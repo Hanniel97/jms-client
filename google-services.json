@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "1069765698561",
+    "firebase_url": "https://corded-evening-412102-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "corded-evening-412102",
+    "storage_bucket": "corded-evening-412102.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1069765698561:android:90c564e985ca28d49acc00",
+        "android_client_info": {
+          "package_name": "com.jmsclient.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1069765698561-6c991vclafc3s5uv7s6798anunul8ntl.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.jmsclient.app",
+            "certificate_hash": "0e29008f2500f82dcf8ce2076b9d1748c943faf8"
+          }
+        },
+        {
+          "client_id": "1069765698561-npc0eqq2vnn37p1bcu2v57vckqdibm06.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC2z4RChMIjcwSc_OvQ4u9WqBs1phsfFps"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1069765698561-npc0eqq2vnn37p1bcu2v57vckqdibm06.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1069765698561-0h5ivo595dhtgkhuerg8811kupjivpir.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.jms.driver.ios"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

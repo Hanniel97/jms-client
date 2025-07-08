@@ -1,0 +1,103 @@
+/* eslint-disable react-hooks/rules-of-hooks */
+import CustomHeader from "@/components/CustomHeader";
+import KeyboardAvoidWrapper from "@/components/KeyboardAvoidingWrapper";
+import { apiRequest } from "@/services/api";
+import useStore from "@/store/useStore";
+import { CustomTextInput, CustomTextInputReview } from "@/components/CustomTextInput";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { Icon } from "@rneui/base";
+import { Controller, useForm } from "react-hook-form";
+import { router } from "expo-router";
+import React, { useState } from "react";
+import { Text, View } from "react-native";
+import * as yup from "yup";
+import { CustomButton } from "@/components/CustomButton";
+import { showError, showSuccess } from "@/utils/showToast";
+import { useWS } from "@/services/WSProvider";
+
+const schema = yup.object().shape({
+    message: yup.string().required("Le message est requis"),
+});
+
+export default function contactus() {
+    const { user, tok, setUser, } = useStore();
+
+    const [loading, setLoading] = useState<boolean>(false);
+
+    const {
+        control,
+        handleSubmit,
+        formState: { errors },
+    } = useForm({
+        resolver: yupResolver(schema),
+        defaultValues: {
+            message: "",
+        },
+    });
+
+    const onSubmit = async (data: any) => {
+        // setLoading(true)
+        // const res = await apiRequest({
+        //     method: 'PUT',
+        //     endpoint: 'updateProfil/' + user._id,
+        //     token: tok,
+        //     data: {
+        //         nom: data.nom,
+        //         prenom: data.prenom
+        //     },
+        // });
+
+        // console.log('dfdbfk jd', res)
+
+        // if (res.success === false) {
+        //     setLoading(false)
+        //     showError(res.message)
+        //     return;
+        // }
+
+        // if (res.success === true) {
+        //     setUser(res.data)
+        //     setLoading(false)
+        //     showSuccess(res.message)
+        //     router.back()
+        // }
+    };
+
+    return (
+        <View className="flex-1 bg-white dark:bg-black">
+            <CustomHeader showBack={true} title={"Nous contacter"} />
+
+            <KeyboardAvoidWrapper>
+                <View className="px-3 flex-1 h-full mt-3">
+                    <Text className="text-lg font-['RubikBold'] self-center text-black dark:text-white mb-2">Adresse</Text>
+
+                    <Text className="text-gray-500 text-center font-['RubikMedium'] text-lg dark:text-white mb-8">Un code a été envoyé sur votre numéro via la méthode de vérification que vous avez choisi. Ce code expire dans 5 minutes pour votre sécurité.</Text>
+
+                    <Controller
+                        control={control}
+                        name="message"
+                        render={({ field: { onChange, value } }) => (
+                            <CustomTextInputReview
+                                // label="Nom & Prénom"
+                                // icon0={<Icon name="user" type='font-awesome' size={20} color="#000000" />}
+                                placeholder="Taper votre message"
+                                keyboardType="default"
+                                value={value}
+                                onChangeText={onChange}
+                                error={errors.message?.message}
+                            />
+                        )}
+                    />
+
+                    <CustomButton
+                        buttonText="Envoyer"
+                        loading={loading}
+                        buttonClassNames="bg-primary shadow-xl h-12 rounded-full items-center justify-center mt-4"
+                        textClassNames="text-white text-lg font-['RubikBold']"
+                        onPress={handleSubmit(onSubmit)}
+                    />
+                </View>
+            </KeyboardAvoidWrapper>
+        </View>
+    )
+}
