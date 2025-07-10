@@ -1,8 +1,9 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import CustomHeader from "@/components/CustomHeader";
 import React from "react";
-import { ScrollView, Text, View } from "react-native";
+import { ScrollView, Text, View, ViewStyle, StyleSheet } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import WebView from "react-native-webview";
 
 const Section = ({ title, children }: { title: string; children: React.ReactNode }) => (
     <View className="mb-5">
@@ -13,12 +14,16 @@ const Section = ({ title, children }: { title: string; children: React.ReactNode
 
 export default function policy() {
     const insets = useSafeAreaInsets();
-    
-    return (
-        <View style={{marginBottom: insets.bottom}} className="flex-1 bg-white dark:bg-black">
-            <CustomHeader showBack={true} title={"Politique de confidentialité"} />
 
-            <ScrollView className="px-5" showsVerticalScrollIndicator={false} contentContainerStyle={{ justifyContent: "center" }}>
+    return (
+        <View style={{ marginBottom: insets.bottom }} className="flex-1 bg-white dark:bg-black">
+            <CustomHeader showBack={true} title={"Politique de confidentialité"} />
+            <WebView
+                source={{ uri: "https://jmstracking-ci.com/privacy-policy#" }}
+                originWhitelist={["*"]}
+            />
+
+            {/* <ScrollView className="px-5" showsVerticalScrollIndicator={false} contentContainerStyle={{ justifyContent: "center" }}>
                 <Text className="text-2xl mb-1 font-['RubikRegular']">Politique de Confidentialité</Text>
                 <Text className="text-xs text-gray-500 mb-4 font-['RubikRegular']">Dernière mise à jour : 23 juin 2025</Text>
 
@@ -28,7 +33,6 @@ export default function policy() {
 
                 <Section title="2. Données collectées">
                     • Données d'identité : nom, prénom, numéro de téléphone{'\n'}
-                    {/* • Données d’utilisation : dons publiés, demandes faites, interactions entre utilisateurs{'\n'} */}
                     • Données techniques : type d'appareil, système d'exploitation, adresse IP
                 </Section>
 
@@ -68,7 +72,42 @@ export default function policy() {
                 <Text className="text-sm text-gray-500 mt-6 font-['RubikRegular']">
                     Pour toute question ou demande relative à vos données personnelles, contactez-nous depuis la section « Contact » de l’application.
                 </Text>
-            </ScrollView>
+            </ScrollView> */}
         </View>
     )
 }
+
+const styles = StyleSheet.create({
+    modalContainer: {
+        flex: 1,
+        backgroundColor: "rgba(0,0,0,0.0)",
+        justifyContent: "center",
+        alignItems: "center",
+        // padding: 16,
+    } as ViewStyle,
+
+    webviewWrapper: {
+        width: "100%",
+        height: "100%",
+        backgroundColor: "white",
+        borderRadius: 16,
+        overflow: "hidden",
+    },
+
+    closeButton: {
+        position: "absolute",
+        top: 40,
+        right: 20,
+        zIndex: 10,
+        backgroundColor: "rgba(0,0,0,0.6)",
+        width: 40,
+        height: 40,
+        justifyContent: "center",
+        alignItems: "center",
+        borderRadius: 20,
+    },
+
+    webview: {
+        flex: 1,
+    },
+});

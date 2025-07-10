@@ -1,19 +1,19 @@
+import { GOOGLE_API_KEY } from "@/services/api";
 import useStore from "@/store/useStore";
 import { getPoints } from "@/utils/mapUtils";
 import { Icon, ScreenHeight } from "@rneui/base";
 import React, { memo, useEffect, useRef, useState } from "react";
 import {
-    View, Image,
+    Image,
+    Platform,
     useColorScheme,
-    Platform
+    View
 } from "react-native";
 import MapView, { Marker, Polyline } from "react-native-maps";
 import MapViewDirections from 'react-native-maps-directions';
-import darkMapStyle from "../services/mapStyleDark.json"
+import darkMapStyle from "../services/mapStyleDark.json";
 import lightMapStyle from '../services/mapStyleLight.json';
 import { CustomButton } from "./CustomButton";
-
-const GOOGLE_API_KEY = "AIzaSyB6_OxzEd6VT4yqdW2zS0wjT7Gc6w9xxTw";
 
 const androidHeights = [ScreenHeight * 0.12, ScreenHeight * 0.42]
 const iosHeights = [ScreenHeight * 0.2, ScreenHeight * 0.5]
@@ -130,37 +130,42 @@ export const LiveTrackingMap: React.FC<{
 
                 {drop?.latitude && (
                     <Marker
-                        anchor={{ x: 0.5, y: 1 }}
+                        anchor={{ x: 0.3, y: 0.6 }}
                         coordinate={{
                             latitude: drop.latitude,
                             longitude: drop.longitude
                         }}
                         zIndex={1}
+                        title="Destination"
+                        pinColor="red"
                     >
                         <View>
-                            <Image
+                            {/* <Image
                                 source={require('../assets/images/customer.png')}
                                 style={{ height: 40, width: 40, resizeMode: "contain" }}
-                            />
+                            /> */}
+                            <Icon name="location-pin" type="entypo" size={35} color="red" />
                         </View>
                     </Marker>
                 )}
 
                 {pickup?.latitude && (
                     <Marker
-                        anchor={{ x: 0.5, y: 1 }}
+                        anchor={{ x: 0.3, y: 0.6 }}
                         coordinate={{
                             latitude: pickup.latitude,
                             longitude: pickup.longitude
                         }}
                         zIndex={2}
+                        title="Départ"
+                        pinColor="green"
                     >
                         <View>
                             {/* <Image
                                 source={require('../assets/images/car2.png')}
                                 style={{ height: 50, width: 50, resizeMode: "contain" }}
                             /> */}
-                            <Icon name="location-pin" type="entypo" size={30} color="red" />
+                            <Icon name="location-pin" type="entypo" size={35} color="green" />
                         </View>
                     </Marker>
                 )}
@@ -189,7 +194,7 @@ export const LiveTrackingMap: React.FC<{
                         strokeColor={theme === "dark" ? "#FFFFFF" : "#000000"}
                         strokeWidth={2}
                         geodesic={true}
-                        lineDashPattern={[12, 10]}
+                        lineDashPattern={[12, 5]}
                     />
                 )}
             </MapView>

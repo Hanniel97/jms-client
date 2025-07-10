@@ -47,6 +47,19 @@ const toastConfig = {
       }}
     />
   ),
+  info: (props: JSX.IntrinsicAttributes & BaseToastProps) => (
+    <ErrorToast
+      {...props}
+      text1Style={{
+        fontSize: 15,
+        fontFamily: "RubikRegular"
+      }}
+      text2Style={{
+        fontSize: 13,
+        fontFamily: "RubikRegular"
+      }}
+    />
+  )
 }
 
 export default function RootLayout() {
@@ -75,8 +88,8 @@ export default function RootLayout() {
             flex: 1,
             // marginBottom: insets.bottom
           }}>
-            {/* <Routes /> */}
-            <Slot />
+            <Routes />
+            {/* <Slot /> */}
           </GestureHandlerRootView>
         </Suspense>
         <Toast config={toastConfig} />

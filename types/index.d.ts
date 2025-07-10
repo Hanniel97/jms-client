@@ -49,6 +49,7 @@ export interface IRide {
     customer: IUser,
     rider: IUser,
     status: string,
+    paymentMethod: string,
     otp: string,
     createdAt: date,
     updatedAt: date

@@ -24,7 +24,7 @@ export const CustomTextInput: React.FC<InputProps> = ({ label, onChangeText, ico
                     )
                 }
 
-                <TextInput className="flex flex-1 font-['RubikRegular'] bg-transparent text-md text-['#000'] h-[50px] pl-2"
+                <TextInput style={{color: "#000000"}} className="flex flex-1 font-['RubikRegular'] bg-transparent text-md text-['#000000'] h-[50px] pl-2"
                     onChangeText={onChangeText} secureTextEntry={IsSecureText} keyboardType={keyboardType} placeholder={placeholder}
                     placeholderTextColor={"gray"} autoCapitalize="none" value={value}
                 />

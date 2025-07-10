@@ -67,7 +67,7 @@ export const LiveRide = () => {
 
             on('error', (error) => {
                 router.replace("/(tabs)")
-                showError("Aucun chauffeur trouvé")
+                showInfo("Aucun chauffeur trouvé")
             })
         }
 
@@ -179,11 +179,7 @@ export const LiveRide = () => {
         }
     }
 
-    console.log(duration)
-
     function onNavigationStateChange({ url }: { url: string }) {
-        // console.log(">>>", url);
-
         if (url.includes('success')) {
             setLoad(false)
             hideModal()

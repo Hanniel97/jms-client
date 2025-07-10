@@ -1,8 +1,61 @@
+import { NotificationListener } from '@/services/notificationHandler';
+import { registerForPushNotificationsAsync } from '@/services/registerForPushNotificationAsync';
+import useStore from '@/store/useStore';
 import { Stack } from 'expo-router';
+import { useEffect } from 'react';
 
-const Routes = () =>{
-    
-    return(
+// function useNotificationObserver() {
+//     useEffect(() => {
+//         let isMounted = true;
+
+//         function redirect(notification: Notifications.Notification) {
+//             const url = notification.request.content.data?.url;
+//             if (url) {
+//                 // router.push(url, params: {});
+//                 router.push({ pathname: url, params: { id: notification.request.content.data?.id } })
+//             }
+//         }
+
+//         Notifications.getLastNotificationResponseAsync()
+//             .then(response => {
+//                 if (!isMounted || !response?.notification) {
+//                     return;
+//                 }
+//                 redirect(response?.notification);
+//             });
+
+//         const subscription = Notifications.addNotificationResponseReceivedListener(response => {
+//             redirect(response.notification);
+//         });
+
+//         return () => {
+//             isMounted = false;
+//             subscription.remove();
+//         };
+//     }, []);
+// }
+
+const Routes = () => {
+    const { isAuthenticated, tok } = useStore();
+
+    // useNotificationObserver();
+
+    useEffect(() => {
+        // Enregistrer le token push
+        if (isAuthenticated) {
+            registerForPushNotificationsAsync(tok);
+        }
+
+    }, [tok, isAuthenticated]);
+
+    useEffect(() => {
+        const unsubscribe = NotificationListener();
+        return () => {
+            unsubscribe(); // Nettoie les écouteurs pour éviter les écoutes multiples
+        };
+    }, []);
+
+    return (
         <Stack>
             <Stack.Screen name="index" options={{ headerShown: false }} />
             <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
@@ -16,11 +69,7 @@ const Routes = () =>{
             <Stack.Screen name="deleteaccount" options={{ headerShown: false }} />
             <Stack.Screen name="addcourse" options={{ headerShown: false }} />
             <Stack.Screen name="liveride" options={{ headerShown: false }} />
-            {/* <Stack.Screen name="send" options={{ headerShown: false }} />
-            <Stack.Screen name="sendmoneyform" options={{ headerShown: false }} />
-            <Stack.Screen name="sendmoneysummary" options={{ headerShown: false }} />
-            <Stack.Screen name="request" options={{ headerShown: false }} />
-            <Stack.Screen name="userinfo" options={{ headerShown: false }} /> */}
+            <Stack.Screen name="ridedetails" options={{ headerShown: false }} />
         </Stack>
     )
 }

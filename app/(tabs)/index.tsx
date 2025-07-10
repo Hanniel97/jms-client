@@ -9,6 +9,7 @@ import { showError, showSuccess } from '@/utils/showToast';
 import { useIsFocused } from '@react-navigation/native';
 import { Icon } from '@rneui/base';
 import * as Location from 'expo-location';
+import * as Notifications from 'expo-notifications';
 import { router } from 'expo-router';
 import haversine from "haversine-distance";
 import { jwtDecode } from "jwt-decode";
@@ -23,6 +24,15 @@ import lightMapStyle from '../../services/mapStyleLight.json';
 interface DecodedToken {
   exp: number;
 }
+
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldPlaySound: true,
+    shouldSetBadge: true,
+    shouldShowBanner: true,
+    shouldShowList: true,
+  }),
+});
 
 const LATITUDE_DELTA = 0.04864195044303443;
 const LONGITUDE_DELTA = 0.040142817690068;
@@ -68,7 +78,7 @@ export default function HomeScreen() {
     } catch {
       // return null
       try {
-        
+
         let location = await Location.getLastKnownPositionAsync({});
         setPosition({ latitude: Number(location?.coords.latitude), longitude: Number(location?.coords.longitude), address: "" });
         setFirst(false);
@@ -162,7 +172,7 @@ export default function HomeScreen() {
     }, 1000);
 
     return () => clearTimeout(timeoutId);
-    
+
   }, [first, getPosition, isAuthenticated, user._id])
 
   const goToUserLocation = () => {
@@ -414,7 +424,7 @@ export default function HomeScreen() {
       </View>
 
       {/* 🔘 BOUTON EN BAS */}
-      <View className="flex-row absolute bottom-2 justify-between items-center h-12 w-full px-3">
+      <View className="flex-row absolute bottom-3 justify-between items-center h-12 w-full px-3">
         <CustomButton
           icon={<Icon name="my-location" type="material-icon" size={24} color="#ff6d00" />}
           // buttonText="Commander une course"

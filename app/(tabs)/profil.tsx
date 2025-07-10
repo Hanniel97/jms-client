@@ -238,7 +238,7 @@ export default function profil() {
 
                     <View className="flex-row justify-center items-center bg-green-600 mt-3 py-1 px-3 rounded-lg">
                         <Text className="text-lg text-white font-['RubikSemiBold']">Solde: </Text>
-                        <Text className="text-lg text-white font-['RubikRegular']">3500 XOF</Text>
+                        <Text className="text-lg text-white font-['RubikRegular']">{user.wallet} XOF</Text>
                     </View>
 
                     <Text className="text-xl mt-3 font-['RubikSemiBold']">{user.prenom} {user.nom}</Text>
