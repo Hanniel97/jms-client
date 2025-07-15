@@ -27,6 +27,7 @@ interface Store {
     first: boolean,
     notifications: INotification[];
     historiques: IRide[];
+    enCours: IRide[];
     setTok: (tok: string) => void;
     setRefreshTok: (refreshtok: string) => void;
     setIsAuthenticated: (isAuthenticated: boolean) => void;
@@ -37,6 +38,7 @@ interface Store {
     setFirst: (first: boolean) => void;
     setNotification: (notifications: INotification[]) => void;
     setHistorique: (historiques: IRide[]) => void;
+    setEnCours: (enCours: IRide[]) => void;
     setLogout: () => void;
 }
 
@@ -73,6 +75,7 @@ const useStore = create<Store>()(
             first: true,
             notifications: [],
             historiques: [],
+            enCours: [],
             setTok: (tok) => set({ tok }),
             setRefreshTok: (refresh_tok) => set({ refresh_tok }),
             setIsAuthenticated: (isAuthenticated) => set({ isAuthenticated }),
@@ -83,6 +86,7 @@ const useStore = create<Store>()(
             setFirst: (first) => set({ first }),
             setNotification: (notifications) => set({ notifications }),
             setHistorique: (historiques) => set({ historiques }),
+            setEnCours: (enCours) => set({ enCours }),
             setLogout: () => {
                 set({
                     isAuthenticated: false,
@@ -113,6 +117,7 @@ const useStore = create<Store>()(
                     first: false,
                     notifications: [],
                     historiques: [],
+                    enCours: [],
                 })
             }
         }),

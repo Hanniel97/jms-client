@@ -9,7 +9,6 @@ import { FlatList, Text, TouchableOpacity, View, Image } from "react-native";
 import { Region } from "react-native-maps";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { router } from "expo-router";
-// import BottomSheet, { BottomSheetScrollView } from "@gorhom/bottom-sheet"
 import BottomSheetScrollView, { BottomSheetMethods } from "@/components/BottomSheetScrollView";
 import { CustomButton } from "@/components/CustomButton";
 import { apiRequest, Coordinates, getPlaceDetails, searchPlaces } from "@/services/api";
@@ -40,7 +39,7 @@ const paymentMethods = [
 
 export default function AddCourse() {
     const { tok } = useStore()
-    const { position, setPosition } = useStore();
+    const { position} = useStore();
 
     const insets = useSafeAreaInsets();
     const bottomSheetRef = useRef<BottomSheetMethods>(null);
@@ -58,11 +57,11 @@ export default function AddCourse() {
     const [pickupCoords, setPickupCoords] = useState<any>(null);
     const [drop, setDrop] = useState("");
     const [dropCoords, setDropCoords] = useState<any>(null);
-    const [locations, setLocations] = useState([]);
+    // const [locations, setLocations] = useState([]);
     const [focusedInput, setFocusedInput] = useState("drop");
     const [modalTitle, setModalTitle] = useState("drop");
     const [isMapModalVisible, setMapModalVisible] = useState(false);
-    const [selectedMethod, setSelectedMethod] = useState<string>("momo");
+    const [selectedMethod, setSelectedMethod] = useState<string>("wallet");
     const [selectedCar, setSelectedCar] = useState<string>("eco");
     const [courseDetails, setCourseDetails] = useState<{
         distance: number;
@@ -73,12 +72,12 @@ export default function AddCourse() {
         };
     } | null>(null);
 
-    const [region, setRegion] = useState<Region>({
-        latitude: position.latitude,
-        longitude: position.longitude,
-        latitudeDelta: 0.01,
-        longitudeDelta: 0.01,
-    });
+    // const [region, setRegion] = useState<Region>({
+    //     latitude: position.latitude,
+    //     longitude: position.longitude,
+    //     latitudeDelta: 0.01,
+    //     longitudeDelta: 0.01,
+    // });
 
     const [suggestions, setSuggestions] = useState<any[]>([]);
 
@@ -130,9 +129,9 @@ export default function AddCourse() {
             alert("L'emplacement choisi est trop éloigné");
             return;
         } else {
-            setLocations([])
+            // setLocations([])
 
-            pressHandler()
+            // pressHandler()
 
             const res = await apiRequest({
                 method: 'POST',
@@ -148,14 +147,6 @@ export default function AddCourse() {
                 setCourseDetails(res.data);
                 pressHandler()
             }
-            // router.navigate({
-            //     pathname: "/(tabs)", params: {
-            //         distanceInKm: distance.toFixed(2),
-            //         drop_latitude: dropCoords?.latitude,
-            //         drop_longitude: dropCoords?.longitude,
-            //         drop_address: drop
-            //     }
-            // })
         }
     }
 
@@ -163,7 +154,7 @@ export default function AddCourse() {
         if (dropCoords && pickupCoords) {
             checkDistance()
         } else {
-            setLocations([])
+            // setLocations([])
             setMapModalVisible(false)
         }
     }, [dropCoords, pickupCoords])
@@ -363,7 +354,7 @@ export default function AddCourse() {
                                 setDropCoords(data);
                                 setDrop(data?.address)
                             } else {
-                                setLocations(data);
+                                // setLocations(data);
                                 setPickupCoords(data);
                                 setPickup(data?.address)
                             }

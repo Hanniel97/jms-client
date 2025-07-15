@@ -8,17 +8,17 @@ export const GOOGLE_API_KEY = "AIzaSyB6_OxzEd6VT4yqdW2zS0wjT7Gc6w9xxTw";
 const test: boolean = __DEV__;
 
 export const apiUrl: string = test ?
-    "http://192.168.100.4:5000/api/"
+    "http://192.168.196.26:5000/api/"
     :
     "https://jms-tansport-backend.onrender.com/api/"
 
 export const socketUrl: string = test ?
-    "http://192.168.100.4:5000"
+    "http://192.168.196.26:5000"
     :
     "https://jms-tansport-backend.onrender.com"
 
 export const photoUrl: string = test ?
-    "http://192.168.100.4:5000/"
+    "http://192.168.196.26:5000/"
     :
     "https://jms-tansport-backend.onrender.com/"
 
@@ -143,6 +143,8 @@ export const searchPlaces = async (text: string) => {
         );
 
         const json = await res.json();
+
+        // console.log(json)
         return Array.isArray(json.predictions) ? json.predictions : [];
     } catch (error) {
         console.error("Erreur API Google Autocomplete :", error);
@@ -157,6 +159,8 @@ export const getPlaceDetails = async (placeId: string): Promise<Coordinates | nu
         );
 
         const json = await res.json();
+
+        // console.log(json)
 
         if (json.status !== 'OK' || !json.result?.geometry?.location) {
             return null;

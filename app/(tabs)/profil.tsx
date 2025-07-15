@@ -222,7 +222,7 @@ export default function profil() {
                     <View className="flex w-28 h-28 rounded-full border-2 border-white">
                         <Image
                             source={user.photo === "" ? require("../../assets/images/profil1.png") : { uri: photoUrl + user.photo }}
-                            className="w-28 h-28 rounded-full border-4 border-primary"
+                            className="w-28 h-28 rounded-full border-2 border-primary"
                         />
                         <TouchableOpacity onPress={() => { setVisible(true) }}>
                             <View className="flex h-9 w-9 rounded-full bg-primary absolute bottom-0 right-0 justify-center items-center">
@@ -236,17 +236,17 @@ export default function profil() {
                         </TouchableOpacity>
                     </View>
 
-                    <View className="flex-row justify-center items-center bg-green-600 mt-3 py-1 px-3 rounded-lg">
+                    <TouchableOpacity onPress={() => router.push('/wallet')} className="flex-row justify-center items-center bg-green-600 mt-3 py-1 px-3 rounded-lg">
                         <Text className="text-lg text-white font-['RubikSemiBold']">Solde: </Text>
-                        <Text className="text-lg text-white font-['RubikRegular']">{user.wallet} XOF</Text>
-                    </View>
+                        <Text className="text-lg text-white font-['RubikRegular']">{user.wallet.toLocaleString()} XOF</Text>
+                    </TouchableOpacity>
 
                     <Text className="text-xl mt-3 font-['RubikSemiBold']">{user.prenom} {user.nom}</Text>
                     <Text className="text-sm text-gray-500 mt-1 font-['RubikRegular']">{user.phone}</Text>
                 </View>
 
                 <SettingsItem icon={<FontAwesome name="user" size={20} color="#000000" />} label="Modifier le profil" onPress={() => router.push("/editprofil")} />
-                <SettingsItem icon={<Entypo name="wallet" size={20} color="#000000" />} label="Recharger portefeuille" onPress={() => router.push("/rechargewallet")} />
+                <SettingsItem icon={<Entypo name="wallet" size={20} color="#000000" />} label="Portefeuille" onPress={() => router.push("/wallet")} />
                 <SettingsItem icon={<Entypo name="lock" size={20} color="#000000" />} label="Changer mot de passe" onPress={() => router.push("/changepassword")} />
                 <SettingsItem icon={<Ionicons name="shield-checkmark" size={20} color="#000000" />} label="Politique de confidentialité" onPress={() => router.push("/policy")} />
                 <SettingsItem icon={<MaterialIcons name="message" size={20} color="#000000" />} label="Nous contacter" onPress={() => router.push("/contactus")} />

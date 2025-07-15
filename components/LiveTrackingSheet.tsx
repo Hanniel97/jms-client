@@ -1,12 +1,13 @@
+import { photoUrl } from "@/services/api";
 import { useWS } from "@/services/WSProvider";
 import { vehiculeIcons } from "@/utils/mapUtils";
 import { Icon } from "@rneui/base";
 import { LinearGradient } from "expo-linear-gradient";
+import React from "react";
+import { Alert, Image, Linking, Platform, Text, TouchableOpacity, View } from "react-native";
 import QRCode from 'react-native-qrcode-svg';
-import React, { useEffect, useState } from "react";
-import { Image, Text, TouchableOpacity, View, Linking, Platform, Alert } from "react-native";
 import { CustomButton } from "./CustomButton";
-import { photoUrl } from "@/services/api";
+import { ICar } from "@/types";
 
 type VehicleType = "eco" | "confort";
 
@@ -24,8 +25,8 @@ interface RideItem {
     estimatedDurationFormatted?: string,
 }
 
-const LiveTrackingSheet: React.FC<{ item: RideItem, duration: number }> = ({
-    item, duration
+const LiveTrackingSheet: React.FC<{ item: RideItem, duration: number, car: ICar, rating: { moyenne: number, total: number } }> = ({
+    item, duration, car, rating
 }) => {
     const { emit } = useWS();
 
@@ -38,26 +39,6 @@ const LiveTrackingSheet: React.FC<{ item: RideItem, duration: number }> = ({
         const secs = seconds % 60;
         return `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
     };
-
-    // const [remainingSeconds, setRemainingSeconds] = useState(
-    //     (item?.estimatedDuration || 0) * 60 // convertit les minutes en secondes
-    // );
-
-    // useEffect(() => {
-    //     if (item?.status !== "START" || remainingSeconds <= 0) return;
-
-    //     const interval = setInterval(() => {
-    //         setRemainingSeconds(prev => {
-    //             if (prev <= 1) {
-    //                 clearInterval(interval);
-    //                 return 0;
-    //             }
-    //             return prev - 1;
-    //         });
-    //     }, 1000); // chaque seconde
-
-    //     return () => clearInterval(interval);
-    // }, [item?.status, remainingSeconds]);
 
     const callNumber = (phone: string) => {
         let phoneNumber = '';
@@ -83,20 +64,6 @@ const LiveTrackingSheet: React.FC<{ item: RideItem, duration: number }> = ({
         <View className="bg-white px-4 pb-6 rounded-t-2xl shadow-md">
             {item?.status === "ACCEPTED" ?
                 <>
-                    {/* <View className="mb-3 justify-center items-center self-center bg-primary/50 p-3 rounded-xl">
-                        <QRCode
-                            value={item?.otp}
-                            size={80}
-                            quietZone={10}
-                            ecl="H"
-                        />
-
-                        <View className="mt-2 flex-row justify-center items-center">
-                            <Icon name="access-time-filled" type='material-icon' size={20} color="#FFFFFF" />
-                            <Text className="text-white ffont-['RubikLight'] ml-1">02:00</Text>
-                        </View>
-                    </View> */}
-
                     <View className="mb-3 w-full">
                         <Text className="text-black font-['RubikBold'] text-sm">Votre course a été acceptée</Text>
                         <Text className="text-black font-['RubikBold'] mt-1">Votre chauffeur est en route</Text>
@@ -110,13 +77,13 @@ const LiveTrackingSheet: React.FC<{ item: RideItem, duration: number }> = ({
                             />
                             <View className=" px-2 flex-row rounded-full bg-primary absolute bottom-0 right-0 justify-center items-center">
                                 <Icon type="entypo" name="star" size={15} color={"#facc15"} />
-                                <Text className="ml-1 text-white font-['RubikRegular']">4.9</Text>
+                                <Text className="ml-1 text-white font-['RubikRegular']">{rating?.moyenne}</Text>
                             </View>
                         </View>
                         <View style={{ flex: 1 }} className="pl-1 gap-1">
                             <Text className="ml-1 text-black font-['RubikRegular']">{item?.rider?.prenom} {item?.rider?.nom}</Text>
-                            <Text className="ml-1 text-gray-400 font-['RubikRegular']">{item?.rider?.nom} Mercedes benz (Rouge)</Text>
-                            <Text className="ml-1 text-gray-400 font-['RubikRegular']">{item?.rider?.nom} BC 2484 RB</Text>
+                            <Text className="ml-1 text-gray-400 font-['RubikRegular']">{car?.marque} - {car?.model}</Text>
+                            <Text className="ml-1 text-gray-400 font-['RubikRegular']">{car?.immatriculation}</Text>
                         </View>
                         <TouchableOpacity onPress={() => callNumber(item?.rider?.phone)} className="bg-green-400 h-10 w-10 rounded-full justify-center items-center">
                             <Icon type="ionicon" name="call" size={25} color={"#FFFFFF"} />
@@ -152,13 +119,13 @@ const LiveTrackingSheet: React.FC<{ item: RideItem, duration: number }> = ({
                                 />
                                 <View className=" px-2 flex-row rounded-full bg-primary absolute bottom-0 right-0 justify-center items-center">
                                     <Icon type="entypo" name="star" size={15} color={"#facc15"} />
-                                    <Text className="ml-1 text-white font-['RubikRegular']">4.9</Text>
+                                    <Text className="ml-1 text-white font-['RubikRegular']">{rating?.moyenne}</Text>
                                 </View>
                             </View>
                             <View style={{ flex: 1 }} className="pl-1 gap-1">
                                 <Text className="ml-1 text-black font-['RubikRegular']">{item?.rider?.prenom} {item?.rider?.nom}</Text>
-                                <Text className="ml-1 text-gray-400 font-['RubikRegular']">{item?.rider?.nom} Mercedes benz (Rouge)</Text>
-                                <Text className="ml-1 text-gray-400 font-['RubikRegular']">{item?.rider?.nom} BC 2484 RB</Text>
+                                <Text className="ml-1 text-gray-400 font-['RubikRegular']">{car?.marque} - {car?.model}</Text>
+                                <Text className="ml-1 text-gray-400 font-['RubikRegular']">{car?.immatriculation}</Text>
                             </View>
                             <TouchableOpacity onPress={() => callNumber(item?.rider?.phone)} className="bg-green-400 h-10 w-10 rounded-full justify-center items-center">
                                 <Icon type="ionicon" name="call" size={25} color={"#FFFFFF"} />
@@ -167,20 +134,6 @@ const LiveTrackingSheet: React.FC<{ item: RideItem, duration: number }> = ({
                     </>
                     : item?.status === "VERIFIED" ?
                         <>
-                            {/* <View className="mb-3 justify-center items-center self-center bg-primary/50 p-3 rounded-xl">
-                                <QRCode
-                                    value={item?.otp}
-                                    size={80}
-                                    quietZone={10}
-                                    ecl="H"
-                                />
-
-                                <View className="mt-2 flex-row justify-center items-center">
-                                    <Icon name="access-time-filled" type='material-icon' size={20} color="#FFFFFF" />
-                                    <Text className="text-white ffont-['RubikLight'] ml-1">02:00</Text>
-                                </View>
-                            </View> */}
-
                             <View className="mb-3 w-full">
                                 <Text className="text-black font-['RubikBold'] text-sm">Votre course peut commencer</Text>
                                 {/* <Text className="text-black font-['RubikBold'] mt-1">Votre chauffeur est en route</Text> */}
@@ -189,18 +142,18 @@ const LiveTrackingSheet: React.FC<{ item: RideItem, duration: number }> = ({
                             <View className="mb-3 flex-row justify-center items-center self-center w-full">
                                 <View className="flex w-14 h-14 rounded-full">
                                     <Image
-                                        source={item?.rider?.photo !== "" ? require("../assets/images/profil1.png") : { uri: photoUrl + item?.rider?.photo }}
+                                        source={item?.rider?.photo === "" ? require("../assets/images/profil1.png") : { uri: photoUrl + item?.rider?.photo }}
                                         className="w-14 h-14 rounded-full border-4 border-primary"
                                     />
                                     <View className=" px-2 flex-row rounded-full bg-primary absolute bottom-0 right-0 justify-center items-center">
                                         <Icon type="entypo" name="star" size={15} color={"#facc15"} />
-                                        <Text className="ml-1 text-white font-['RubikRegular']">4.9</Text>
+                                        <Text className="ml-1 text-white font-['RubikRegular']">{rating?.moyenne}</Text>
                                     </View>
                                 </View>
                                 <View style={{ flex: 1 }} className="pl-1 gap-1">
                                     <Text className="ml-1 text-black font-['RubikRegular']">{item?.rider?.prenom} {item?.rider?.nom}</Text>
-                                    <Text className="ml-1 text-gray-400 font-['RubikRegular']">{item?.rider?.nom} Mercedes benz (Rouge)</Text>
-                                    <Text className="ml-1 text-gray-400 font-['RubikRegular']">{item?.rider?.nom} BC 2484 RB</Text>
+                                    <Text className="ml-1 text-gray-400 font-['RubikRegular']">{car?.marque} - {car?.model}</Text>
+                                    <Text className="ml-1 text-gray-400 font-['RubikRegular']">{car?.immatriculation}</Text>
                                 </View>
                                 <TouchableOpacity onPress={() => callNumber(item?.rider?.phone)} className="bg-green-400 h-10 w-10 rounded-full justify-center items-center">
                                     <Icon type="ionicon" name="call" size={25} color={"#FFFFFF"} />
@@ -222,13 +175,13 @@ const LiveTrackingSheet: React.FC<{ item: RideItem, duration: number }> = ({
                                         />
                                         <View className=" px-2 flex-row rounded-full bg-primary absolute bottom-0 right-0 justify-center items-center">
                                             <Icon type="entypo" name="star" size={15} color={"#facc15"} />
-                                            <Text className="ml-1 text-white font-['RubikRegular']">4.9</Text>
+                                            <Text className="ml-1 text-white font-['RubikRegular']">{rating?.moyenne}</Text>
                                         </View>
                                     </View>
                                     <View style={{ flex: 1 }} className="pl-1 gap-1">
                                         <Text className="ml-1 text-black font-['RubikRegular']">{item?.rider?.prenom} {item?.rider?.nom}</Text>
-                                        <Text className="ml-1 text-gray-400 font-['RubikRegular']">{item?.rider?.nom} Mercedes benz (Rouge)</Text>
-                                        <Text className="ml-1 text-gray-400 font-['RubikRegular']">{item?.rider?.nom} BC 2484 RB</Text>
+                                        <Text className="ml-1 text-gray-400 font-['RubikRegular']">{car?.marque} - {car?.model}</Text>
+                                        <Text className="ml-1 text-gray-400 font-['RubikRegular']">{car?.immatriculation}</Text>
                                     </View>
                                     <TouchableOpacity onPress={() => callNumber(item?.rider?.phone)} className="bg-green-400 h-10 w-10 rounded-full justify-center items-center">
                                         <Icon type="ionicon" name="call" size={25} color={"#FFFFFF"} />
@@ -313,7 +266,7 @@ const LiveTrackingSheet: React.FC<{ item: RideItem, duration: number }> = ({
                 </View>
             </View>
 
-            {/* {item?.status === "ACCEPTED" ?
+            {item?.status === "ACCEPTED" ?
                 <CustomButton
                     buttonText="Annuler la course"
                     buttonClassNames="bg-primary shadow-xl h-12 rounded-full items-center justify-center mt-4 mb-6"
@@ -322,21 +275,21 @@ const LiveTrackingSheet: React.FC<{ item: RideItem, duration: number }> = ({
                 />
                 :
                 <CustomButton
-                    buttonText={`Destination dans 02:00`}
+                    buttonText={`Destination dans ${formatTimeMMSS(duration)} min`}
                     disable={true}
                     buttonClassNames="bg-primary shadow-xl h-12 rounded-full items-center justify-center mt-4 mb-6"
                     textClassNames="text-white text-lg font-['RubikBold']"
                     onPress={cancelOrder}
                 />
-            } */}
+            }
 
-            <CustomButton
+            {/* <CustomButton
                 buttonText={`Destination dans ${formatTimeMMSS(duration)} min`}
                 disable={true}
                 buttonClassNames="bg-primary shadow-xl h-12 rounded-full items-center justify-center mt-4 mb-6"
                 textClassNames="text-white text-lg font-['RubikBold']"
                 onPress={cancelOrder}
-            />
+            /> */}
 
 
 

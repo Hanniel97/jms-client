@@ -30,7 +30,7 @@ export const CustomButton: React.FC<CustomButtonProps> = ({
                     <Text numberOfLines={1} adjustsFontSizeToFit className={`${textClassNames}`}>
                         {buttonText}
                         {buttonTextSpan && (
-                            <Text className={`${spanClassNames}`}>{buttonTextSpan}</Text>
+                            <Text numberOfLines={1} adjustsFontSizeToFit className={`${spanClassNames}`}>{buttonTextSpan}</Text>
                         )}
                     </Text>
 

@@ -37,7 +37,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="historique"
         options={{
-          title: 'Historique',
+          title: 'Activité',
           tabBarIcon: ({ color, focused }) => <Icon type="material-icon" name="access-time" size={28} color={color} />,
         }}
       />

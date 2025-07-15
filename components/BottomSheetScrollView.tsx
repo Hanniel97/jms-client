@@ -1,19 +1,19 @@
-import { Dimensions, StyleSheet, View } from 'react-native';
 import React, {
     forwardRef,
-    useImperativeHandle,
     useCallback,
+    useImperativeHandle,
     useState,
 } from 'react';
+import { Dimensions, StyleSheet, View } from 'react-native';
+import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, {
-    useSharedValue,
+    runOnJS,
+    useAnimatedScrollHandler,
     useAnimatedStyle,
+    useSharedValue,
     withSpring,
     withTiming,
-    useAnimatedScrollHandler,
-    runOnJS,
 } from 'react-native-reanimated';
-import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import BackDrop from './BackDrop';
 
@@ -48,13 +48,28 @@ const BottomSheetScrollView = forwardRef<BottomSheetMethods, Props>(
             topAnimation.value = withTiming(openHeight);
         }, [openHeight, topAnimation]);
 
+        // const close = useCallback(() => {
+        //     topAnimation.value = withTiming(closeHeight, {}, (finished) => {
+        //         if (finished && onClose) {
+        //             runOnJS(onClose)();
+        //         }
+        //     });
+        // }, [closeHeight, onClose, topAnimation]);
+
+        const handleClose = useCallback(() => {
+            if (onClose) {
+                onClose();
+            }
+        }, [onClose]);
+
         const close = useCallback(() => {
             topAnimation.value = withTiming(closeHeight, {}, (finished) => {
-                if (finished && onClose) {
-                    runOnJS(onClose)();
+                'worklet';
+                if (finished) {
+                    runOnJS(handleClose)();
                 }
             });
-        }, [closeHeight, onClose, topAnimation]);
+        }, [closeHeight, topAnimation, handleClose]);
 
         useImperativeHandle(ref, () => ({ expand, close }), [expand, close]);
 
@@ -74,12 +89,20 @@ const BottomSheetScrollView = forwardRef<BottomSheetMethods, Props>(
                 }
             })
             .onEnd(() => {
+                'worklet';
                 if (topAnimation.value > openHeight + 50) {
-                    close();
+                    runOnJS(close)(); // ✅ correction ici
                 } else {
                     topAnimation.value = withSpring(openHeight);
                 }
-            });
+            })
+        // .onEnd(() => {
+        //     if (topAnimation.value > openHeight + 50) {
+        //         close();
+        //     } else {
+        //         topAnimation.value = withSpring(openHeight);
+        //     }
+        // });
 
         const panScroll = Gesture.Pan()
             .onBegin(() => {

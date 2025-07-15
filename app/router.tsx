@@ -70,6 +70,7 @@ const Routes = () => {
             <Stack.Screen name="addcourse" options={{ headerShown: false }} />
             <Stack.Screen name="liveride" options={{ headerShown: false }} />
             <Stack.Screen name="ridedetails" options={{ headerShown: false }} />
+            <Stack.Screen name="wallet" options={{ headerShown: false }} />
         </Stack>
     )
 }

@@ -1,88 +1,12 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import CustomHeader from "@/components/CustomHeader";
-import { apiRequest } from "@/services/api";
-import useStore from "@/store/useStore";
-import React, { useCallback, useEffect, useState } from "react";
-import { FlatList, RefreshControl, Text, View, Image } from "react-native";
 import { DisplayLoading } from "@/components/DisplayLoading";
 import RenderNotification from "@/components/RenderNotifications";
+import { apiRequest } from "@/services/api";
+import useStore from "@/store/useStore";
 import { groupNotificationsByDate } from "@/utils/groupNotificationsByDate";
-import moment from 'moment';
-
-const data = [
-    {
-        _id: "1",
-        user: "",
-        type: "recharge",
-        body: "Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum",
-        title: "Compte rechargé",
-        isRead: false,
-        createdAt: moment().toDate(), // Aujourd'hui
-    },
-    {
-        _id: "2",
-        user: "",
-        type: "paiement",
-        body: "Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum",
-        title: "Course réglée",
-        isRead: false,
-        createdAt: moment().subtract(1, 'days').toDate(), // Hier
-    },
-    {
-        _id: "3",
-        user: "",
-        type: "reduction",
-        body: "Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum",
-        title: "30% de réduction",
-        isRead: false,
-        createdAt: moment().subtract(3, 'days').toDate(), // Il y a 3 jours
-    },
-    {
-        _id: "4",
-        user: "",
-        type: "recharge",
-        body: "Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum",
-        title: "Compte rechargé",
-        isRead: false,
-        createdAt: moment().subtract(7, 'days').toDate(), // Il y a 7 jours
-    },
-    {
-        _id: "5",
-        user: "",
-        type: "paiement",
-        body: "Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum",
-        title: "Course réglée",
-        isRead: false,
-        createdAt: moment().toDate(), // Aujourd'hui
-    },
-    {
-        _id: "6",
-        user: "",
-        type: "reduction",
-        body: "Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum",
-        title: "30% de réduction",
-        isRead: false,
-        createdAt: moment().subtract(1, 'days').toDate(), // Hier
-    },
-    {
-        _id: "7",
-        user: "",
-        type: "paiement",
-        body: "Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum",
-        title: "Course réglée",
-        isRead: false,
-        createdAt: moment().subtract(10, 'days').toDate(), // Il y a 10 jours
-    },
-    {
-        _id: "8",
-        user: "",
-        type: "reduction",
-        body: "Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum",
-        title: "30% de réduction",
-        isRead: false,
-        createdAt: moment().subtract(30, 'days').toDate(), // Il y a 30 jours
-    },
-];
+import React, { useCallback, useEffect, useState } from "react";
+import { FlatList, Image, RefreshControl, Text, View } from "react-native";
 
 export default function notifications() {
     const { user, tok, isAuthenticated, notifications, setNotification } = useStore();
@@ -130,7 +54,7 @@ export default function notifications() {
     }
 
     return (
-        <View className="flex-1 bg-white dark:bg-black">
+        <View className="flex-1 bg-white">
             <CustomHeader showBack={true} title={"Notifications"} />
 
 

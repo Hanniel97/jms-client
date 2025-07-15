@@ -1,11 +1,10 @@
 import { GOOGLE_API_KEY } from "@/services/api";
 import useStore from "@/store/useStore";
 import { getPoints } from "@/utils/mapUtils";
-import { Icon, ScreenHeight } from "@rneui/base";
+import { Icon } from "@rneui/base";
 import React, { memo, useEffect, useRef, useState } from "react";
 import {
     Image,
-    Platform,
     useColorScheme,
     View
 } from "react-native";
@@ -15,8 +14,8 @@ import darkMapStyle from "../services/mapStyleDark.json";
 import lightMapStyle from '../services/mapStyleLight.json';
 import { CustomButton } from "./CustomButton";
 
-const androidHeights = [ScreenHeight * 0.12, ScreenHeight * 0.42]
-const iosHeights = [ScreenHeight * 0.2, ScreenHeight * 0.5]
+// const androidHeights = [ScreenHeight * 0.12, ScreenHeight * 0.42]
+// const iosHeights = [ScreenHeight * 0.2, ScreenHeight * 0.5]
 
 export const LiveTrackingMap: React.FC<{
     height: number;
@@ -26,11 +25,9 @@ export const LiveTrackingMap: React.FC<{
     status: string
     bottomSheetHeight: number,
     setDuration: any
-}> = ({ drop, status, height, pickup, rider, bottomSheetHeight, setDuration }) => {
+}> = ({ drop, status, pickup, rider, bottomSheetHeight, setDuration }) => {
     const theme = useColorScheme();
     const mapStyle = theme === 'dark' ? darkMapStyle : lightMapStyle;
-
-    const snapPoints = Platform.OS === "ios" ? iosHeights : androidHeights;
 
     const { position } = useStore();
     const mapRef = useRef<MapView | null>(null);

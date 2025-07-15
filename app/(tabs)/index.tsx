@@ -1,5 +1,4 @@
 import { CustomButton } from '@/components/CustomButton';
-import GrantLocationModal from '@/components/GrantLocationModal';
 import { useWS } from '@/services/WSProvider';
 import { apiRequest } from '@/services/api';
 import { refresh_tokens } from '@/services/apiInterceptors';
@@ -74,7 +73,7 @@ export default function HomeScreen() {
       let location = await Location.getCurrentPositionAsync({});
       setPosition({ latitude: location.coords.latitude, longitude: location.coords.longitude, address: "" });
       setFirst(false);
-      setModalVisible(false)
+      // setModalVisible(false)
     } catch {
       // return null
       try {
@@ -82,7 +81,7 @@ export default function HomeScreen() {
         let location = await Location.getLastKnownPositionAsync({});
         setPosition({ latitude: Number(location?.coords.latitude), longitude: Number(location?.coords.longitude), address: "" });
         setFirst(false);
-        setModalVisible(false)
+        // setModalVisible(false)
       } catch {
         console.log("")
       }
@@ -161,11 +160,13 @@ export default function HomeScreen() {
 
     emit('user_connected', user._id);
 
-    if (first) {
-      setModalVisible(true);
-    } else {
-      getPosition();
-    }
+    // if (first) {
+    //   setModalVisible(true);
+    // } else {
+    //   getPosition();
+    // }
+
+    getPosition();
 
     const timeoutId = setTimeout(() => {
       tokenCheck();
@@ -333,8 +334,8 @@ export default function HomeScreen() {
         style={{ flex: 1 }}
         ref={mapRef}
         customMapStyle={mapStyle}
-        maxZoomLevel={16}
-        minZoomLevel={12}
+        // maxZoomLevel={16}
+        // minZoomLevel={12}
         showsUserLocation={true}
         showsMyLocationButton={false}
         zoomEnabled={true}
@@ -358,15 +359,15 @@ export default function HomeScreen() {
           //   setOutOfRange(distance > MAx_DISTANCE_THERESHOLD);
           // }
         }}
-        pitchEnabled={false}
+        // pitchEnabled={false}
         provider="google"
-        showsCompass={false}
-        showsIndoors={false}
-        showsIndoorLevelPicker={false}
-        showsTraffic={false}
-        showsScale={false}
-        showsBuildings={false}
-        showsPointsOfInterest={false}
+        // showsCompass={false}
+        // showsIndoors={false}
+        // showsIndoorLevelPicker={false}
+        // showsTraffic={false}
+        // showsScale={false}
+        // showsBuildings={false}
+        // showsPointsOfInterest={false}
       >
         {
           markers.filter((marker: any) => marker?.latitude && marker.longitude && marker.visible).map((marker: any, index: number) =>
@@ -374,7 +375,7 @@ export default function HomeScreen() {
               key={index}
               zIndex={index + 1}
               flat
-              anchor={{ x: 0.5, y: 0.5 }}
+              anchor={{ x: 0.3, y: 0.6 }}
               coordinate={{
                 latitude: marker.latitude,
                 longitude: marker.longitude
@@ -444,11 +445,11 @@ export default function HomeScreen() {
         />
       </View>
 
-      <GrantLocationModal
+      {/* <GrantLocationModal
         visible={modalVisible}
         onClose={() => setModalVisible(false)}
         onConfirm={getPosition}
-      />
+      /> */}
     </View>
   );
 }

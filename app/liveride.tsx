@@ -16,9 +16,11 @@ const androidHeights = [ScreenHeight * 0.14, ScreenHeight * 0.52]
 const iosHeights = [ScreenHeight * 0.2, ScreenHeight * 0.5]
 
 export const LiveRide = () => {
-    const { tok, user } = useStore();
+    const { tok, user, setUser } = useStore();
     const { emit, on, off } = useWS();
-    const [riderData, setRiderData] = useState<any>(null)
+    const [rideData, setRideData] = useState<any>(null)
+    const [car, setDataCar] = useState<any>(null)
+    const [rating, setRating] = useState<any>(null)
     const [riderCoords, setRiderCoords] = useState<any>(null)
     const { id } = useLocalSearchParams();
     const bottomSheetRef = useRef(null);
@@ -45,29 +47,35 @@ export const LiveRide = () => {
         if (id) {
             emit('subscribeRide', id)
             on('rideData', (data) => {
-                if (data?.status === "SEARCHING_FOR_RIDER") {
+                console.log(data)
+                setRideData(data.ride)
+                setDataCar(data.car)
+                setRating(data.rating)
+                if (data?.ride?.status === "SEARCHING_FOR_RIDER") {
                     emit('searchrider', id)
                 }
             })
 
             on('rideUpdate', (data) => {
-                setRiderData(data)
+                setRideData(data.ride)
+                setDataCar(data.car)
+                setRating(data.rating)
                 // console.log(data)
             })
 
-            on('rideCanceled', (message) => {
+            on('rideCanceled', (dat) => {
                 router.replace("/(tabs)")
-                showError(message)
+                showInfo(dat.message)
             })
 
             on("riderCanceled", (data) => {
-                showError(data.message)
-                console.log("🚨 Rider a annulé :", data.message);
+                showInfo(data.message)
+                // console.log("🚨 Rider a annulé :", data.message);
             });
 
             on('error', (error) => {
                 router.replace("/(tabs)")
-                showInfo("Aucun chauffeur trouvé")
+                showError(error.message)
             })
         }
 
@@ -78,7 +86,7 @@ export const LiveRide = () => {
             off('riderCanceled');
             off('error');
         }
-    }, [emit, id, off, on, riderData]);
+    }, [emit, id, off, on]);
 
     const getRide = useCallback(async () => {
         const res = await apiRequest({
@@ -96,7 +104,7 @@ export const LiveRide = () => {
         // }
 
         if (res.success === true) {
-            setRiderData(res.ride)
+            setRideData(res.ride)
             // setLoading(false)
             // showSuccess(res.message)
             // router.push({ pathname: '/liveride', params: { id: res.ride._id } })
@@ -115,7 +123,7 @@ export const LiveRide = () => {
             endpoint: 'fedaPayment',
             token: tok,
             data: {
-                amount: riderData?.fare,
+                amount: rideData?.fare,
                 user: user
             }
         })
@@ -130,14 +138,40 @@ export const LiveRide = () => {
             // setLoad(false);
             showError(res.message)
         }
-    }, [riderData?.fare, tok, user])
+    }, [rideData?.fare, tok, user])
+
+    const payRideFromWallet = async () => {
+        setLoad(true);
+        const res = await apiRequest({
+            method: 'POST',
+            endpoint: 'ride/payRideFromWallet',
+            token: tok,
+            data: {
+                rideId: rideData?._id,
+                userId: user._id
+            }
+        })
+
+
+        if (res.success === true) {
+            showSuccess(res.message)
+            setLoad(false);
+            setUser(res.user)
+            router.replace('/(tabs)')
+        } else {
+            showError(res.message)
+            setLoad(false);
+        }
+    }
 
     useEffect(() => {
-        if (riderData && riderData?.status === "COMPLETED") {
-            // setModalVisible(true)
+        if (rideData && rideData?.status === "COMPLETED" && rideData?.paymentMethod !== "wallet") {
             handlePayment()
+        }else if(rideData && rideData?.status === "COMPLETED" && rideData?.paymentMethod === "wallet"){
+            payRideFromWallet()
         }
-    }, [getRide, handlePayment, id, riderData]);
+
+    }, [getRide, id, rideData]);
 
     useEffect(() => {
         if (urlPayment) {
@@ -146,8 +180,8 @@ export const LiveRide = () => {
     }, [urlPayment])
 
     useEffect(() => {
-        if (riderData?.rider?._id) {
-            emit('subscribeToriderLocation', riderData?.rider?._id)
+        if (rideData?.rider?._id) {
+            emit('subscribeToriderLocation', rideData?.rider?._id)
             on('riderLocationUpdate', (data) => {
                 setRiderCoords(data?.coords)
             })
@@ -156,13 +190,13 @@ export const LiveRide = () => {
         return () => {
             off('riderLocationUpdate')
         }
-    }, [emit, off, on, riderData]);
+    }, [emit, off, on, rideData]);
 
     const handleStatut = async () => {
         setLoad(true);
         const res = await apiRequest({
             method: 'PUT',
-            endpoint: 'ride/update/' + riderData._id,
+            endpoint: 'ride/update/' + rideData._id,
             token: tok,
             data: {
                 status: "PAYED"
@@ -202,19 +236,19 @@ export const LiveRide = () => {
     return (
         <View className="flex-1 bg-white">
 
-            {riderData && (
+            {rideData && (
                 <LiveTrackingMap
                     setDuration={setDuration}
                     bottomSheetHeight={mapHeight}
                     height={mapHeight}
-                    status={riderData?.status}
+                    status={rideData?.status}
                     drop={{
-                        latitude: parseFloat(riderData?.drop?.latitude),
-                        longitude: parseFloat(riderData?.drop?.longitude),
+                        latitude: parseFloat(rideData?.drop?.latitude),
+                        longitude: parseFloat(rideData?.drop?.longitude),
                     }}
                     pickup={{
-                        latitude: parseFloat(riderData?.pickup?.latitude),
-                        longitude: parseFloat(riderData?.pickup?.longitude),
+                        latitude: parseFloat(rideData?.pickup?.latitude),
+                        longitude: parseFloat(rideData?.pickup?.longitude),
                     }}
                     rider={
                         riderCoords ?
@@ -228,7 +262,7 @@ export const LiveRide = () => {
                 />
             )}
 
-            {riderData ?
+            {rideData ?
                 <BottomSheet
                     ref={bottomSheetRef}
                     index={1}
@@ -242,14 +276,16 @@ export const LiveRide = () => {
                     onChange={handleSheetChanges}
                 >
                     <BottomSheetScrollView contentContainerStyle={{}}>
-                        {riderData?.status === "SEARCHING_FOR_RIDER" ? (
+                        {rideData?.status === "SEARCHING_FOR_RIDER" ? (
                             <SearchingRiderSheet
-                                item={riderData}
+                                item={rideData}
                             />
                         ) : (
                             <LiveTrackingSheet
+                                car={car}
+                                rating={rating}
                                 duration={duration.toFixed(0)}
-                                item={riderData}
+                                item={rideData}
                             />
                         )}
                     </BottomSheetScrollView>
@@ -315,7 +351,7 @@ export const LiveRide = () => {
                                 onPress={onClose}
                                 className="flex-1 mr-2 items-center justify-center bg-primary dark:bg-gray-700 px-4 py-3 rounded-full"
                             >
-                                <Text className="text-white font-['RubikMedium']">Payer {riderData?.fare} </Text>
+                                <Text className="text-white font-['RubikMedium']">Payer {rideData?.fare} </Text>
                             </Pressable>
 
                             <Pressable

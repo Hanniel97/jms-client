@@ -21,6 +21,8 @@ export interface IUser {
     idCard: string,
     verified: boolean,
     otp: string,
+    moyenne?: number,
+    total?: number,
 }
 
 export interface ITransaction {
@@ -49,6 +51,7 @@ export interface IRide {
     customer: IUser,
     rider: IUser,
     status: string,
+    estimatedDurationFormatted: string,
     paymentMethod: string,
     otp: string,
     createdAt: date,
@@ -86,6 +89,17 @@ export interface ICar {
     assurance: string,
     visiteTechnique: string,
     photosVehicule: [string],
+    createdAt: date,
+    updatedAt: date
+}
+
+export interface IRecharge {
+    _id: string,
+    user: IUser,
+    amount: number;
+    date: string;
+    type: string,
+    title: string,
     createdAt: date,
     updatedAt: date
 }

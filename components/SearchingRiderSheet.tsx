@@ -132,7 +132,7 @@ const SearchingRiderSheet: React.FC<{ item: RiderItem }> = ({ item }) => {
                     <View className="justify-center items-center">
                         <Text className="text-gray-500 font-['RubikRegular']">Prix</Text>
                         <Text className="font-['RubikBold']">{item?.fare
-                            ? `${item?.fare.toFixed(0)} XOF`
+                            ? `${item?.fare} XOF`
                             : '...'}</Text>
                     </View>
                 </View>

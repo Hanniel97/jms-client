@@ -117,4 +117,6 @@ web-build/
 dist/
 
 expo-env.d.ts
-# @end expo-cli
+@end 
+
+google-services.json
