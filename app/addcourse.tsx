@@ -1,18 +1,17 @@
+import BottomSheetScrollView, { BottomSheetMethods } from "@/components/BottomSheetScrollView";
+import { CustomButton } from "@/components/CustomButton";
 import CustomHeader from "@/components/CustomHeader";
 import { CustomLocationTextInput } from "@/components/CustomTextInput";
 import MapPickerModal from "@/components/MapPickerModal";
-import useStore from "@/store/useStore";
-import { Icon } from "@rneui/base";
-import { getDistanceFromLatLonInKm } from "@/services/distanceCalculator";
-import React, { useCallback, useEffect, useRef, useState } from "react";
-import { FlatList, Text, TouchableOpacity, View, Image } from "react-native";
-import { Region } from "react-native-maps";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { router } from "expo-router";
-import BottomSheetScrollView, { BottomSheetMethods } from "@/components/BottomSheetScrollView";
-import { CustomButton } from "@/components/CustomButton";
 import { apiRequest, Coordinates, getPlaceDetails, searchPlaces } from "@/services/api";
+import { getDistanceFromLatLonInKm } from "@/services/distanceCalculator";
+import useStore from "@/store/useStore";
 import { showError, showSuccess } from "@/utils/showToast";
+import { Icon } from "@rneui/base";
+import { router } from "expo-router";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import { FlatList, Image, Text, TouchableOpacity, View } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const paymentMethods = [
     {
@@ -21,20 +20,25 @@ const paymentMethods = [
         image: require("../assets/images/wallet.jpg"),
     },
     {
-        key: "momo",
-        title: "Mtn",
-        image: require("../assets/images/mtn.png"),
+        key: "espece",
+        title: "Espèces",
+        image: require("../assets/images/espece.png"),
     },
-    {
-        key: "moov",
-        title: "Moov",
-        image: require("../assets/images/moov.png"),
-    },
-    {
-        key: "orange",
-        title: "Orange",
-        image: require("../assets/images/orange.png"),
-    },
+    // {
+    //     key: "momo",
+    //     title: "Mtn",
+    //     image: require("../assets/images/mtn.png"),
+    // },
+    // {
+    //     key: "moov",
+    //     title: "Moov",
+    //     image: require("../assets/images/moov.png"),
+    // },
+    // {
+    //     key: "orange",
+    //     title: "Orange",
+    //     image: require("../assets/images/orange.png"),
+    // },
 ];
 
 export default function AddCourse() {
@@ -200,6 +204,7 @@ export default function AddCourse() {
     };
 
     const useMyPosition = async () => {
+        // console.log(position)
         if (position) {
             setPickupCoords(position);
             if (position.address !== null) {
@@ -431,13 +436,13 @@ export default function AddCourse() {
                         </TouchableOpacity>
                     </View>
 
-                    <View className="flex-row justify-between my-2 p-2 rounded-xl border-[1px] border-gray-300/30 bg-white">
+                    <View className="flex-row justify-between my-2 p-2 w-64 rounded-xl border-[1px] border-gray-300/30 bg-white">
                         {paymentMethods.map((method) => (
                             <TouchableOpacity
                                 key={method.key}
                                 activeOpacity={0.8}
                                 onPress={() => setSelectedMethod(method.key)}
-                                className={`items-center rounded-xl w-[22%]`}
+                                className={`items-center rounded-xl w-[42%] bg-gray-50`}
                             >
                                 <Image
                                     source={method.image}

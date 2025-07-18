@@ -33,8 +33,8 @@ Notifications.setNotificationHandler({
   }),
 });
 
-const LATITUDE_DELTA = 0.04864195044303443;
-const LONGITUDE_DELTA = 0.040142817690068;
+const LATITUDE_DELTA = 0.01;
+const LONGITUDE_DELTA = 0.01;
 
 export default function HomeScreen() {
   const insets = useSafeAreaInsets();
@@ -414,12 +414,12 @@ export default function HomeScreen() {
         style={{ position: 'absolute', top: insets.top }}
       >
         <View style={{ flex: 0.75 }} className='h-14 flex-row items-center'>
-          <TouchableOpacity onPress={() => router.push('/(tabs)/profil')} className="w-10 h-10 justify-center items-center rounded-full bg-primary/80 border border-primary">
+          <TouchableOpacity onPress={() => router.push('/(tabs)/profil')} className="w-12 h-12 justify-center items-center rounded-full bg-primary border border-primary">
             <Icon type="font-awesome" name="user" size={20} color="#FFFFFF" />
           </TouchableOpacity>
         </View>
 
-        <TouchableOpacity onPress={() => router.push('/notifications')} className="w-10 h-10 justify-center items-center rounded-full bg-primary/80 border border-primary ml-2">
+        <TouchableOpacity onPress={() => router.push('/notifications')} className="w-12 h-12 justify-center items-center rounded-full bg-primary border border-primary ml-2">
           <Icon type="font-awesome" name="bell" size={20} color="#FFFFFF" />
         </TouchableOpacity>
       </View>

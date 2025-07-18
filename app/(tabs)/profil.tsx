@@ -5,11 +5,11 @@ import { Icon } from "@rneui/base";
 import * as ImagePicker from 'expo-image-picker'
 import * as FileSystem from 'expo-file-system';
 import { router } from "expo-router";
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Dialog } from "react-native-paper";
 import { Ionicons, Entypo, MaterialIcons, FontAwesome } from "@expo/vector-icons";
-import { ActivityIndicator, Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
-import { apiUrl, photoUrl } from "@/services/api";
+import { ActivityIndicator, Image, RefreshControl, ScrollView, Text, TouchableOpacity, View } from "react-native";
+import { apiRequest, apiUrl, photoUrl } from "@/services/api";
 import { useWS } from "@/services/WSProvider";
 import { showError, showInfo, showSuccess } from "@/utils/showToast";
 
@@ -33,8 +33,42 @@ export default function profil() {
 
     const [loading, setLoading] = useState<boolean>(false);
     const [visible, setVisible] = useState<boolean>(false);
+    const [refreshing, setRefreshing] = useState(false);
 
     const hideDialog = () => setVisible(false);
+
+    const getUserInfo = useCallback(async () => {
+        try {
+            // setLoading(true);
+            const res = await apiRequest({
+                method: "GET",
+                endpoint: "me",
+                token: tok,
+            });
+
+            if (res.success === true) {
+                setUser(res.data);
+            }
+        } catch (e) {
+            console.log(e);
+            // setLoading(false);
+        }
+    }, [setUser, tok]);
+
+    const onRefresh = () => {
+        try {
+            getUserInfo();
+        } catch (error) {
+            console.log(error);
+            setRefreshing(false);
+        } finally {
+            setRefreshing(false);
+        }
+    };
+
+    useEffect(() => {
+        getUserInfo();
+    }, [getUserInfo]);
 
     const logout = () => {
         fetch(apiUrl + 'logout', {
@@ -213,7 +247,7 @@ export default function profil() {
             <CustomHeader showBack={true} showTitle={true} title="Profile" />
 
             <ScrollView
-                // refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+                refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
                 contentContainerStyle={{ justifyContent: "center", marginBottom: 10 }}
                 showsVerticalScrollIndicator={false}
                 className="flex-1 px-4"
@@ -255,7 +289,7 @@ export default function profil() {
             </ScrollView>
 
             <Dialog visible={visible} onDismiss={hideDialog}>
-                <Dialog.Title style={{fontFamily: "RubikRegular"}}>Choisir une image</Dialog.Title>
+                <Dialog.Title style={{ fontFamily: "RubikRegular" }}>Choisir une image</Dialog.Title>
                 <Dialog.Content>
                     <View style={{ height: 120, flexDirection: 'row' }}>
                         <TouchableOpacity onPress={() => takeImage()} style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>

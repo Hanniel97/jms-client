@@ -49,6 +49,50 @@
           ]
         }
       }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1069765698561:android:bc217e8f4b588a819acc00",
+        "android_client_info": {
+          "package_name": "com.jmsdriver.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1069765698561-3jcf1gvnagj6l4nagrcf5asq9rvcee4b.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.jmsdriver.app",
+            "certificate_hash": "fabc9e5ea3d198a187da0f953df1b12ca8c59e4c"
+          }
+        },
+        {
+          "client_id": "1069765698561-npc0eqq2vnn37p1bcu2v57vckqdibm06.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC2z4RChMIjcwSc_OvQ4u9WqBs1phsfFps"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1069765698561-npc0eqq2vnn37p1bcu2v57vckqdibm06.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1069765698561-0h5ivo595dhtgkhuerg8811kupjivpir.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.jms.driver.ios"
+              }
+            }
+          ]
+        }
+      }
     }
   ],
   "configuration_version": "1"

@@ -1,5 +1,6 @@
 import { photoUrl } from "@/services/api";
 import { useWS } from "@/services/WSProvider";
+import { ICar } from "@/types";
 import { vehiculeIcons } from "@/utils/mapUtils";
 import { Icon } from "@rneui/base";
 import { LinearGradient } from "expo-linear-gradient";
@@ -7,7 +8,7 @@ import React from "react";
 import { Alert, Image, Linking, Platform, Text, TouchableOpacity, View } from "react-native";
 import QRCode from 'react-native-qrcode-svg';
 import { CustomButton } from "./CustomButton";
-import { ICar } from "@/types";
+import CustomProgressBar from "./CustomProgressBar";
 
 type VehicleType = "eco" | "confort";
 
@@ -23,12 +24,15 @@ interface RideItem {
     distance?: number,
     estimatedDuration?: number,
     estimatedDurationFormatted?: string,
+    paymentMethod: string,
 }
 
 const LiveTrackingSheet: React.FC<{ item: RideItem, duration: number, car: ICar, rating: { moyenne: number, total: number } }> = ({
     item, duration, car, rating
 }) => {
     const { emit } = useWS();
+
+    // console.log('duré de la course:', duration)
 
     const cancelOrder = () => {
         emit('cancelRideCustomer', item?._id)
@@ -61,7 +65,7 @@ const LiveTrackingSheet: React.FC<{ item: RideItem, duration: number, car: ICar,
     };
 
     return (
-        <View className="bg-white px-4 pb-6 rounded-t-2xl shadow-md">
+        <View className="bg-white px-4 pb-6 rounded-t-2xl">
             {item?.status === "ACCEPTED" ?
                 <>
                     <View className="mb-3 w-full">
@@ -81,7 +85,7 @@ const LiveTrackingSheet: React.FC<{ item: RideItem, duration: number, car: ICar,
                             </View>
                         </View>
                         <View style={{ flex: 1 }} className="pl-1 gap-1">
-                            <Text className="ml-1 text-black font-['RubikRegular']">{item?.rider?.prenom} {item?.rider?.nom}</Text>
+                            <Text className="ml-1 text-black font-['RubikRegular']">{item?.rider?.prenom} {item?.rider?.nom[0]}.</Text>
                             <Text className="ml-1 text-gray-400 font-['RubikRegular']">{car?.marque} - {car?.model}</Text>
                             <Text className="ml-1 text-gray-400 font-['RubikRegular']">{car?.immatriculation}</Text>
                         </View>
@@ -123,11 +127,11 @@ const LiveTrackingSheet: React.FC<{ item: RideItem, duration: number, car: ICar,
                                 </View>
                             </View>
                             <View style={{ flex: 1 }} className="pl-1 gap-1">
-                                <Text className="ml-1 text-black font-['RubikRegular']">{item?.rider?.prenom} {item?.rider?.nom}</Text>
+                                <Text className="ml-1 text-black font-['RubikRegular']">{item?.rider?.prenom} {item?.rider?.nom[0]}.</Text>
                                 <Text className="ml-1 text-gray-400 font-['RubikRegular']">{car?.marque} - {car?.model}</Text>
                                 <Text className="ml-1 text-gray-400 font-['RubikRegular']">{car?.immatriculation}</Text>
                             </View>
-                            <TouchableOpacity onPress={() => callNumber(item?.rider?.phone)} className="bg-green-400 h-10 w-10 rounded-full justify-center items-center">
+                            <TouchableOpacity onPress={() => callNumber(item?.rider?.phone)} className="bg-secondary h-12 w-12 rounded-full justify-center items-center">
                                 <Icon type="ionicon" name="call" size={25} color={"#FFFFFF"} />
                             </TouchableOpacity>
                         </View>
@@ -151,11 +155,11 @@ const LiveTrackingSheet: React.FC<{ item: RideItem, duration: number, car: ICar,
                                     </View>
                                 </View>
                                 <View style={{ flex: 1 }} className="pl-1 gap-1">
-                                    <Text className="ml-1 text-black font-['RubikRegular']">{item?.rider?.prenom} {item?.rider?.nom}</Text>
+                                    <Text className="ml-1 text-black font-['RubikRegular']">{item?.rider?.prenom} {item?.rider?.nom[0]}.</Text>
                                     <Text className="ml-1 text-gray-400 font-['RubikRegular']">{car?.marque} - {car?.model}</Text>
                                     <Text className="ml-1 text-gray-400 font-['RubikRegular']">{car?.immatriculation}</Text>
                                 </View>
-                                <TouchableOpacity onPress={() => callNumber(item?.rider?.phone)} className="bg-green-400 h-10 w-10 rounded-full justify-center items-center">
+                                <TouchableOpacity onPress={() => callNumber(item?.rider?.phone)} className="bg-secondary h-12 w-12 rounded-full justify-center items-center">
                                     <Icon type="ionicon" name="call" size={25} color={"#FFFFFF"} />
                                 </TouchableOpacity>
                             </View>
@@ -168,7 +172,7 @@ const LiveTrackingSheet: React.FC<{ item: RideItem, duration: number, car: ICar,
                                 </View>
 
                                 <View className="mb-3 flex-row justify-center items-center self-center w-full">
-                                    <View className="flex w-14 h-14 rounded-full">
+                                    <View className="flex w-14 h-14 rounded-full justify-center items-center">
                                         <Image
                                             source={item?.rider?.photo === "" ? require("../assets/images/profil1.png") : { uri: photoUrl + item?.rider?.photo }}
                                             className="w-14 h-14 rounded-full border-4 border-primary"
@@ -179,151 +183,180 @@ const LiveTrackingSheet: React.FC<{ item: RideItem, duration: number, car: ICar,
                                         </View>
                                     </View>
                                     <View style={{ flex: 1 }} className="pl-1 gap-1">
-                                        <Text className="ml-1 text-black font-['RubikRegular']">{item?.rider?.prenom} {item?.rider?.nom}</Text>
+                                        <Text className="ml-1 text-black font-['RubikRegular']">{item?.rider?.prenom} {item?.rider?.nom[0]}.</Text>
                                         <Text className="ml-1 text-gray-400 font-['RubikRegular']">{car?.marque} - {car?.model}</Text>
                                         <Text className="ml-1 text-gray-400 font-['RubikRegular']">{car?.immatriculation}</Text>
                                     </View>
-                                    <TouchableOpacity onPress={() => callNumber(item?.rider?.phone)} className="bg-green-400 h-10 w-10 rounded-full justify-center items-center">
+                                    <TouchableOpacity onPress={() => callNumber(item?.rider?.phone)} className="bg-secondary h-12 w-12 rounded-full justify-center items-center">
                                         <Icon type="ionicon" name="call" size={25} color={"#FFFFFF"} />
                                     </TouchableOpacity>
                                 </View>
                             </>
                             : item?.status === "COMPLETED" ?
-                                <View className="mb-3 w-full">
-                                    <Text className="text-black font-['RubikBold'] text-sm">Votre course a démarré</Text>
-                                    <Text className="text-black font-['RubikBold'] mt-1"><Text className="text-primary font-bold">JMS</Text> vous souhaite de passer un agréable moment.</Text>
+                                <View className="rounded-xl mb-2">
+                                    <View className="mb-3 w-full">
+                                        <Text className="text-black font-['RubikBold'] text-lg">Paiement en cours...</Text>
+                                        <CustomProgressBar duration={2000} />
+                                    </View>
+
+                                    <View className="bg-blue-50 border border-blue-100 rounded-xl p-4 flex-row justify-between">
+                                        <View>
+                                            <Text className="text-gray-500 font-['RubikRegular'] ">Montant de la course</Text>
+                                            <Text className="text-3xl text-blue-900 mt-1 font-['RubikBold']">
+                                                {item.fare?.toLocaleString()} XOF
+                                            </Text>
+                                        </View>
+
+                                        <View>
+                                            <Text className="text-gray-500 font-['RubikRegular'] ">Méthode</Text>
+                                            <Text className="text-2xl text-primary mt-1 font-['RubikBold'] uppercase">
+                                                {item.paymentMethod === "wallet" ? "Portefeuille" : item.paymentMethod}
+                                            </Text>
+                                        </View>
+                                    </View>
+                                    {/* <Text className="text-black font-['RubikBold'] text-sm">Votre course a démarré</Text>
+                                    <Text className="text-black font-['RubikBold'] mt-1"><Text className="text-primary font-bold">JMS</Text> vous souhaite de passer un agréable moment.</Text> */}
                                 </View>
                                 :
                                 <>
                                 </>
             }
-            <View>
-                <View className="py-1 px-2 w-full flex-row justify-center items-center">
-                    <Icon name="dot-fill" type='octicon' size={25} color="#000000" />
-                    <View className="my-2 ml-2 bg-gray-200/20 border border-gray-200 rounded-lg h-[50px] py-1 px-3 justify-center w-full">
-                        <Text className="font-['RubikRegular']">{item?.pickup?.address}</Text>
-                    </View>
-                </View>
 
-                <View className="bg-black w-1 h-16 absolute bottom-11 left-0.5" />
+            {
+                item?.status === "COMPLETED" ?
+                    <>
+                    </>
+                    :
+                    <>
+                        <View>
+                            <View className="py-1 px-2 w-full flex-row justify-center items-center">
+                                <Icon name="dot-fill" type='octicon' size={25} color="#000000" />
+                                <View className="my-2 ml-2 bg-gray-200/20 border border-gray-200 rounded-lg h-[50px] py-1 px-3 justify-center w-full">
+                                    <Text className="font-['RubikRegular']">{item?.pickup?.address}</Text>
+                                </View>
+                            </View>
 
-                <View className="py-1 px-2 w-full flex-row justify-center items-center">
-                    <Icon name="pin-drop" type='material-icon' size={20} color="#000000" />
-                    <View className="my-2 ml-2 bg-gray-200/20 border border-gray-200 rounded-lg h-[50px] py-1 px-3 justify-center w-full">
-                        <Text className="font-['RubikRegular']">{item?.drop?.address}</Text>
-                    </View>
-                </View>
-            </View>
+                            <View className="bg-black w-1 h-16 absolute bottom-11 left-0.5" />
 
-            <View className="rounded-xl h-14 flex-row my-2">
-                <LinearGradient
-                    colors={['#ff6d00', '#FFFFFF']}
-                    start={{ x: 1, y: 1 }}
-                    end={{ x: 0, y: 1 }}
-                    style={{
-                        flex: 0.35,
-                        height: 56,
-                        width: '50%',
-                        borderTopRightRadius: 12,
-                        borderBottomRightRadius: 12,
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        overflow: 'hidden',
-                    }}
-                >
-                    {item?.vehicle && vehiculeIcons[item.vehicle] && (
-                        <Image
-                            source={vehiculeIcons[item.vehicle].icon}
-                            style={{
-                                height: 80,
-                                width: 80,
-                                resizeMode: 'contain',
-                                position: 'absolute',
-                            }}
-                        />
-                    )}
-                </LinearGradient>
+                            <View className="py-1 px-2 w-full flex-row justify-center items-center">
+                                <Icon name="pin-drop" type='material-icon' size={20} color="#000000" />
+                                <View className="my-2 ml-2 bg-gray-200/20 border border-gray-200 rounded-lg h-[50px] py-1 px-3 justify-center w-full">
+                                    <Text className="font-['RubikRegular']">{item?.drop?.address}</Text>
+                                </View>
+                            </View>
+                        </View>
 
-                <View style={{ flex: 0.60 }} className="p-2 gap-1 flex-row justify-between">
-                    <View className="justify-center items-center">
-                        <Text className="text-gray-500 font-['RubikRegular']">Distance</Text>
-                        <Text className="font-['RubikBold']">{item?.distance
-                            ? `${item?.distance.toFixed(2)} Km`
-                            : '...'}</Text>
-                    </View>
-                    <View className="justify-center items-center">
-                        <Text className="text-gray-500 font-['RubikRegular']">Temps</Text>
-                        <Text className="font-['RubikBold']">{item?.estimatedDurationFormatted
-                            ? `${item?.estimatedDurationFormatted} min`
-                            : '...'}</Text>
-                    </View>
-                    <View className="justify-center items-center">
-                        <Text className="text-gray-500 font-['RubikRegular']">Prix</Text>
-                        <Text className="font-['RubikBold']">{item?.fare
-                            ? `${item?.fare.toFixed(0)} XOF`
-                            : '...'}</Text>
-                    </View>
-                </View>
-            </View>
+                        <View className="rounded-xl h-14 flex-row my-2">
+                            <LinearGradient
+                                colors={['#ff6d00', '#FFFFFF']}
+                                start={{ x: 1, y: 1 }}
+                                end={{ x: 0, y: 1 }}
+                                style={{
+                                    flex: 0.35,
+                                    height: 56,
+                                    width: '50%',
+                                    borderTopRightRadius: 12,
+                                    borderBottomRightRadius: 12,
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                    overflow: 'hidden',
+                                }}
+                            >
+                                {item?.vehicle && vehiculeIcons[item.vehicle] && (
+                                    <Image
+                                        source={vehiculeIcons[item.vehicle].icon}
+                                        style={{
+                                            height: 80,
+                                            width: 80,
+                                            resizeMode: 'contain',
+                                            position: 'absolute',
+                                        }}
+                                    />
+                                )}
+                            </LinearGradient>
 
-            {item?.status === "ACCEPTED" ?
-                <CustomButton
-                    buttonText="Annuler la course"
-                    buttonClassNames="bg-primary shadow-xl h-12 rounded-full items-center justify-center mt-4 mb-6"
-                    textClassNames="text-white text-lg font-['RubikBold']"
-                    onPress={cancelOrder}
-                />
-                :
-                <CustomButton
-                    buttonText={`Destination dans ${formatTimeMMSS(duration)} min`}
-                    disable={true}
-                    buttonClassNames="bg-primary shadow-xl h-12 rounded-full items-center justify-center mt-4 mb-6"
-                    textClassNames="text-white text-lg font-['RubikBold']"
-                    onPress={cancelOrder}
-                />
-            }
+                            <View style={{ flex: 0.60 }} className="p-2 gap-1 flex-row justify-between">
+                                <View className="justify-center items-center">
+                                    <Text className="text-gray-500 font-['RubikRegular']">Distance</Text>
+                                    <Text className="font-['RubikBold']">{item?.distance
+                                        ? `${item?.distance.toFixed(2)} Km`
+                                        : '...'}</Text>
+                                </View>
+                                <View className="justify-center items-center">
+                                    <Text className="text-gray-500 font-['RubikRegular']">Temps</Text>
+                                    <Text className="font-['RubikBold']">{duration
+                                        ? `${formatTimeMMSS(duration)} min`
+                                        : '...'}</Text>
+                                </View>
+                                <View className="justify-center items-center">
+                                    <Text className="text-gray-500 font-['RubikRegular']">Prix</Text>
+                                    <Text className="font-['RubikBold']">{item?.fare
+                                        ? `${item?.fare.toFixed(0)} XOF`
+                                        : '...'}</Text>
+                                </View>
+                            </View>
+                        </View>
 
-            {/* <CustomButton
-                buttonText={`Destination dans ${formatTimeMMSS(duration)} min`}
-                disable={true}
-                buttonClassNames="bg-primary shadow-xl h-12 rounded-full items-center justify-center mt-4 mb-6"
-                textClassNames="text-white text-lg font-['RubikBold']"
-                onPress={cancelOrder}
-            /> */}
-
-
-
-            {/* <View>
-                <View className="flex-row justify-center items-center mb-4">
-                    {item?.vehicle && vehiculeIcons[item.vehicle] && (
-                        <Image
-                            source={vehiculeIcons[item.vehicle].icon}
-                            style={{ height: 60, width: 60, resizeMode: "contain" }}
-                        />
-                    )}
-                    <View>
-                        <Text>
-                            {item?.status === "START" ? "Votre chauffeur est proche"
-                                : item?.status === "ARRIVED" ? "Bonne journée"
-                                    : "Wohoo"
-                            }
-                        </Text>
-                        <Text>
-                            {item?.status === "START" ? `OPT - ${item?.otp}` : "--"}
-                        </Text>
-                    </View>
-                </View>
-
-                {item?.rider?.phone && (
-                    <Text>
-                        +229{" "}
-                        {
-                            item?.rider?.phone &&
-                            item?.rider?.phone?.slice(0, 5) + " " + item?.rider?.phone.slice(5)
+                        {item?.status === "ACCEPTED" ?
+                            <CustomButton
+                                buttonText="Annuler la course"
+                                buttonClassNames="bg-primary h-12 rounded-full items-center justify-center mt-4 mb-6"
+                                textClassNames="text-white text-lg font-['RubikBold']"
+                                onPress={cancelOrder}
+                            />
+                            :
+                            <CustomButton
+                                buttonText={`Destination dans ${formatTimeMMSS(duration)} min`}
+                                disable={true}
+                                buttonClassNames="bg-primary h-12 rounded-full items-center justify-center mt-4 mb-6"
+                                textClassNames="text-white text-lg font-['RubikBold']"
+                                onPress={cancelOrder}
+                            />
                         }
-                    </Text>
-                )}
-            </View> */}
+
+                        {/* <CustomButton
+                            buttonText={`Destination dans ${formatTimeMMSS(duration)} min`}
+                            disable={true}
+                            buttonClassNames="bg-primary h-12 rounded-full items-center justify-center mt-4 mb-6"
+                            textClassNames="text-white text-lg font-['RubikBold']"
+                            onPress={cancelOrder}
+                        /> */}
+
+
+
+                                    {/* <View>
+                            <View className="flex-row justify-center items-center mb-4">
+                                {item?.vehicle && vehiculeIcons[item.vehicle] && (
+                                    <Image
+                                        source={vehiculeIcons[item.vehicle].icon}
+                                        style={{ height: 60, width: 60, resizeMode: "contain" }}
+                                    />
+                                )}
+                                <View>
+                                    <Text>
+                                        {item?.status === "START" ? "Votre chauffeur est proche"
+                                            : item?.status === "ARRIVED" ? "Bonne journée"
+                                                : "Wohoo"
+                                        }
+                                    </Text>
+                                    <Text>
+                                        {item?.status === "START" ? `OPT - ${item?.otp}` : "--"}
+                                    </Text>
+                                </View>
+                            </View>
+
+                            {item?.rider?.phone && (
+                                <Text>
+                                    +229{" "}
+                                    {
+                                        item?.rider?.phone &&
+                                        item?.rider?.phone?.slice(0, 5) + " " + item?.rider?.phone.slice(5)
+                                    }
+                                </Text>
+                            )}
+                        </View> */}
+                    </>
+            }
         </View>
     )
 }
@@ -502,7 +535,7 @@ export default LiveTrackingSheet;
 //     };
 
 //     return (
-//         <View className="bg-white px-4 pb-6 rounded-t-2xl shadow-md">
+//         <View className="bg-white px-4 pb-6 rounded-t-2xl">
 //             {renderStatusInfo()}
 
 //             {/* Pickup & Drop */}
@@ -582,7 +615,7 @@ export default LiveTrackingSheet;
 //                 }
 //                 disable={item?.status !== "ACCEPTED"}
 //                 onPress={cancelOrder}
-//                 buttonClassNames="bg-primary shadow-xl h-12 rounded-full items-center justify-center mt-4 mb-6"
+//                 buttonClassNames="bg-primary h-12 rounded-full items-center justify-center mt-4 mb-6"
 //                 textClassNames="text-white text-lg font-['RubikBold']"
 //             />
 //         </View>

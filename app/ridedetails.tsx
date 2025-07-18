@@ -8,8 +8,9 @@ import useStore from "@/store/useStore";
 import { ICar, IRide } from "@/types";
 import { showError, showSuccess } from "@/utils/showToast";
 import polyline from "@mapbox/polyline";
-import { Icon, Rating } from "@rneui/base";
-import { AirbnbRating } from '@rneui/themed';
+// import { Icon, Rating } from "@rneui/base";
+import Rating from "@/components/Rating";
+import { AirbnbRating, Icon } from '@rneui/themed';
 import { useLocalSearchParams } from "expo-router";
 import moment from "moment";
 import "moment/locale/fr";
@@ -209,7 +210,7 @@ export default function RideDetails() {
                     <View className="mt-3 flex flex-row justify-between items-center">
                         <View>
                             {/* <Text className="text-gray-600 font-['RubikSemiBold']">Noter</Text> */}
-                            <View>
+                            {/* <View>
                                 <Rating
                                     showRating
                                     type="star"
@@ -220,7 +221,9 @@ export default function RideDetails() {
                                     onFinishRating={ratingCompleted}
                                     style={{ paddingVertical: 10 }}
                                 />
-                            </View>
+                            </View> */}
+
+                            <Rating value={ride.rider?.moyenne} editable={false} onChange={setNote} />
 
                         </View>
                         <TouchableOpacity onPress={pressHandler} className="bg-primary px-4 py-2 rounded-full">
@@ -347,13 +350,14 @@ export default function RideDetails() {
 
                     <View className="self-center">
                         <Text className="text-gray-600 font-['RubikSemiBold'] py-3">Noter le chauffeur pour la course effectuée</Text>
-                        <AirbnbRating
+                        {/* <AirbnbRating
                             count={5}
                             size={35}
                             defaultRating={note}
                             showRating={false}
                             onFinishRating={value => setNote(value)}
-                        />
+                        /> */}
+                        <Rating value={note} onChange={setNote} />
                     </View>
 
                     <CustomButton

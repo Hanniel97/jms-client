@@ -24,7 +24,7 @@ interface RiderItem {
     estimatedDurationFormatted?: string,
 }
 
-const SearchingRiderSheet: React.FC<{ item: RiderItem }> = ({ item }) => {
+const SearchingRiderSheet: React.FC<{ item: RiderItem, duration: number }> = ({ item, duration }) => {
     const { emit } = useWS();
 
     const cancelOrder = () => {
@@ -33,14 +33,20 @@ const SearchingRiderSheet: React.FC<{ item: RiderItem }> = ({ item }) => {
 
     useEffect(() => {
         emit("searchrider", item?._id)
-    },[emit])
+    },[emit, item?._id])
+
+    const formatTimeMMSS = (seconds: number): string => {
+        const mins = Math.floor(seconds / 60);
+        const secs = seconds % 60;
+        return `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+    };
 
     return (
         <View className="bg-white px-4 pb-6 rounded-t-2xl shadow-md">
             <View className="mb-3 flex-row justify-center items-center self-center bg-primary/80 px-2 py-1 rounded-full">
                 <Icon name="access-time-filled" type='material-icon' size={20} color="#FFFFFF" />
-                <Text className="text-white font-['RubikLight'] ml-1">{item?.estimatedDurationFormatted
-                    ? `${item?.estimatedDurationFormatted} min`
+                <Text className="text-white font-['RubikLight'] ml-1">{duration
+                    ? `${formatTimeMMSS(duration)} min`
                     : '...'}</Text>
             </View>
 
@@ -125,8 +131,8 @@ const SearchingRiderSheet: React.FC<{ item: RiderItem }> = ({ item }) => {
                     </View>
                     <View className="justify-center items-center">
                         <Text className="text-gray-500 font-['RubikRegular']">Temps</Text>
-                        <Text className="font-['RubikBold']">{item?.estimatedDurationFormatted
-                            ? `${item?.estimatedDurationFormatted} min`
+                        <Text className="font-['RubikBold']">{duration
+                            ? `${formatTimeMMSS(duration)} min`
                             : '...'}</Text>
                     </View>
                     <View className="justify-center items-center">

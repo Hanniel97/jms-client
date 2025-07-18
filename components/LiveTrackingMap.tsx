@@ -1,8 +1,9 @@
 import { GOOGLE_API_KEY } from "@/services/api";
 import useStore from "@/store/useStore";
+import polyline from "@mapbox/polyline";
 import { getPoints } from "@/utils/mapUtils";
 import { Icon } from "@rneui/base";
-import React, { memo, useEffect, useRef, useState } from "react";
+import React, { memo, useCallback, useEffect, useRef, useState } from "react";
 import {
     Image,
     useColorScheme,
@@ -32,6 +33,8 @@ export const LiveTrackingMap: React.FC<{
     const { position } = useStore();
     const mapRef = useRef<MapView | null>(null);
     const [isUserInteracting, setIsUserInteracting] = useState(false);
+    const [trafficColor, setTrafficColor] = useState("#16B84E");
+    const [coords, setCoords] = useState<{ latitude: number; longitude: number }[]>([]);
 
     const fitToMarkers = async () => {
         if (isUserInteracting) return;
@@ -91,6 +94,48 @@ export const LiveTrackingMap: React.FC<{
         if (pickup?.latitude && drop?.latitude) fitToMarkers();
     }, [drop?.latitude, pickup?.latitude, rider.latitude])
 
+    const fetchDirections = useCallback(async () => {
+        try {
+            const origin = status === "ACCEPTED" ? `${rider.latitude},${rider.longitude}` : `${pickup.latitude},${pickup.longitude}`;
+            // `${pickup.latitude},${pickup.longitude}`;
+            const destination = status === "ACCEPTED" ? `${pickup.latitude},${pickup.longitude}` : `${drop.latitude},${drop.longitude}`;
+            // `${drop.latitude},${drop.longitude}`;
+            const url = `https://maps.googleapis.com/maps/api/directions/json?origin=${origin}&destination=${destination}&key=${GOOGLE_API_KEY}&departure_time=now&mode=driving`;
+
+            const response = await fetch(url);
+            const json = await response.json();
+
+            if (!json.routes.length) return;
+
+            const points = polyline.decode(json.routes[0].overview_polyline.points);
+            const mapped = points.map(([latitude, longitude]) => ({ latitude, longitude }));
+            setCoords(mapped);
+
+            const leg = json.routes[0].legs[0];
+            const duration = leg.duration.value;
+            const trafficDuration = leg.duration_in_traffic?.value || duration;
+
+            setDuration(Math.round(trafficDuration / 60));
+
+            if (trafficDuration > duration * 1.5) setTrafficColor("#DE2916");
+            else if (trafficDuration > duration * 1.2) setTrafficColor("#FFA500");
+            else setTrafficColor("#16B84E");
+        } catch (err) {
+            console.error("Erreur Directions API:", err);
+        }
+    }, [drop.latitude, drop.longitude, pickup.latitude, pickup.longitude]);
+
+    useEffect(() => {
+        fetchDirections();
+    }, [fetchDirections]);
+
+    // useEffect(() => {
+    //     const interval = setInterval(() => {
+    //         fetchDirections();
+    //     }, 1000);
+    //     return () => clearInterval(interval);
+    // }, [fetchDirections]);
+
     return (
         <View className="flex-1 bg-white">
             <MapView
@@ -108,7 +153,7 @@ export const LiveTrackingMap: React.FC<{
                 onRegionChangeComplete={() => setIsUserInteracting(false)}
                 provider="google"
             >
-                {rider?.latitude && pickup?.latitude && (
+                {/* {rider?.latitude && pickup?.latitude && (
                     <MapViewDirections
                         // origin={rider}
                         origin={status === "ACCEPTED" ? rider : pickup}
@@ -123,7 +168,7 @@ export const LiveTrackingMap: React.FC<{
                         precision="high"
                         onError={(error) => console.log("Directions error:", error)}
                     />
-                )}
+                )} */}
 
                 {drop?.latitude && (
                     <Marker
@@ -169,7 +214,7 @@ export const LiveTrackingMap: React.FC<{
 
                 {rider?.latitude && (
                     <Marker
-                        anchor={{ x: 0.5, y: 1 }}
+                        anchor={{ x: 0.3, y: 0.6 }}
                         coordinate={{
                             latitude: rider.latitude,
                             longitude: rider.longitude
@@ -179,13 +224,13 @@ export const LiveTrackingMap: React.FC<{
                         <View>
                             <Image
                                 source={require('../assets/images/driver.png')}
-                                style={{ height: 50, width: 50, resizeMode: "contain" }}
+                                style={{ height: 50, width: 50, resizeMode: "contain", transform: [{ rotate: `${rider.heading || 0}deg` }], }}
                             />
                         </View>
                     </Marker>
                 )}
 
-                {drop && pickup && (
+                {/* {drop && pickup && (
                     <Polyline
                         coordinates={getPoints([drop, pickup])}
                         strokeColor={theme === "dark" ? "#FFFFFF" : "#000000"}
@@ -193,7 +238,8 @@ export const LiveTrackingMap: React.FC<{
                         geodesic={true}
                         lineDashPattern={[12, 5]}
                     />
-                )}
+                )} */}
+                <Polyline coordinates={coords} strokeColor={trafficColor} strokeWidth={5} />
             </MapView>
 
             {/* <CustomButton

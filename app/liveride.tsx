@@ -60,7 +60,7 @@ export const LiveRide = () => {
                 setRideData(data.ride)
                 setDataCar(data.car)
                 setRating(data.rating)
-                // console.log(data)
+                console.log('ride data updated ==>', data)
             })
 
             on('rideCanceled', (dat) => {
@@ -95,19 +95,10 @@ export const LiveRide = () => {
             token: tok,
         });
 
-        // console.log('dfdbfk jd', res)
-
-        // if (res.success === false) {
-        //     setLoading(false)
-        //     showError(res.message)
-        //     return;
-        // }
+        console.log('dfdbfk jd', res)
 
         if (res.success === true) {
             setRideData(res.ride)
-            // setLoading(false)
-            // showSuccess(res.message)
-            // router.push({ pathname: '/liveride', params: { id: res.ride._id } })
         }
     }, [id, tok]);
 
@@ -166,8 +157,8 @@ export const LiveRide = () => {
 
     useEffect(() => {
         if (rideData && rideData?.status === "COMPLETED" && rideData?.paymentMethod !== "wallet") {
-            handlePayment()
-        }else if(rideData && rideData?.status === "COMPLETED" && rideData?.paymentMethod === "wallet"){
+            // handlePayment()
+        } else if (rideData && rideData?.status === "COMPLETED" && rideData?.paymentMethod === "wallet") {
             payRideFromWallet()
         }
 
@@ -191,6 +182,12 @@ export const LiveRide = () => {
             off('riderLocationUpdate')
         }
     }, [emit, off, on, rideData]);
+
+    useEffect(() => {
+        if(rideData?.paymentMethod === "espece" && rideData?.status === "PAYED"){
+            router.replace('/(tabs)')
+        }
+    }, [rideData?.paymentMethod, rideData?.status])
 
     const handleStatut = async () => {
         setLoad(true);
@@ -278,13 +275,14 @@ export const LiveRide = () => {
                     <BottomSheetScrollView contentContainerStyle={{}}>
                         {rideData?.status === "SEARCHING_FOR_RIDER" ? (
                             <SearchingRiderSheet
+                                duration={duration}
                                 item={rideData}
                             />
                         ) : (
                             <LiveTrackingSheet
                                 car={car}
                                 rating={rating}
-                                duration={duration.toFixed(0)}
+                                duration={duration}
                                 item={rideData}
                             />
                         )}

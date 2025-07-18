@@ -23,20 +23,25 @@ const schema = yup.object().shape({
 
 const paymentMethods = [
     {
-        key: "momo",
-        title: "Mtn",
-        image: require("../assets/images/mtn.png"),
+        key: "wave",
+        title: "Wave",
+        image: require("../assets/images/wave.png"),
     },
-    {
-        key: "moov",
-        title: "Moov",
-        image: require("../assets/images/moov.png"),
-    },
-    {
-        key: "orange",
-        title: "Orange",
-        image: require("../assets/images/orange.png"),
-    },
+    // {
+    //     key: "momo",
+    //     title: "Mtn",
+    //     image: require("../assets/images/mtn.png"),
+    // },
+    // {
+    //     key: "moov",
+    //     title: "Moov",
+    //     image: require("../assets/images/moov.png"),
+    // },
+    // {
+    //     key: "orange",
+    //     title: "Orange",
+    //     image: require("../assets/images/orange.png"),
+    // },
 ];
 
 const formule = [
@@ -81,7 +86,7 @@ export default function rechargewallet() {
     const { user, tok, setUser, } = useStore();
 
     const [loading, setLoading] = useState<boolean>(false);
-    const [selectedMethod, setSelectedMethod] = useState<string>("momo");
+    const [selectedMethod, setSelectedMethod] = useState<string>("wave");
     const [selectedAmount, setSelectedAmount] = useState<number | null>(null);
     const [showWebview, setShowWebview] = useState(false);
     const [montant, setMontant] = useState<number>(0);

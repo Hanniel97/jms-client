@@ -1,16 +1,15 @@
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { WSProvider } from '@/services/WSProvider';
 import { useFonts } from 'expo-font';
-import { Slot, Stack } from 'expo-router';
+import NetInfo from "@react-native-community/netinfo";
 import { StatusBar } from 'expo-status-bar';
-import { JSX, Suspense } from 'react';
+import { JSX, Suspense, useEffect, useState } from 'react';
 import { ActivityIndicator } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import 'react-native-reanimated';
 import Toast, { BaseToast, BaseToastProps, ErrorToast } from 'react-native-toast-message';
 import { TailwindProvider } from 'tailwindcss-react-native';
 import Routes from './router';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 function Loading() {
   return <ActivityIndicator size="large" color="blue" />;
@@ -63,7 +62,7 @@ const toastConfig = {
 }
 
 export default function RootLayout() {
-  const insets = useSafeAreaInsets();
+  const [isConnected, setIsConnected] = useState(true);
   const colorScheme = useColorScheme();
   const [loaded] = useFonts({
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
@@ -73,6 +72,26 @@ export default function RootLayout() {
     RubikLight: require('../assets/fonts/Rubik/static/Rubik-Light.ttf'),
     RubikMedium: require('../assets/fonts/Rubik/static/Rubik-Medium.ttf'),
   });
+
+  // useEffect(() => {
+  //   const unsubscribe = NetInfo.addEventListener((state) => {
+  //     setIsConnected(state.isConnected ?? false);
+  //     if (!state.isConnected) {
+  //       router.replace("/_offline");
+  //     }
+  //   });
+
+  //   return () => unsubscribe();
+  // }, []);
+
+  // 🔌 Écoute de la connexion Internet
+  useEffect(() => {
+    const unsubscribe = NetInfo.addEventListener(state => {
+      setIsConnected(state.isConnected && state.isInternetReachable !== false);
+    });
+
+    return () => unsubscribe();
+  }, []);
 
   if (!loaded) {
     // Async font loading only occurs in development.
@@ -88,7 +107,7 @@ export default function RootLayout() {
             flex: 1,
             // marginBottom: insets.bottom
           }}>
-            <Routes />
+            <Routes isConnected={isConnected} />
             {/* <Slot /> */}
           </GestureHandlerRootView>
         </Suspense>

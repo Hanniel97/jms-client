@@ -8,17 +8,17 @@ export const GOOGLE_API_KEY = "AIzaSyB6_OxzEd6VT4yqdW2zS0wjT7Gc6w9xxTw";
 const test: boolean = __DEV__;
 
 export const apiUrl: string = test ?
-    "http://192.168.196.26:5000/api/"
+    "http://192.168.100.14:5000/api/"
     :
     "https://jms-tansport-backend.onrender.com/api/"
 
 export const socketUrl: string = test ?
-    "http://192.168.196.26:5000"
+    "http://192.168.100.14:5000"
     :
     "https://jms-tansport-backend.onrender.com"
 
 export const photoUrl: string = test ?
-    "http://192.168.196.26:5000/"
+    "http://192.168.100.14:5000/"
     :
     "https://jms-tansport-backend.onrender.com/"
 

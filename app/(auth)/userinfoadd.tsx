@@ -13,7 +13,7 @@ import { Icon } from "@rneui/base";
 import { router } from "expo-router";
 import React, { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { Pressable, Text, View } from "react-native";
+import { Pressable, Text, TouchableOpacity, View } from "react-native";
 import * as yup from "yup";
 
 // const MIN_AGE = 18;
@@ -177,11 +177,11 @@ export default function userinfoadd() {
                                         <Text numberOfLines={2} className="text-black dark:text-white text-sm w-52 font-['RubikRegular']">Je suis d'accord avec les conditions générales d'utilisation</Text>
                                     </View>
 
-                                    <View style={{ flex: 0.2 }} className={`border-[1px] border-green-600 rounded-full justify-center items-center`} >
+                                    <TouchableOpacity onPress={() => router.push('/policy')} style={{ flex: 0.2 }} className={`border-[1px] border-green-600 rounded-full justify-center items-center`} >
                                         <Text className="text-sm text-green-600 dark:text-white px-2 py-1 items-center font-['RubikRegular']">
                                             Lire
                                         </Text>
-                                    </View>
+                                    </TouchableOpacity>
                                 </View>
 
                                 {errors.cgu_accepte && <Text className="text-red-500 mt-1 text-sm font-['RubikRegular']">{errors.cgu_accepte.message}</Text>}
