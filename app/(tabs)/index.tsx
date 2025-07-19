@@ -430,15 +430,15 @@ export default function HomeScreen() {
           icon={<Icon name="my-location" type="material-icon" size={24} color="#ff6d00" />}
           // buttonText="Commander une course"
           buttonClassNames="bg-white shadow-xl w-12 h-12 rounded-full items-center justify-center"
-          textClassNames="text-white text-lg font-['RubikBold']"
+          textClassNames="text-white text-sm font-['RubikBold']"
           // onPress={() => { handleGpsButtonPress() }}
           onPress={() => goToUserLocation()}
         />
         <CustomButton
           buttonText="Commander une course"
           loading={loading}
-          buttonClassNames="bg-primary shadow-xl h-12 w-64 rounded-full items-center justify-center"
-          textClassNames="text-white text-lg font-['RubikBold']"
+          buttonClassNames="bg-primary shadow-xl h-12 w-72 rounded-full items-center justify-center"
+          textClassNames="text-white text-sm font-['RubikBold']"
           onPress={() => {
             getRide()
           }}

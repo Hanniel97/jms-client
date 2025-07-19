@@ -316,7 +316,7 @@ export default function RideDetails() {
                         <View className="my-2 ml-2 py-1 px-3 justify-center w-full h-16">
                             <View className="flex flex-row justify-between items-center">
                                 <Text className="text-gray-500 font-['RubikSemiBold'] text-lg">Départ</Text>
-                                <Text className="text-lg font-['RubikRegular']">{moment(ride.createdAt).add(6, "minutes").format("HH:mm")}</Text>
+                                <Text className="text-lg font-['RubikRegular']">{moment(ride.startTime).format("HH:mm")}</Text>
                             </View>
 
                             <Text numberOfLines={2} className="font-['RubikRegular'] text-lg">{ride.pickup.address}</Text>
@@ -331,7 +331,7 @@ export default function RideDetails() {
                         <View className="my-2 py-1 px-3 justify-center w-full h-16">
                             <View className="flex flex-row justify-between items-center">
                                 <Text className="text-gray-500 font-['RubikSemiBold'] text-lg">Arrivée</Text>
-                                <Text className="text-lg font-['RubikRegular']">{moment(ride.createdAt).add(28, "minutes").format("HH:mm")}</Text>
+                                <Text className="text-lg font-['RubikRegular']">{moment(ride.endTime).format("HH:mm")}</Text>
                             </View>
 
                             <Text numberOfLines={2} className="font-['RubikRegular'] text-lg">{ride.drop.address}</Text>

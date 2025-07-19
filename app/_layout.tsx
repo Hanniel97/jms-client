@@ -73,25 +73,26 @@ export default function RootLayout() {
     RubikMedium: require('../assets/fonts/Rubik/static/Rubik-Medium.ttf'),
   });
 
-  // useEffect(() => {
-  //   const unsubscribe = NetInfo.addEventListener((state) => {
-  //     setIsConnected(state.isConnected ?? false);
-  //     if (!state.isConnected) {
-  //       router.replace("/_offline");
-  //     }
-  //   });
-
-  //   return () => unsubscribe();
-  // }, []);
-
-  // 🔌 Écoute de la connexion Internet
   useEffect(() => {
-    const unsubscribe = NetInfo.addEventListener(state => {
-      setIsConnected(state.isConnected && state.isInternetReachable !== false);
+    const unsubscribe = NetInfo.addEventListener((state) => {
+      console.log(state)
+      setIsConnected(state.isConnected ?? false);
+      // if (!state.isConnected) {
+      //   router.replace("/_offline");
+      // }
     });
 
     return () => unsubscribe();
   }, []);
+
+  // 🔌 Écoute de la connexion Internet
+  // useEffect(() => {
+  //   const unsubscribe = NetInfo.addEventListener(state => {
+  //     setIsConnected(state.isConnected && state.isInternetReachable !== false);
+  //   });
+
+  //   return () => unsubscribe();
+  // }, []);
 
   if (!loaded) {
     // Async font loading only occurs in development.

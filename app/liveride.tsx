@@ -131,7 +131,7 @@ export const LiveRide = () => {
         }
     }, [rideData?.fare, tok, user])
 
-    const payRideFromWallet = async () => {
+    const payRideFromWallet = useCallback(async () => {
         setLoad(true);
         const res = await apiRequest({
             method: 'POST',
@@ -153,7 +153,7 @@ export const LiveRide = () => {
             showError(res.message)
             setLoad(false);
         }
-    }
+    }, [rideData?._id, setUser, tok, user._id])
 
     useEffect(() => {
         if (rideData && rideData?.status === "COMPLETED" && rideData?.paymentMethod !== "wallet") {
@@ -161,14 +161,13 @@ export const LiveRide = () => {
         } else if (rideData && rideData?.status === "COMPLETED" && rideData?.paymentMethod === "wallet") {
             payRideFromWallet()
         }
+    }, [getRide, id, payRideFromWallet, rideData]);
 
-    }, [getRide, id, rideData]);
-
-    useEffect(() => {
-        if (urlPayment) {
-            setShowWebview(true)
-        }
-    }, [urlPayment])
+    // useEffect(() => {
+    //     if (urlPayment) {
+    //         setShowWebview(true)
+    //     }
+    // }, [urlPayment])
 
     useEffect(() => {
         if (rideData?.rider?._id) {
@@ -180,6 +179,7 @@ export const LiveRide = () => {
 
         return () => {
             off('riderLocationUpdate')
+            off('subscribeToriderLocation')
         }
     }, [emit, off, on, rideData]);
 

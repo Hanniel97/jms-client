@@ -64,9 +64,9 @@ export default function otpcheck() {
 
             <KeyboardAvoidWrapper>
                 <View className="px-3 flex-1 h-full">
-                    <Text className="text-lg font-['RubikBold'] text-black dark:text-white mb-2">Entrer le code de vérification</Text>
+                    <Text className="text-sm font-['RubikBold'] text-black dark:text-white mb-2">Entrer le code de vérification</Text>
 
-                    <Text className="text-gray-500 font-['RubikRegular'] text-lg dark:text-white mb-8">Un code a été envoyé sur votre numéro via la méthode de vérification que vous avez choisi. Ce code expire dans 5 minutes pour votre sécurité.</Text>
+                    <Text className="text-gray-500 font-['RubikRegular'] text-sm dark:text-white mb-8">Un code a été envoyé sur votre numéro via la méthode de vérification que vous avez choisi. Ce code expire dans 5 minutes pour votre sécurité.</Text>
 
                     <Controller
                         control={otpControl}
@@ -94,8 +94,8 @@ export default function otpcheck() {
                     <CustomButton
                         buttonText="Valider"
                         loading={loading}
-                        buttonClassNames="bg-primary shadow-xl w-full h-12 rounded-full items-center justify-center mt-4"
-                        textClassNames="text-white text-lg font-['RubikBold']"
+                        buttonClassNames="bg-primary w-full h-12 rounded-full items-center justify-center mt-4"
+                        textClassNames="text-white text-sm font-['RubikBold']"
                         onPress={handleOtpSubmit(handleOTP)}
                     />
                 </View>

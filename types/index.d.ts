@@ -54,6 +54,8 @@ export interface IRide {
     estimatedDurationFormatted: string,
     paymentMethod: string,
     otp: string,
+    startTime: date,
+    endTime: date,
     createdAt: date,
     updatedAt: date
 }

@@ -120,9 +120,9 @@ export default function phonecheck() {
                 </View>
 
                 <View className="px-3 flex-1 h-full">
-                    <Text className="text-lg text-center font-['RubikBold'] text-black dark:text-white mt-8 mb-2">Entrer vôtre numéro de téléphone</Text>
+                    <Text className="text-sm text-center font-['RubikBold'] text-black dark:text-white mt-8 mb-2">Entrer vôtre numéro de téléphone</Text>
 
-                    <Text className="text-center text-black font-['RubikRegular'] dark:text-white mb-8">entrer vôtre numéro de téléphone pour vous connecter ou pour créer un compte</Text>
+                    <Text className="text-center text-black text-sm font-['RubikRegular'] dark:text-white mb-8">entrer vôtre numéro de téléphone pour vous connecter ou pour créer un compte</Text>
 
                     <Controller
                         control={control}
@@ -164,8 +164,8 @@ export default function phonecheck() {
                     <CustomButton
                         buttonText="Commencer"
                         loading={loading}
-                        buttonClassNames="bg-primary shadow-xl w-full h-12 rounded-full items-center justify-center mt-4"
-                        textClassNames="text-white text-lg font-['RubikBold']"
+                        buttonClassNames="bg-primary w-full h-12 rounded-full items-center justify-center mt-4"
+                        textClassNames="text-white text-sm font-['RubikBold']"
                         onPress={handleSubmit(onSubmit)}
                     />
                 </View>
@@ -191,8 +191,8 @@ export default function phonecheck() {
                         <CustomButton
                             buttonText="Continuer via SMS"
                             // loading={loading}
-                            buttonClassNames="bg-gray-200 shadow-xl w-full h-12 rounded-full items-center justify-center mt-4"
-                            textClassNames="text-black text-lg font-['RubikBold']"
+                            buttonClassNames="bg-gray-200 w-full h-12 rounded-full items-center justify-center mt-4"
+                            textClassNames="text-black text-sm font-['RubikBold']"
                             onPress={() => {
                                 setMethode('sms');
                                 setVisible2(false);
@@ -204,8 +204,8 @@ export default function phonecheck() {
                         <CustomButton
                             buttonText="Continuer via WhatsApp"
                             // loading={loading}
-                            buttonClassNames="bg-gray-200 shadow-xl w-full h-12 rounded-full items-center justify-center mt-4"
-                            textClassNames="text-black text-lg font-['RubikBold']"
+                            buttonClassNames="bg-gray-200 w-full h-12 rounded-full items-center justify-center mt-4"
+                            textClassNames="text-black text-sm font-['RubikBold']"
                             onPress={() => {
                                 setMethode('whatsapp')
                                 setVisible2(false);

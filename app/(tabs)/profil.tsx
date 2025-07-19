@@ -271,11 +271,11 @@ export default function profil() {
                     </View>
 
                     <TouchableOpacity onPress={() => router.push('/wallet')} className="flex-row justify-center items-center bg-green-600 mt-3 py-1 px-3 rounded-lg">
-                        <Text className="text-lg text-white font-['RubikSemiBold']">Solde: </Text>
-                        <Text className="text-lg text-white font-['RubikRegular']">{user.wallet.toLocaleString()} XOF</Text>
+                        <Text className="text-sm text-white font-['RubikSemiBold']">Solde: </Text>
+                        <Text numberOfLines={1} className="text-sm text-white font-['RubikRegular']">{user.wallet.toLocaleString()} XOF</Text>
                     </TouchableOpacity>
 
-                    <Text className="text-xl mt-3 font-['RubikSemiBold']">{user.prenom} {user.nom}</Text>
+                    <Text className="text-lg mt-3 font-['RubikSemiBold']">{user.prenom} {user.nom}</Text>
                     <Text className="text-sm text-gray-500 mt-1 font-['RubikRegular']">{user.phone}</Text>
                 </View>
 

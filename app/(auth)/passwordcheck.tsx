@@ -81,11 +81,11 @@ export default function passwordcheck() {
             <CustomHeader showBack={true} showTitle={false} />
             <KeyboardAvoidWrapper>
                 <View className="px-3 flex-1 h-full">
-                    <Text className="text-lg font-['RubikBold'] text-black dark:text-white mb-2">
+                    <Text className="text-sm font-['RubikBold'] text-black dark:text-white mb-2">
                         Entrer votre mot de passe
                     </Text>
 
-                    <Text className="text-gray-500 font-['RubikRegular'] text-lg dark:text-white mb-8">
+                    <Text className="text-gray-500 font-['RubikRegular'] text-sm dark:text-white mb-8">
                         Entrer votre mot de passe pour vous connecter.
                     </Text>
 
@@ -110,8 +110,8 @@ export default function passwordcheck() {
                         buttonText="Valider"
                         loading={loading}
                         // disable={!isPasswordValid}
-                        buttonClassNames={`w-full h-12 rounded-full items-center justify-center mt-6 bg-primary shadow-xl`}
-                        textClassNames="text-white text-lg font-['RubikBold']"
+                        buttonClassNames={`w-full h-12 rounded-full items-center justify-center mt-6 bg-primary`}
+                        textClassNames="text-white text-sm font-['RubikBold']"
                         onPress={handlePasswordSubmit(handlePasswordChange)}
                     />
                 </View>

@@ -10,8 +10,13 @@ import { showError, showSuccess } from "@/utils/showToast";
 import { Icon } from "@rneui/base";
 import { router } from "expo-router";
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { FlatList, Image, Text, TouchableOpacity, View } from "react-native";
+import { Dimensions, FlatList, Image, Text, TouchableOpacity, View, PixelRatio, useWindowDimensions } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+
+const { height } = Dimensions.get('window');
+const scale = PixelRatio.getFontScale();
+
+const baseSize = (size: number) => size / scale
 
 const paymentMethods = [
     {
@@ -42,8 +47,9 @@ const paymentMethods = [
 ];
 
 export default function AddCourse() {
+    const { width } = useWindowDimensions();
     const { tok } = useStore()
-    const { position} = useStore();
+    const { position } = useStore();
 
     const insets = useSafeAreaInsets();
     const bottomSheetRef = useRef<BottomSheetMethods>(null);
@@ -214,7 +220,7 @@ export default function AddCourse() {
     }
 
     return (
-        <View style={{ marginBottom: insets.bottom }} className="flex-1 bg-white dark:bg-black">
+        <View style={{ marginBottom: insets.bottom }} className="flex-1 bg-white">
             <CustomHeader showBack={true} title={"Créer une course"} />
 
             <View className="w-full px-4">
@@ -255,35 +261,6 @@ export default function AddCourse() {
                 </View>
             </View>
             <View className="bg-white px-3 space-y-4">
-
-
-
-
-                {/* <View>
-                    <Text className="text-black text-sm font-medium">
-                        Lieu d’arrivée
-                    </Text>
-                    <TextInput
-                        className="bg-gray-100 px-3 py-2 rounded-lg text-black mt-1"
-                        placeholder="Destination"
-                        value={endText}
-                        onFocus={() => setIsStartFocused(false)}
-                        onChangeText={(text) => {
-                            setEndText(text);
-                            handleInputChange(text, false);
-                        }}
-                    />
-                </View> */}
-
-                {/* <TouchableOpacity
-                    onPress={getCurrentLocation}
-                    className="mt-2 bg-primary/10 border border-primary rounded-full py-3 items-center"
-                >
-                    <Text className="text-primary font-semibold">
-                        Utiliser ma position actuelle
-                    </Text>
-                </TouchableOpacity> */}
-
                 <View
                     className={`flex-row items-center rounded-lg`}
                 >
@@ -296,8 +273,9 @@ export default function AddCourse() {
                     keyExtractor={(item, index) =>
                         item?.place_id ?? index.toString()
                     }
-                    // initialNumToRender={5}
-                    // windowSize={5}
+                    initialNumToRender={5}
+                    windowSize={5}
+                    showsVerticalScrollIndicator={false}
                     renderItem={({ item }) =>
                         item?.description && item?.place_id ? (
                             <TouchableOpacity
@@ -317,7 +295,8 @@ export default function AddCourse() {
                             </TouchableOpacity>
                         ) : null
                     }
-                    // style={{flex: 1}}
+                    style={{ maxHeight: height * 0.7 }}
+                    // contentContainerStyle={{marginBottom: 100}}
                     keyboardShouldPersistTaps="handled"
                     ListFooterComponent={
                         <TouchableOpacity
@@ -369,6 +348,135 @@ export default function AddCourse() {
             )}
 
             <BottomSheetScrollView
+                ref={bottomSheetRef}
+                snapTo={'55%'}
+                backgroundColor={'white'}
+                backDropColor={'black'}
+            >
+                <View className="p-3 space-y-4">
+                    {/* Cartes ECO / CONFORT */}
+                    <View className="flex-row justify-between space-x-2">
+                        {['eco', 'confort'].map((type) => (
+                            <TouchableOpacity
+                                key={type}
+                                activeOpacity={0.8}
+                                onPress={() => setSelectedCar(type)}
+                                className="flex-1 rounded-xl border border-gray-300 bg-white"
+                                style={{ minHeight: baseSize(110) }} // Hauteur dynamique
+                            >
+                                <View className="bg-primary h-10 w-[70%] rounded-tl-xl rounded-br-xl">
+                                    <Image
+                                        source={type === 'eco'
+                                            ? require('../assets/images/Taxi_confort_gris_miroir.png')
+                                            : require('../assets/images/Taxi_confort_blanc_recadre.png')}
+                                        style={{
+                                            height: baseSize(110),
+                                            width: baseSize(110),
+                                            resizeMode: 'contain',
+                                            position: 'absolute',
+                                            top: -baseSize(40),
+                                        }}
+                                    />
+                                </View>
+
+                                <View className="flex-1 justify-center px-2 py-2">
+                                    <View className="flex-row justify-between items-center">
+                                        <Text
+                                            className="font-['RubikRegular'] text-black"
+                                            style={{ fontSize: baseSize(14) }}
+                                            adjustsFontSizeToFit
+                                            numberOfLines={1}
+                                        >
+                                            {type === 'eco' ? 'ECO' : 'CONFORT'}
+                                        </Text>
+                                        <Text
+                                            className="font-['RubikBold']"
+                                            style={{ fontSize: baseSize(12) }}
+                                            adjustsFontSizeToFit
+                                            numberOfLines={1}
+                                        >
+                                            {courseDetails?.fare[type]
+                                                ? `${courseDetails.fare[type].toFixed(0)} XOF`
+                                                : '...'}
+                                        </Text>
+                                    </View>
+
+                                    <View className="flex-row justify-between items-center mt-1">
+                                        <Text
+                                            className="text-gray-500 font-['RubikRegular']"
+                                            style={{ fontSize: baseSize(12) }}
+                                            adjustsFontSizeToFit
+                                        >
+                                            {courseDetails?.estimatedDuration || '...'} min
+                                        </Text>
+                                        <Text
+                                            className="font-['RubikBold']"
+                                            style={{ fontSize: baseSize(12) }}
+                                            adjustsFontSizeToFit
+                                        >
+                                            {courseDetails?.distance || '...'} km
+                                        </Text>
+                                        <View className="w-4 h-4 rounded-full border border-gray-400 items-center justify-center">
+                                            {selectedCar === type && (
+                                                <View className="w-2 h-2 rounded-full bg-green-500" />
+                                            )}
+                                        </View>
+                                    </View>
+                                </View>
+                            </TouchableOpacity>
+                        ))}
+                    </View>
+
+                    {/* Méthodes de paiement */}
+                    <View className="flex-row justify-between space-x-2 p-2 rounded-xl border border-gray-300 bg-white mb-3">
+                        {paymentMethods.map((method) => (
+                            <TouchableOpacity
+                                key={method.key}
+                                activeOpacity={0.8}
+                                onPress={() => setSelectedMethod(method.key)}
+                                className="flex-1 items-center rounded-xl bg-gray-50 p-2"
+                                style={{ minHeight: baseSize(100) }}
+                            >
+                                <Image
+                                    source={method.image}
+                                    style={{
+                                        width: baseSize(48),
+                                        height: baseSize(48),
+                                        resizeMode: 'contain',
+                                        marginBottom: baseSize(4),
+                                    }}
+                                />
+                                <Text
+                                    className="text-center text-black font-['RubikRegular']"
+                                    style={{ fontSize: baseSize(12) }}
+                                    adjustsFontSizeToFit
+                                    numberOfLines={1}
+                                >
+                                    {method.title}
+                                </Text>
+                                <View className="w-5 h-5 rounded-full border-2 border-primary items-center justify-center mt-1">
+                                    {selectedMethod === method.key && (
+                                        <View className="w-2.5 h-2.5 rounded-full bg-primary" />
+                                    )}
+                                </View>
+                            </TouchableOpacity>
+                        ))}
+                    </View>
+
+                    {/* Bouton Commander */}
+                    <CustomButton
+                        buttonText="Commander"
+                        loading={loading}
+                        buttonClassNames="bg-primary h-12 rounded-full items-center justify-center mt-4"
+                        textClassNames="text-white text-sm font-['RubikBold']"
+                        // style={{ minHeight: baseSize(48) }}
+                        // textStyle={{ fontSize: baseSize(16) }}
+                        onPress={onSubmit}
+                    />
+                </View>
+            </BottomSheetScrollView>
+
+            {/* <BottomSheetScrollView
                 ref={bottomSheetRef}
                 snapTo={'55%'}
                 backgroundColor={'white'}
@@ -453,7 +561,7 @@ export default function AddCourse() {
                                     {method.title}
                                 </Text>
 
-                                {/* Radio circle */}
+                                
                                 <View className="w-5 h-5 rounded-full border-2 border-primary items-center justify-center">
                                     {selectedMethod === method.key && (
                                         <View className="w-2.5 h-2.5 rounded-full bg-primary" />
@@ -466,12 +574,12 @@ export default function AddCourse() {
                     <CustomButton
                         buttonText="Commander"
                         loading={loading}
-                        buttonClassNames="bg-primary shadow-xl h-12 rounded-full items-center justify-center mt-4"
-                        textClassNames="text-white text-lg font-['RubikBold']"
+                        buttonClassNames="bg-primary h-12 rounded-full items-center justify-center mt-4"
+                        textClassNames="text-white text-sm font-['RubikBold']"
                         onPress={onSubmit}
                     />
                 </View>
-            </BottomSheetScrollView>
+            </BottomSheetScrollView> */}
         </View>
     );
 }

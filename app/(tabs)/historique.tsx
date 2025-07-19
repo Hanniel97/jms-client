@@ -96,7 +96,7 @@ export default function HistoriqueScreen() {
         contentContainerStyle={{ padding: 16 }}
         renderItem={({ item }) => (
           <View className="mb-6 w-full flex-1">
-            <Text className="text-lg text-black mb-2 font-['RubikBold']">{item.title}</Text>
+            <Text className="text-sm text-black mb-2 font-['RubikBold']">{item.title}</Text>
             {Array.isArray(item.data) &&
               item.data.map((ride) => (
                 <RenderHistorique key={ride._id} ride={ride} />

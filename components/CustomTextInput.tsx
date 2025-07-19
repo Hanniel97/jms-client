@@ -24,7 +24,7 @@ export const CustomTextInput: React.FC<InputProps> = ({ label, onChangeText, ico
                     )
                 }
 
-                <TextInput style={{color: "#000000"}} className="flex flex-1 font-['RubikRegular'] bg-transparent text-md text-['#000000'] h-[50px] pl-2"
+                <TextInput style={{color: "#000000"}} className="flex flex-1 font-['RubikRegular'] bg-transparent text-sm text-['#000000'] h-[50px] pl-2"
                     onChangeText={onChangeText} secureTextEntry={IsSecureText} keyboardType={keyboardType} placeholder={placeholder}
                     placeholderTextColor={"gray"} autoCapitalize="none" value={value}
                 />
@@ -108,7 +108,7 @@ export const CustomTextInputReview: React.FC<InputsReviewProps> = ({ onPress, on
 
 export const CustomLocationTextInput: React.FC<LocationInputProps> = ({ onChangeText, placeholder, value, onFocus, ...props }) => {
     return (
-        <View className=" bg-gray-200/20 border border-gray-200 rounded-lg h-[50px] p-1 justify-center items-center w-full">
+        <View className=" bg-gray-200/20 border border-gray-200 rounded-lg h-[57px] px-1 justify-center items-center w-full">
             <TextInput className="w-full font-['RubikRegular'] bg-transparent text-md text-['#000000']"
                 onChangeText={onChangeText} keyboardType={"default"} placeholder={placeholder} value={value}
                 placeholderTextColor={"gray"} onFocus={onFocus}

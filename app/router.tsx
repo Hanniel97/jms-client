@@ -60,7 +60,7 @@ const Routes = ({ isConnected }: Props) => {
     }, []);
 
     return (
-        <Stack>
+        <Stack screenOptions={{headerShown: false}}>
             {
                 isConnected ? (
                     <>

@@ -1,7 +1,8 @@
 import { useWS } from "@/services/WSProvider";
 import { vehiculeIcons } from "@/utils/mapUtils";
-import React, { useEffect } from "react";
+import { Icon } from "@rneui/base";
 import { LinearGradient } from 'expo-linear-gradient';
+import React, { useEffect } from "react";
 import {
     Image,
     Text,
@@ -9,7 +10,6 @@ import {
 } from "react-native";
 import { CustomButton } from "./CustomButton";
 import CustomProgressBar from "./CustomProgressBar";
-import { Icon } from "@rneui/base";
 
 type VehicleType = "eco" | "confort";
 
@@ -51,7 +51,7 @@ const SearchingRiderSheet: React.FC<{ item: RiderItem, duration: number }> = ({ 
             </View>
 
             <View className="mb-3 w-full">
-                <Text className="text-black font-['RubikSemiBold'] text-lg">Recherche d'un chauffeur en cours...</Text>
+                <Text className="text-black font-['RubikSemiBold'] text-sm">Recherche d'un chauffeur en cours...</Text>
                 <CustomProgressBar duration={2000} />
                 {/* <Text className="text-gray-500 text-sm mt-1 capitalize">Course {item?.vehicle}</Text> */}
             </View>
@@ -59,16 +59,16 @@ const SearchingRiderSheet: React.FC<{ item: RiderItem, duration: number }> = ({ 
             <View>
                 <View className="py-1 px-2 w-full flex-row justify-center  items-center">
                     <Icon name="dot-fill" type='octicon' size={25} color="#000000" />
-                    <View className="my-2 ml-2 bg-gray-200/20 border border-gray-200 rounded-lg h-[50px] py-1 px-3 justify-center w-full">
+                    <View className="my-2 ml-2 bg-gray-200/20 border border-gray-200 rounded-lg h-[65px] py-1 px-3 justify-center w-full">
                         <Text numberOfLines={2} className="font-['RubikRegular']">{item?.pickup?.address}</Text>
                     </View>
                 </View>
 
-                <View className="bg-black w-1 h-16 absolute bottom-11 left-0.5" />
+                <View className="bg-black w-1 h-20 absolute bottom-14 left-0.5" />
 
                 <View className="py-1 px-2 w-full flex-row justify-center  items-center">
-                    <Icon name="pin-drop" type='material-icon' size={25} color="#000000" />
-                    <View className="my-2 ml-2 bg-gray-200/20 border border-gray-200 rounded-lg h-[50px] py-1 px-3 justify-center w-full">
+                    <Icon name="pin-drop" type='material-icon' size={27} color="#000000" />
+                    <View className="my-2 ml-2 bg-gray-200/20 border border-gray-200 rounded-lg h-[65px] py-1 px-3 justify-center w-full">
                         <Text numberOfLines={2} className="font-['RubikRegular']">{item?.drop?.address}</Text>
                     </View>
                 </View>
@@ -124,20 +124,20 @@ const SearchingRiderSheet: React.FC<{ item: RiderItem, duration: number }> = ({ 
 
                 <View style={{ flex: 0.60 }} className="p-2 gap-1 flex-row justify-between">
                     <View className="justify-center items-center">
-                        <Text className="text-gray-500 font-['RubikRegular']">Distance</Text>
-                        <Text className="font-['RubikBold']">{item?.distance
+                        <Text numberOfLines={1} adjustsFontSizeToFit className="text-gray-500 font-['RubikRegular']">Distance</Text>
+                        <Text numberOfLines={1} adjustsFontSizeToFit className="font-['RubikBold']">{item?.distance
                             ? `${item?.distance.toFixed(2)} Km`
                             : '...'}</Text>
                     </View>
                     <View className="justify-center items-center">
-                        <Text className="text-gray-500 font-['RubikRegular']">Temps</Text>
-                        <Text className="font-['RubikBold']">{duration
+                        <Text numberOfLines={1} adjustsFontSizeToFit className="text-gray-500 font-['RubikRegular']">Temps</Text>
+                        <Text numberOfLines={1} adjustsFontSizeToFit className="font-['RubikBold']">{duration
                             ? `${formatTimeMMSS(duration)} min`
                             : '...'}</Text>
                     </View>
                     <View className="justify-center items-center">
-                        <Text className="text-gray-500 font-['RubikRegular']">Prix</Text>
-                        <Text className="font-['RubikBold']">{item?.fare
+                        <Text numberOfLines={1} adjustsFontSizeToFit className="text-gray-500 font-['RubikRegular']">Prix</Text>
+                        <Text numberOfLines={1} adjustsFontSizeToFit className="font-['RubikBold']">{item?.fare
                             ? `${item?.fare} XOF`
                             : '...'}</Text>
                     </View>
@@ -146,9 +146,9 @@ const SearchingRiderSheet: React.FC<{ item: RiderItem, duration: number }> = ({ 
 
             <CustomButton
                 buttonText="Annuler la course"
-                buttonClassNames="bg-primary shadow-xl h-12 rounded-full items-center justify-center mt-4 mb-6"
-                textClassNames="text-white text-lg font-['RubikBold']"
-                onPress={cancelOrder}
+                buttonClassNames="bg-primary h-12 rounded-full items-center justify-center mt-4 mb-6"
+                textClassNames="text-white text-sm font-['RubikBold']"
+                onPress={() => {cancelOrder()}}
             />
         </View>
     );

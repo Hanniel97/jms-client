@@ -91,11 +91,11 @@ export default function userinfoadd() {
             <CustomHeader showBack={true} showTitle={false} />
             <KeyboardAvoidWrapper>
                 <View className="px-3 flex-1 h-full">
-                    <Text className="text-lg font-['RubikBold'] text-black dark:text-white mb-2">
+                    <Text className="text-sm font-['RubikBold'] text-black dark:text-white mb-2">
                         Dites-nous un peu plus sur vous
                     </Text>
 
-                    <Text className="text-gray-500 font-['RubikRegular'] text-lg dark:text-white mb-8">
+                    <Text className="text-gray-500 font-['RubikRegular'] text-sm dark:text-white mb-8">
                         Renseigner les champs suivants pour nous permettre de vous connaître et de créer votre profil
                     </Text>
 
@@ -192,8 +192,8 @@ export default function userinfoadd() {
                     <CustomButton
                         buttonText="Suivant"
                         loading={loading}
-                        buttonClassNames="bg-primary shadow-xl w-full h-12 rounded-full items-center justify-center mt-4"
-                        textClassNames="text-white text-lg font-['RubikBold']"
+                        buttonClassNames="bg-primary w-full h-12 rounded-full items-center justify-center mt-4"
+                        textClassNames="text-white text-sm font-['RubikBold']"
                         onPress={handleSubmit(onSubmit)}
                     />
                 </View>

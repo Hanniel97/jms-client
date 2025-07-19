@@ -69,9 +69,9 @@ export default function contactus() {
 
             <KeyboardAvoidWrapper>
                 <View className="px-3 flex-1 h-full mt-3">
-                    <Text className="text-lg font-['RubikBold'] self-center text-black dark:text-white mb-2">Adresse</Text>
+                    <Text className="text-sm font-['RubikBold'] self-center text-black dark:text-white mb-2">Adresse</Text>
 
-                    <Text className="text-gray-500 text-center font-['RubikMedium'] text-lg dark:text-white mb-8">Un code a été envoyé sur votre numéro via la méthode de vérification que vous avez choisi. Ce code expire dans 5 minutes pour votre sécurité.</Text>
+                    <Text className="text-gray-500 text-center font-['RubikMedium'] text-sm dark:text-white mb-8"></Text>
 
                     <Controller
                         control={control}
@@ -92,8 +92,8 @@ export default function contactus() {
                     <CustomButton
                         buttonText="Envoyer"
                         loading={loading}
-                        buttonClassNames="bg-primary shadow-xl h-12 rounded-full items-center justify-center mt-4"
-                        textClassNames="text-white text-lg font-['RubikBold']"
+                        buttonClassNames="bg-primary h-12 rounded-full items-center justify-center mt-4"
+                        textClassNames="text-white text-sm font-['RubikBold']"
                         onPress={handleSubmit(onSubmit)}
                     />
                 </View>
