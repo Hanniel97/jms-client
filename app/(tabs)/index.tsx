@@ -176,6 +176,14 @@ export default function HomeScreen() {
 
   }, [first, getPosition, isAuthenticated, user._id])
 
+  useEffect(() => {
+    const interval = setInterval(() => {
+      emit("heartbeat");
+    }, 10000);
+
+    return () => clearInterval(interval);
+  }, [emit]);
+
   const goToUserLocation = () => {
     const region_to_go = {
       latitude: position.latitude,
@@ -361,13 +369,13 @@ export default function HomeScreen() {
         }}
         // pitchEnabled={false}
         provider="google"
-        // showsCompass={false}
-        // showsIndoors={false}
-        // showsIndoorLevelPicker={false}
-        // showsTraffic={false}
-        // showsScale={false}
-        // showsBuildings={false}
-        // showsPointsOfInterest={false}
+      // showsCompass={false}
+      // showsIndoors={false}
+      // showsIndoorLevelPicker={false}
+      // showsTraffic={false}
+      // showsScale={false}
+      // showsBuildings={false}
+      // showsPointsOfInterest={false}
       >
         {
           markers.filter((marker: any) => marker?.latitude && marker.longitude && marker.visible).map((marker: any, index: number) =>

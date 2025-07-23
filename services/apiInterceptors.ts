@@ -25,6 +25,7 @@ export const refresh_tokens = async () => {
 
         return new_access_token;
     } catch (error) {
+        console.log(error)
         logout();
     }
 };
