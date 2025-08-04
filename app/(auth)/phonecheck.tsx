@@ -30,13 +30,13 @@ export default function phonecheck() {
 
     const [loading, setLoading] = useState<boolean>(false);
     const [method, setMethode] = useState<string>("");
-    const [countryCode, setCountryCode] = useState('BJ');
+    const [countryCode, setCountryCode] = useState('CI');
     const [visible, setVisible] = useState(false);
     const [visible2, setVisible2] = useState(false);
     const [country, setCountry] = useState<Country>({
-        "callingCode": ["229"],
-        "cca2": "BJ",
-        "name": "Bénin",
+        "callingCode": ["225"],
+        "cca2": "CI",
+        "name": "Côte d'Ivoire",
         "region": "Africa",
         "subregion": "Western Africa",
         "currency": [],
@@ -57,13 +57,15 @@ export default function phonecheck() {
     });
 
     const onSubmit = useCallback(async (data: any) => {
-        console.log((`+${country?.callingCode?.[0] || "1"}`).concat(data.phone))
+        // console.log((`+${country?.callingCode?.[0] || "1"}`).concat(data.phone))
+        // console.log((`+${country?.callingCode?.[0] || "1"}`).concat(data.phone))
         setLoading(true)
         const res = await apiRequest({
             method: 'POST',
             endpoint: 'checkPhoneClient',
             data: {
                 phone: (`+${country?.callingCode?.[0] || "1"}`).concat(data.phone),
+                countryCode: country?.cca2.toLowerCase(),
                 method
             },
         });

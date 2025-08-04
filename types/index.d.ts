@@ -9,6 +9,7 @@ export interface IUser {
     _id: string,
     role: string,
     phone: string,
+    countryCode: string,
     email: string,
     nom: string,
     prenom: string,

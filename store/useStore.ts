@@ -63,7 +63,8 @@ const useStore = create<Store>()(
                 wallet: 0,
                 idCard: "",
                 verified: false,
-                otp: ""
+                otp: "",
+                countryCode: "ci"
             },
             transactions: [],
             outOfRange: false,
@@ -107,7 +108,8 @@ const useStore = create<Store>()(
                         wallet: 0,
                         idCard: "",
                         verified: false,
-                        otp: ""
+                        otp: "",
+                        countryCode: "ci"
                     },
                     position: {
                         longitude: 0,

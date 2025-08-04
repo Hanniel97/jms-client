@@ -26,21 +26,21 @@ export const WSProvider: React.FC<WSProviderProps> = ({ children }) => {
         null
     );
 
-    const { tok, user } = useStore();
+    const { tok, user, isAuthenticated } = useStore();
 
     // console.log('mon user', user)
 
     const socket = useRef<Socket | null>(null);
 
     useEffect(() => {
-        if (tok) {
+        if (tok && isAuthenticated) {
             console.log("🟢 Mise à jour du token détectée :", tok);
             setSocketAccessToken(tok);
         }
-    }, [tok]);
+    }, [isAuthenticated, tok]);
 
     useEffect(() => {
-        if (!socketAccessToken) return;
+        if (!socketAccessToken && !isAuthenticated) return;
 
         console.log("🔄 Tentative de connexion WebSocket...");
 
@@ -55,9 +55,12 @@ export const WSProvider: React.FC<WSProviderProps> = ({ children }) => {
             reconnectionAttempts: 5,
             reconnectionDelay: 2000,
             withCredentials: true,
-            extraHeaders: {
-                access_token: socketAccessToken || "",
+            auth: {
+                token: socketAccessToken || "",
             },
+            // extraHeaders: {
+            //     access_token: socketAccessToken || "",
+            // },
         });
 
         console.log("✅ WebSocket initialisé avec le token :", socketAccessToken);
@@ -90,7 +93,7 @@ export const WSProvider: React.FC<WSProviderProps> = ({ children }) => {
             socket.current?.disconnect();
         }
 
-    }, [socketAccessToken, user]);
+    }, [isAuthenticated, socketAccessToken, user]);
 
     const emit = (event: string, data: any = {}) => {
         socket.current?.emit(event, data);

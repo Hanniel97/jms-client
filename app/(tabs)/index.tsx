@@ -13,10 +13,12 @@ import { router } from 'expo-router';
 import haversine from "haversine-distance";
 import { jwtDecode } from "jwt-decode";
 import { isEqual } from 'lodash';
-import { useCallback, useEffect, useRef, useState } from 'react';
-import { Image, TouchableOpacity, View, useColorScheme } from 'react-native';
+import { Car } from "lucide-react-native";
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { ActivityIndicator, Dimensions, Image, TouchableOpacity, View, useColorScheme, Vibration } from 'react-native';
 import MapView, { Marker, Region } from 'react-native-maps';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import SwipeButton from 'rn-swipe-button';
 import darkMapStyle from "../../services/mapStyleDark.json";
 import lightMapStyle from '../../services/mapStyleLight.json';
 
@@ -50,7 +52,6 @@ export default function HomeScreen() {
   const mapStyle = theme === 'dark' ? darkMapStyle : lightMapStyle;
 
   const [moving, setMoving] = useState(true);
-  const [modalVisible, setModalVisible] = useState(false);
   const [visible, setVisible] = useState(false);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<string>("");
@@ -239,27 +240,27 @@ export default function HomeScreen() {
     })()
   }, [mapRef, isFocused])
 
-  const generateRandomMarkers = () => {
-    console.log(position)
-    if (!position?.latitude || !position?.longitude || outOfRange) return;
+  // const generateRandomMarkers = () => {
+  //   console.log(position)
+  //   if (!position?.latitude || !position?.longitude || outOfRange) return;
 
-    const types = ["auto", "eco"];
-    const newMarkers = Array.from({ length: 20 }, (_, index) => {
-      const randomType = types[Math.floor(Math.random() * types.length)];
-      const randomRotation = Math.floor(Math.random() * 360)
+  //   const types = ["auto", "eco"];
+  //   const newMarkers = Array.from({ length: 20 }, (_, index) => {
+  //     const randomType = types[Math.floor(Math.random() * types.length)];
+  //     const randomRotation = Math.floor(Math.random() * 360)
 
-      return {
-        id: index,
-        latitude: position?.latitude + (Math.random() - 0.5) * 0.01,
-        longitude: position?.longitude + (Math.random() - 0.5) * 0.01,
-        type: randomType,
-        rotation: randomRotation,
-        visible: true,
-      }
-    });
-    console.log(markers)
-    setMarkers(newMarkers)
-  }
+  //     return {
+  //       id: index,
+  //       latitude: position?.latitude + (Math.random() - 0.5) * 0.01,
+  //       longitude: position?.longitude + (Math.random() - 0.5) * 0.01,
+  //       type: randomType,
+  //       rotation: randomRotation,
+  //       visible: true,
+  //     }
+  //   });
+  //   console.log(markers)
+  //   setMarkers(newMarkers)
+  // }
 
   // useEffect(() => {
   //   generateRandomMarkers();
@@ -295,22 +296,22 @@ export default function HomeScreen() {
 
   }, [position, emit, on, off, isFocused])
 
-  const handleGpsButtonPress = async () => {
-    try {
-      let { status } = await Location.requestForegroundPermissionsAsync();
-      let location = await Location.getCurrentPositionAsync({});
-      const { latitude, longitude } = location.coords;
+  // const handleGpsButtonPress = async () => {
+  //   try {
+  //     let { status } = await Location.requestForegroundPermissionsAsync();
+  //     let location = await Location.getCurrentPositionAsync({});
+  //     const { latitude, longitude } = location.coords;
 
-      mapRef.current?.fitToCoordinates([{ latitude, longitude }], {
-        edgePadding: { top: 100, left: 100, bottom: 100, right: 100, },
-        animated: true,
-      });
-      const address = await reverseGeocode(latitude, longitude);
-      setPosition({ latitude: latitude, longitude: longitude, address: address });
-    } catch (error) {
-      console.log(error)
-    }
-  }
+  //     mapRef.current?.fitToCoordinates([{ latitude, longitude }], {
+  //       edgePadding: { top: 100, left: 100, bottom: 100, right: 100, },
+  //       animated: true,
+  //     });
+  //     const address = await reverseGeocode(latitude, longitude);
+  //     setPosition({ latitude: latitude, longitude: longitude, address: address });
+  //   } catch (error) {
+  //     console.log(error)
+  //   }
+  // }
 
   const getRide = useCallback(async () => {
     setLoading(true)
@@ -433,7 +434,7 @@ export default function HomeScreen() {
       </View>
 
       {/* 🔘 BOUTON EN BAS */}
-      <View className="flex-row absolute bottom-3 justify-between items-center h-12 w-full px-3">
+      {/* <View className="flex-row absolute bottom-3 justify-between items-center h-12 w-full px-3">
         <CustomButton
           icon={<Icon name="my-location" type="material-icon" size={24} color="#ff6d00" />}
           // buttonText="Commander une course"
@@ -450,6 +451,109 @@ export default function HomeScreen() {
           onPress={() => {
             getRide()
           }}
+        />
+      </View> */}
+
+      <View className="flex-row absolute bottom-3 justify-between items-center h-12 w-full px-3">
+        {/* Bouton GPS */}
+        <TouchableOpacity onPress={() => goToUserLocation()} className="bg-white shadow-xl shadow-gray-700 w-14 h-14 rounded-full items-center justify-center">
+          <Icon name="my-location" type="material-icon" size={24} color="#ff6d00" />
+        </TouchableOpacity>
+
+        {/* Slider */}
+        {/* <Slider
+          ref={sliderRef}
+          disabled={loading || slideComplete}
+          // childrenContainer={{ backgroundColor: 'red' }}
+          onEndReached={() => {
+            // getRide();
+          }}
+          containerStyle={{
+            margin: 0,
+            backgroundColor: '#ff6d00',
+            borderRadius: 50,
+            overflow: 'hidden',
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: Dimensions.get('window').width * 0.7
+          }}
+          sliderElement={<View className="w-12 h-12 rounded-full bg-white justify-center items-center shadow-md">
+            <Car size={24} color="#ff6d00" />
+          </View>}
+          onSlideStart={() => { }}
+          onSlideEnd={() => { 
+            getRide();
+            setSlideComplete(true);
+          }}
+        >
+          {
+            loading ?
+              <ActivityIndicator size={"small"} color={"#FFFFFF"} />
+              : <Text className="text-white text-sm font-['RubikBold']">Glissez pour commander</Text>
+          }
+        </Slider> */}
+
+        <SwipeButton
+          containerStyles={{
+            borderRadius: 999,
+            backgroundColor: "#ff6d00",
+            width: Dimensions.get("window").width * 0.75,
+            height: 60,
+            overflow: "hidden",
+            shadowColor: "#000",
+            shadowOffset: { width: 0, height: 2 },
+            shadowOpacity: 0.2,
+            shadowRadius: 4,
+            elevation: 4,
+          }}
+          railBackgroundColor="#ff6d00"
+          railBorderColor="transparent"
+          railFillBackgroundColor="#fff"
+          railFillBorderColor="#fff"
+          railStyles={{
+            borderWidth: 0,
+            backgroundColor: "transparent",
+          }}
+          thumbIconComponent={() => (
+            <View
+              style={{
+                width: 48,
+                height: 48,
+                borderRadius: 24,
+                backgroundColor: "#ffffff",
+                justifyContent: "center",
+                alignItems: "center",
+                shadowColor: "#000",
+                shadowOffset: { width: 0, height: 2 },
+                shadowOpacity: 0.3,
+                shadowRadius: 4,
+                elevation: 3,
+              }}
+            >
+              {
+                loading ?
+                  <ActivityIndicator size={"small"} color={"#ff6d00"} />
+                  : <Car size={22} color="#ff6d00" />
+              }
+
+            </View>
+          )}
+          thumbIconBackgroundColor="transparent"
+          thumbIconBorderColor="transparent"
+          title="Glissez pour commander"
+          titleStyles={{
+            color: "#fff",
+            fontFamily: "RubikBold",
+            fontSize: 16,
+            letterSpacing: 0.5,
+          }}
+          height={60}
+          onSwipeSuccess={() => {
+            Vibration.vibrate(200);
+            getRide();
+          }}
+          resetAfterSuccessAnimDelay={200}
+          shouldResetAfterSuccess={true}
         />
       </View>
 

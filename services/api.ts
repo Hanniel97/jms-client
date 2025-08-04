@@ -7,20 +7,20 @@ export const GOOGLE_API_KEY = "AIzaSyB6_OxzEd6VT4yqdW2zS0wjT7Gc6w9xxTw";
 
 const test: boolean = __DEV__;
 
-export const apiUrl: string = test ?
+export const apiUrl: string = !test ?
     "http://192.168.100.14:5000/api/"
     :
-    "https://jms-tansport-backend.onrender.com/api/"
+    "https://api.jmstaxi.com/api/"
 
-export const socketUrl: string = test ?
+export const socketUrl: string = !test ?
     "http://192.168.100.14:5000"
     :
-    "https://jms-tansport-backend.onrender.com"
+    "https://api.jmstaxi.com"
 
-export const photoUrl: string = test ?
+export const photoUrl: string = !test ?
     "http://192.168.100.14:5000/"
     :
-    "https://jms-tansport-backend.onrender.com/"
+    "https://api.jmstaxi.com/"
 
 type Method = 'GET' | 'POST' | 'PUT' | 'DELETE';
 
@@ -132,25 +132,47 @@ export interface Coordinates {
     address: string;
 }
 
+// export const searchPlaces = async (text: string) => {
+//     if (text.length < 3) return [];
+
+//     try {
+//         const res = await fetch(
+//             `https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${encodeURIComponent(
+//                 text
+//             )}&key=${GOOGLE_API_KEY}&language=fr&components=country:bj`
+//         );
+
+//         const json = await res.json();
+
+//         // console.log(json)
+//         return Array.isArray(json.predictions) ? json.predictions : [];
+//     } catch (error) {
+//         console.error("Erreur API Google Autocomplete :", error);
+//         return [];
+//     }
+// };
+
 export const searchPlaces = async (text: string) => {
     if (text.length < 3) return [];
+
+    const store = useStore.getState();
 
     try {
         const res = await fetch(
             `https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${encodeURIComponent(
                 text
-            )}&key=${GOOGLE_API_KEY}&language=fr&components=country:bj`
+            )}&key=${GOOGLE_API_KEY}&language=fr&components=country:${store.user.countryCode}`
         );
 
         const json = await res.json();
 
-        // console.log(json)
         return Array.isArray(json.predictions) ? json.predictions : [];
     } catch (error) {
         console.error("Erreur API Google Autocomplete :", error);
         return [];
     }
 };
+
 
 export const getPlaceDetails = async (placeId: string): Promise<Coordinates | null> => {
     try {

@@ -396,7 +396,7 @@ export default function AddCourse() {
                                             numberOfLines={1}
                                         >
                                             {courseDetails?.fare[type]
-                                                ? `${courseDetails.fare[type].toFixed(0)} XOF`
+                                                ? `${courseDetails.fare[type]} XOF`
                                                 : '...'}
                                         </Text>
                                     </View>

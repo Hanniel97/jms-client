@@ -3,12 +3,13 @@ import { WSProvider } from '@/services/WSProvider';
 import { useFonts } from 'expo-font';
 import NetInfo from "@react-native-community/netinfo";
 import { StatusBar } from 'expo-status-bar';
-import { JSX, Suspense, useEffect, useState } from 'react';
+import React, { JSX, Suspense, useEffect, useState } from 'react';
 import { ActivityIndicator } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import 'react-native-reanimated';
 import Toast, { BaseToast, BaseToastProps, ErrorToast } from 'react-native-toast-message';
 import { TailwindProvider } from 'tailwindcss-react-native';
+import { useKeepAwake } from 'expo-keep-awake';
 import Routes from './router';
 
 function Loading() {
@@ -64,6 +65,7 @@ const toastConfig = {
 export default function RootLayout() {
   const [isConnected, setIsConnected] = useState(true);
   const colorScheme = useColorScheme();
+  useKeepAwake();
   const [loaded] = useFonts({
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
     RubikRegular: require('../assets/fonts/Rubik/static/Rubik-Regular.ttf'),
