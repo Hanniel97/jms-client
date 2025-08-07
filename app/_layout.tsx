@@ -77,7 +77,7 @@ export default function RootLayout() {
 
   useEffect(() => {
     const unsubscribe = NetInfo.addEventListener((state) => {
-      console.log(state)
+      // console.log(state)
       setIsConnected(state.isConnected ?? false);
       // if (!state.isConnected) {
       //   router.replace("/_offline");

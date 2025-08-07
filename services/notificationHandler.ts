@@ -17,7 +17,7 @@ export const NotificationListener = () => {
 
     // Lorsque l'application est en arrière-plan ou quittée
     unsubscribeOnNotificationOpenedApp = messaging().onNotificationOpenedApp(remoteMessage => {
-        console.log("Ouvert depuis background:", remoteMessage);
+        // console.log("Ouvert depuis background:", remoteMessage);
         handleNotificationRedirect(remoteMessage);
     });
 
@@ -26,14 +26,14 @@ export const NotificationListener = () => {
         .getInitialNotification()
         .then(remoteMessage => {
             if (remoteMessage) {
-                console.log("Ouvert depuis quit:", remoteMessage);
+                // console.log("Ouvert depuis quit:", remoteMessage);
                 handleNotificationRedirect(remoteMessage);
             }
         });
 
     // Lorsque l'application est en foreground (ouverte)
     unsubscribeOnMessage = messaging().onMessage(async remoteMessage => {
-        console.log("Notification en foreground:", remoteMessage);
+        // console.log("Notification en foreground:", remoteMessage);
         await Notifications.scheduleNotificationAsync({
             content: {
                 title: remoteMessage.notification?.title || "Nouvelle notification",
@@ -47,7 +47,7 @@ export const NotificationListener = () => {
 
     // Lorsque l'utilisateur clique sur la notification en foreground
     unsubscribeForegroundClick = Notifications.addNotificationResponseReceivedListener(response => {
-        console.log("Notification cliquée:", response);
+        // console.log("Notification cliquée:", response);
         // handleNotificationRedirect(response.notification.request.content);
         router.push({ pathname: response.notification.request.content.data?.url, params: { id: response.notification.request.content.data?.id } })
     });

@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useRef, useState, ReactNode } from "react";
+import React, { createContext, useContext, useEffect, useRef, useState, ReactNode } from "react";
 import { io, Socket } from "socket.io-client";
 import { socketUrl } from "./api";
 import useStore from "@/store/useStore";
@@ -34,7 +34,7 @@ export const WSProvider: React.FC<WSProviderProps> = ({ children }) => {
 
     useEffect(() => {
         if (tok && isAuthenticated) {
-            console.log("🟢 Mise à jour du token détectée :", tok);
+            // console.log("🟢 Mise à jour du token détectée :", tok);
             setSocketAccessToken(tok);
         }
     }, [isAuthenticated, tok]);
@@ -42,10 +42,10 @@ export const WSProvider: React.FC<WSProviderProps> = ({ children }) => {
     useEffect(() => {
         if (!socketAccessToken && !isAuthenticated) return;
 
-        console.log("🔄 Tentative de connexion WebSocket...");
+        // console.log("🔄 Tentative de connexion WebSocket...");
 
         if (socket.current) {
-            console.log("❌ Déconnexion du socket existant...");
+            // console.log("❌ Déconnexion du socket existant...");
             socket.current.disconnect();
         }
 
@@ -63,16 +63,16 @@ export const WSProvider: React.FC<WSProviderProps> = ({ children }) => {
             // },
         });
 
-        console.log("✅ WebSocket initialisé avec le token :", socketAccessToken);
+        // console.log("✅ WebSocket initialisé avec le token :", socketAccessToken);
 
         // socket.current.on("connect", () => {
         //     console.log("🟢 WebSocket connecté !");
         // });
 
         socket.current.on('connect', () => {
-            console.log('✅ Connecté au serveur Socket.IO');
+            // console.log('✅ Connecté au serveur Socket.IO');
             if (user) {
-                console.log('✅ User connecté ', user._id);
+                // console.log('✅ User connecté ', user._id);
                 emit('user_connected', user._id);
             }
         });
@@ -82,14 +82,14 @@ export const WSProvider: React.FC<WSProviderProps> = ({ children }) => {
         socket.current.on("connect_error", (error) => {
             console.error("❌ Erreur de connexion WebSocket :", error);
             if (error.message === "Authentication error") {
-                console.log("🔄 Rafraîchissement du token...");
+                // console.log("🔄 Rafraîchissement du token...");
                 refresh_tokens();
             }
         });
 
 
         return () => {
-            console.log("🔴 Déconnexion WebSocket dans le cleanup...");
+            // console.log("🔴 Déconnexion WebSocket dans le cleanup...");
             socket.current?.disconnect();
         }
 
@@ -114,7 +114,7 @@ export const WSProvider: React.FC<WSProviderProps> = ({ children }) => {
     const updateAccessToken = () => {
         const token = useStore.getState().tok;
         setSocketAccessToken(token);
-        console.log("🔄 Mise à jour du token WebSocket :", token);
+        // console.log("🔄 Mise à jour du token WebSocket :", token);
     }
 
     const reconnectWithNewToken = async () => {

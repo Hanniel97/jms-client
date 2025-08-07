@@ -29,10 +29,10 @@ class SocketService {
         });
 
         this.socket.on('connect', () => {
-            console.log('✅ Connecté au serveur Socket.IO');
+            // console.log('✅ Connecté au serveur Socket.IO');
             // const userId = useStore().user._id;
             if (userId) {
-                console.log('✅ User connecté ', userId);
+                // console.log('✅ User connecté ', userId);
 
                 this.socket?.emit('user_connected', userId);
             }

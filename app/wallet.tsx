@@ -1,10 +1,10 @@
 import CustomHeader from '@/components/CustomHeader';
+import { DisplayLoading } from '@/components/DisplayLoading';
 import { apiRequest } from '@/services/api';
 import useStore from '@/store/useStore';
 import { IRecharge } from '@/types';
 import { Icon } from '@rneui/themed';
 import { router } from 'expo-router';
-import { DisplayLoading } from '@/components/DisplayLoading';
 import moment from 'moment';
 import 'moment/locale/fr';
 import React, { useCallback, useEffect, useState } from 'react';
@@ -27,7 +27,7 @@ export default function WalletHistory() {
                 token: tok,
             });
 
-            console.log(res)
+            // console.log(res)
 
             if (res.success) {
                 setHistory(res.data)

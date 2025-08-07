@@ -1,24 +1,16 @@
-import CustomHeader from "@/components/CustomHeader";
-import { CustomLocationTextInput } from "@/components/CustomTextInput";
-import MapPickerModal from "@/components/MapPickerModal";
+import { useWS } from "@/services/WSProvider";
 import useStore from "@/store/useStore";
+import { reverseGeocode } from "@/utils/mapUtils";
+import { useIsFocused } from "@react-navigation/native";
 import { Icon } from "@rneui/base";
 import * as Location from "expo-location";
-import { getDistanceFromLatLonInKm } from "@/services/distanceCalculator";
+import haversine from "haversine-distance";
 import React, { memo, useEffect, useRef, useState } from "react";
 import {
-    FlatList,
-    Text,
-    TouchableOpacity,
-    View, Image
+    Image,
+    View
 } from "react-native";
 import MapView, { Marker, Region } from "react-native-maps";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { router } from "expo-router";
-import { useIsFocused } from "@react-navigation/native";
-import { useWS } from "@/services/WSProvider";
-import haversine from "haversine-distance"
-import { reverseGeocode } from "@/utils/mapUtils";
 import { CustomButton } from "./CustomButton";
 
 const DraggableMap: React.FC<{ height: number }> = ({ height }) => {

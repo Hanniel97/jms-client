@@ -27,7 +27,7 @@ export default function deleteaccount() {
             token: tok,
         });
 
-        console.log('dfdbfk jd', res)
+        // console.log('dfdbfk jd', res)
 
         if (res.success === false) {
             setLoading(false)

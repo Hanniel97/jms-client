@@ -1,19 +1,14 @@
 /* eslint-disable react-hooks/rules-of-hooks */
+import { CustomButton } from "@/components/CustomButton";
 import CustomHeader from "@/components/CustomHeader";
+import { CustomTextInputReview } from "@/components/CustomTextInput";
 import KeyboardAvoidWrapper from "@/components/KeyboardAvoidingWrapper";
-import { apiRequest } from "@/services/api";
 import useStore from "@/store/useStore";
-import { CustomTextInput, CustomTextInputReview } from "@/components/CustomTextInput";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { Icon } from "@rneui/base";
-import { Controller, useForm } from "react-hook-form";
-import { router } from "expo-router";
 import React, { useState } from "react";
+import { Controller, useForm } from "react-hook-form";
 import { Text, View } from "react-native";
 import * as yup from "yup";
-import { CustomButton } from "@/components/CustomButton";
-import { showError, showSuccess } from "@/utils/showToast";
-import { useWS } from "@/services/WSProvider";
 
 const schema = yup.object().shape({
     message: yup.string().required("Le message est requis"),

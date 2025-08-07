@@ -25,7 +25,7 @@ export default function notifications() {
                 token: tok,
             })
 
-            console.log('notifications', res)
+            // console.log('notifications', res)
 
             setNotification(res.data)
             setLoading(false)
@@ -47,6 +47,7 @@ export default function notifications() {
         try {
             getNotification()
         } catch (error) {
+            console.log(error)
             setRefreshing(false);
         } finally {
             setRefreshing(false);

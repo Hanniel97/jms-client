@@ -10,7 +10,7 @@ import { showError, showSuccess } from "@/utils/showToast";
 import polyline from "@mapbox/polyline";
 // import { Icon, Rating } from "@rneui/base";
 import Rating from "@/components/Rating";
-import { AirbnbRating, Icon } from '@rneui/themed';
+import { Icon } from '@rneui/themed';
 import { useLocalSearchParams } from "expo-router";
 import moment from "moment";
 import "moment/locale/fr";
@@ -42,11 +42,6 @@ export default function RideDetails() {
     const [car, setCar] = useState<ICar | null>(null);
     const [note, setNote] = useState<number>(0);
 
-    const ratingCompleted = (rating: number) => {
-        console.log('Rating is: ' + rating);
-        setNote(rating)
-    };
-
     const bottomSheetRef = useRef<BottomSheetMethods>(null);
 
     const pressHandler = useCallback(() => {
@@ -66,7 +61,7 @@ export default function RideDetails() {
                 token: tok,
             });
 
-            console.log(res)
+            // console.log(res)
 
             if (res.success) {
                 setRide(res.data.ride);

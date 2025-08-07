@@ -24,6 +24,7 @@ export interface IUser {
     otp: string,
     moyenne?: number,
     total?: number,
+    firebaseConfirmation: any
 }
 
 export interface ITransaction {

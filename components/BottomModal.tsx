@@ -1,8 +1,6 @@
 import React from 'react';
-import { View, Text, Pressable, Image } from 'react-native';
+import { Pressable, Text, View } from 'react-native';
 import Modal from 'react-native-modal';
-import { CustomButton } from './CustomButton';
-import { Icon } from "@rneui/base";
 
 interface BottomModalProps {
     visible: boolean;

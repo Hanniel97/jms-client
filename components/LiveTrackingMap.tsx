@@ -1,7 +1,6 @@
 import { GOOGLE_API_KEY } from "@/services/api";
 import useStore from "@/store/useStore";
 import polyline from "@mapbox/polyline";
-import { getPoints } from "@/utils/mapUtils";
 import { Icon } from "@rneui/base";
 import React, { memo, useCallback, useEffect, useRef, useState } from "react";
 import {
@@ -10,7 +9,6 @@ import {
     View
 } from "react-native";
 import MapView, { Marker, Polyline } from "react-native-maps";
-import MapViewDirections from 'react-native-maps-directions';
 import darkMapStyle from "../services/mapStyleDark.json";
 import lightMapStyle from '../services/mapStyleLight.json';
 import { CustomButton } from "./CustomButton";

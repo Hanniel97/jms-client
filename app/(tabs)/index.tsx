@@ -152,7 +152,7 @@ export default function HomeScreen() {
           logout();
         }
       }
-      console.log("check terminé")
+      // console.log("check terminé")
     }
   }, [emit, logout, refresh_tok, tok, user._id])
 
@@ -454,7 +454,7 @@ export default function HomeScreen() {
         />
       </View> */}
 
-      <View className="flex-row absolute bottom-3 justify-between items-center h-12 w-full px-3">
+      <View className="flex-row absolute bottom-4 justify-between items-center h-12 w-full px-3">
         {/* Bouton GPS */}
         <TouchableOpacity onPress={() => goToUserLocation()} className="bg-white shadow-xl shadow-gray-700 w-14 h-14 rounded-full items-center justify-center">
           <Icon name="my-location" type="material-icon" size={24} color="#ff6d00" />
@@ -544,8 +544,8 @@ export default function HomeScreen() {
           titleStyles={{
             color: "#fff",
             fontFamily: "RubikBold",
-            fontSize: 16,
-            letterSpacing: 0.5,
+            fontSize: 14,
+            // letterSpacing: 0.5,
           }}
           height={60}
           onSwipeSuccess={() => {

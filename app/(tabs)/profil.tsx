@@ -80,7 +80,7 @@ export default function profil() {
         })
             .then(response => response.json())
             .then(res => {
-                console.log(res)
+                // console.log(res)
                 if (res.success === true) {
                     disconnect()
                     setLogout()
@@ -215,7 +215,7 @@ export default function profil() {
                     parameters: {},
                 });
 
-                console.log(uploadPhoto)
+                // console.log(uploadPhoto)
 
                 // Vérifier le statut de la réponse
                 if (uploadPhoto.status === 200) {

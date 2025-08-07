@@ -47,7 +47,7 @@ export const LiveRide = () => {
         if (id) {
             emit('subscribeRide', id)
             on('rideData', (data) => {
-                console.log(data)
+                // console.log(data)
                 setRideData(data.ride)
                 setDataCar(data.car)
                 setRating(data.rating)
@@ -60,7 +60,7 @@ export const LiveRide = () => {
                 setRideData(data.ride)
                 setDataCar(data.car)
                 setRating(data.rating)
-                console.log('ride data updated ==>', data)
+                // console.log('ride data updated ==>', data)
             })
 
             on('rideCanceled', (dat) => {
@@ -95,7 +95,7 @@ export const LiveRide = () => {
             token: tok,
         });
 
-        console.log('dfdbfk jd', res)
+        // console.log('dfdbfk jd', res)
 
         if (res.success === true) {
             setRideData(res.ride)

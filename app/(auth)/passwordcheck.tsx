@@ -1,9 +1,12 @@
 /* eslint-disable react-hooks/rules-of-hooks */
+import { CustomButton } from "@/components/CustomButton";
 import CustomHeader from "@/components/CustomHeader";
+import { CustomTextInput } from "@/components/CustomTextInput";
 import KeyboardAvoidWrapper from "@/components/KeyboardAvoidingWrapper";
 import { apiRequest } from "@/services/api";
+import { useWS } from "@/services/WSProvider";
 import useStore from "@/store/useStore";
-import { CustomTextInput } from "@/components/CustomTextInput";
+import { showError } from "@/utils/showToast";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Icon } from "@rneui/base";
 import { router } from "expo-router";
@@ -11,9 +14,6 @@ import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Text, View } from "react-native";
 import * as yup from "yup";
-import { CustomButton } from "@/components/CustomButton";
-import { showError, showSuccess } from "@/utils/showToast";
-import { useWS } from "@/services/WSProvider";
 
 // Schema uniquement pour confirmer le mot de passe
 const passwordSchema = yup.object().shape({
@@ -46,7 +46,6 @@ export default function passwordcheck() {
     };
 
     const handlePasswordChange = async (data: any) => {
-        console.log(password)
         setLoading(true);
         const res = await apiRequest({
             method: "POST",
@@ -56,7 +55,7 @@ export default function passwordcheck() {
             },
         });
 
-        console.log(res)
+        // console.log(res)
 
         if (res.success === false) {
             setLoading(false);

@@ -7,17 +7,17 @@ export const GOOGLE_API_KEY = "AIzaSyB6_OxzEd6VT4yqdW2zS0wjT7Gc6w9xxTw";
 
 const test: boolean = __DEV__;
 
-export const apiUrl: string = !test ?
+export const apiUrl: string = test ?
     "http://192.168.100.14:5000/api/"
     :
     "https://api.jmstaxi.com/api/"
 
-export const socketUrl: string = !test ?
+export const socketUrl: string = test ?
     "http://192.168.100.14:5000"
     :
     "https://api.jmstaxi.com"
 
-export const photoUrl: string = !test ?
+export const photoUrl: string = test ?
     "http://192.168.100.14:5000/"
     :
     "https://api.jmstaxi.com/"

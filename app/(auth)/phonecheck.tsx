@@ -57,8 +57,6 @@ export default function phonecheck() {
     });
 
     const onSubmit = useCallback(async (data: any) => {
-        // console.log((`+${country?.callingCode?.[0] || "1"}`).concat(data.phone))
-        // console.log((`+${country?.callingCode?.[0] || "1"}`).concat(data.phone))
         setLoading(true)
         const res = await apiRequest({
             method: 'POST',
@@ -70,7 +68,7 @@ export default function phonecheck() {
             },
         });
 
-        console.log(res)
+        // console.log(res)
 
         if (res.status === 401) {
             setLoading(false)

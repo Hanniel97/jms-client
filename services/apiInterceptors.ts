@@ -14,7 +14,7 @@ export const refresh_tokens = async () => {
             { headers: { "Content-Type": "application/json" } } // ✅ Ajout Content-Type
         );
 
-        console.log("check 3", response);
+        // console.log("check 3", response);
 
         const new_access_token = response.data.access_token;
         const new_refresh_token = response.data.refresh_token;

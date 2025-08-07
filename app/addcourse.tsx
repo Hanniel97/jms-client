@@ -106,11 +106,11 @@ export default function AddCourse() {
         if (focusedInput === 'drop') {
             setDrop(location.address);
             setDropCoords(location);
-            console.log('drop coords:', location);
+            // console.log('drop coords:', location);
         } else {
             setPickup(location.address);
             setPickupCoords(location);
-            console.log('pickup coords:', location);
+            // console.log('pickup coords:', location);
         }
 
         setSuggestions([]);

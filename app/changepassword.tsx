@@ -66,7 +66,7 @@ export default function changepassword() {
             },
         });
 
-        console.log(res)
+        // console.log(res)
 
         if (res.success === false) {
             setLoading(false);

@@ -1,9 +1,7 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import BottomModal from "@/components/BottomModal";
 import { CustomButton } from "@/components/CustomButton";
 import CustomHeader from "@/components/CustomHeader";
 import { CustomTextInput } from "@/components/CustomTextInput";
-import DateOfBirthPicker from "@/components/DayOfBirthPicker";
 import KeyboardAvoidWrapper from "@/components/KeyboardAvoidingWrapper";
 import { apiRequest } from "@/services/api";
 import useStore from "@/store/useStore";
@@ -37,7 +35,6 @@ export default function userinfoadd() {
     const {user, setUser, setTok, setRefreshTok, setIsAuthenticated} = useStore();
 
     const [loading, setLoading] = useState<boolean>(false);
-    const [showSexeModal, setShowSexeModal] = useState(false);
 
     const {
         control,
@@ -54,7 +51,6 @@ export default function userinfoadd() {
     // };
 
     const onSubmit = async (data: any) => {
-        // console.log(data)
         setLoading(true)
         const res = await apiRequest({
             method: 'PUT',
@@ -174,7 +170,7 @@ export default function userinfoadd() {
                                 <View className="flex-row items-center p-2 justify-between mb-2">
                                     <View style={{ flex: 0.8 }} className="flex-row items-center">
                                         <View className={`h-5 w-5 mr-2 border ${value ? 'bg-secondary' : 'bg-white'} border-gray-400 rounded`} />
-                                        <Text numberOfLines={2} className="text-black dark:text-white text-sm w-52 font-['RubikRegular']">Je suis d'accord avec les conditions générales d'utilisation</Text>
+                                        <Text numberOfLines={2} className="text-black dark:text-white text-sm w-52 font-['RubikRegular']">Je suis d&rsquo;accord avec les conditions générales d'utilisation</Text>
                                     </View>
 
                                     <TouchableOpacity onPress={() => router.push('/policy')} style={{ flex: 0.2 }} className={`border-[1px] border-green-600 rounded-full justify-center items-center`} >

@@ -42,7 +42,7 @@ export default function otpcheck() {
             },
         });
 
-        console.log(res)
+        // console.log(res)
 
         if (res.success === false) {
             setLoading(false);

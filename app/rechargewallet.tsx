@@ -125,7 +125,7 @@ export default function rechargewallet() {
             }
         })
 
-        console.log('  ', res)
+        // console.log('  ', res)
 
         if (res.success === true) {
             showSuccess(res.message)
@@ -304,10 +304,10 @@ export default function rechargewallet() {
                                     const message = JSON.parse(event.nativeEvent.data);
                                     switch (message.type) {
                                         case "test":
-                                            console.log("Test message reçu");
+                                            // console.log("Test message reçu");
                                             break;
                                         default:
-                                            console.log("Type reçu :", message.type);
+                                            // console.log("Type reçu :", message.type);
                                     }
                                 }}
                             />
