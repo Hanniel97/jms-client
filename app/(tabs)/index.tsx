@@ -1,4 +1,3 @@
-import { CustomButton } from '@/components/CustomButton';
 import { useWS } from '@/services/WSProvider';
 import { apiRequest } from '@/services/api';
 import { refresh_tokens } from '@/services/apiInterceptors';
@@ -15,7 +14,7 @@ import { jwtDecode } from "jwt-decode";
 import { isEqual } from 'lodash';
 import { Car } from "lucide-react-native";
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { ActivityIndicator, Dimensions, Image, TouchableOpacity, View, useColorScheme, Vibration } from 'react-native';
+import { ActivityIndicator, Dimensions, Image, TouchableOpacity, useColorScheme, Vibration, View } from 'react-native';
 import MapView, { Marker, Region } from 'react-native-maps';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import SwipeButton from 'rn-swipe-button';
@@ -403,7 +402,7 @@ export default function HomeScreen() {
         }
       </MapView>
 
-      <View style={{
+      {/* <View style={{
         position: 'absolute',
         left: 0,
         right: 0,
@@ -413,7 +412,7 @@ export default function HomeScreen() {
         justifyContent: 'center',
       }}>
         <Icon name="map-pin" type='font-awesome-5' size={25} color="red" />
-      </View>
+      </View> */}
 
       {/* <DraggableMap height={mapHeight}/> */}
       {/* <LiveRide /> */}

@@ -12,7 +12,7 @@ import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from "
 import { ActivityIndicator, Dimensions, Modal, Platform, StyleSheet, Text, TouchableOpacity, View, ViewStyle } from "react-native";
 import { WebView, WebViewMessageEvent } from 'react-native-webview';
 
-const androidHeights = [ScreenHeight * 0.14, ScreenHeight * 0.52]
+const androidHeights = [ScreenHeight * 0.15, ScreenHeight * 0.64]
 const iosHeights = [ScreenHeight * 0.2, ScreenHeight * 0.5]
 
 export const LiveRide = () => {
