@@ -28,6 +28,7 @@ interface Store {
     notifications: INotification[];
     historiques: IRide[];
     enCours: IRide[];
+    currentRide: IRide | null;
     setTok: (tok: string) => void;
     setRefreshTok: (refreshtok: string) => void;
     setIsAuthenticated: (isAuthenticated: boolean) => void;
@@ -39,6 +40,8 @@ interface Store {
     setNotification: (notifications: INotification[]) => void;
     setHistorique: (historiques: IRide[]) => void;
     setEnCours: (enCours: IRide[]) => void;
+    setCurrentRide: (ride: IRide | null) => void;
+    clearCurrentRide: () => void;
     setLogout: () => void;
 }
 
@@ -64,7 +67,8 @@ const useStore = create<Store>()(
                 idCard: "",
                 verified: false,
                 otp: "",
-                countryCode: "ci"
+                countryCode: "ci",
+                firebaseConfirmation: undefined
             },
             transactions: [],
             outOfRange: false,
@@ -77,6 +81,7 @@ const useStore = create<Store>()(
             notifications: [],
             historiques: [],
             enCours: [],
+            currentRide: null,
             setTok: (tok) => set({ tok }),
             setRefreshTok: (refresh_tok) => set({ refresh_tok }),
             setIsAuthenticated: (isAuthenticated) => set({ isAuthenticated }),
@@ -88,6 +93,8 @@ const useStore = create<Store>()(
             setNotification: (notifications) => set({ notifications }),
             setHistorique: (historiques) => set({ historiques }),
             setEnCours: (enCours) => set({ enCours }),
+            setCurrentRide: (ride) => set({ currentRide: ride }),
+            clearCurrentRide: () => set({ currentRide: null }),
             setLogout: () => {
                 set({
                     isAuthenticated: false,
@@ -109,7 +116,8 @@ const useStore = create<Store>()(
                         idCard: "",
                         verified: false,
                         otp: "",
-                        countryCode: "ci"
+                        countryCode: "ci",
+                        firebaseConfirmation: undefined
                     },
                     position: {
                         longitude: 0,
@@ -120,6 +128,7 @@ const useStore = create<Store>()(
                     notifications: [],
                     historiques: [],
                     enCours: [],
+                    currentRide: null,
                 })
             }
         }),

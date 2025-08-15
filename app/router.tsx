@@ -2,7 +2,7 @@ import { NotificationListener } from '@/services/notificationHandler';
 import { registerForPushNotificationsAsync } from '@/services/registerForPushNotificationAsync';
 import useStore from '@/store/useStore';
 import { Stack } from 'expo-router';
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
 
 // function useNotificationObserver() {
 //     useEffect(() => {

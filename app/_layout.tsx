@@ -13,7 +13,7 @@ import { useKeepAwake } from 'expo-keep-awake';
 import Routes from './router';
 
 function Loading() {
-  return <ActivityIndicator size="large" color="blue" />;
+  return <ActivityIndicator size="large" color="orange" />;
 }
 
 const toastConfig = {
