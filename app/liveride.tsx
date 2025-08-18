@@ -6,23 +6,60 @@ import { useWS } from "@/services/WSProvider";
 import useStore from "@/store/useStore";
 import { showError, showInfo, showSuccess } from "@/utils/showToast";
 import BottomSheet, { BottomSheetScrollView } from "@gorhom/bottom-sheet";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Icon, ScreenHeight } from "@rneui/base";
 import { router, useLocalSearchParams } from "expo-router";
 import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { ActivityIndicator, Modal, Platform, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { WebView, WebViewMessageEvent } from "react-native-webview";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
+// ==================== UI sizing ====================
 const androidHeights = [ScreenHeight * 0.15, ScreenHeight * 0.64];
 const iosHeights = [ScreenHeight * 0.2, ScreenHeight * 0.5];
 
-// Clés de cache persistant
+// ==================== Cache keys ====================
 const CACHE_KEYS = {
     rideSnapshot: "liveRide:snapshot",
     lastRider: "liveRide:lastRider",
+} as const;
+
+// ==================== Types & utils ====================
+type RiderCoord = { latitude: number; longitude: number; heading?: number; ts?: number } | null;
+
+const isNum = (n: any): n is number => typeof n === "number" && !Number.isNaN(n);
+const isLatLng = (p: any): p is { latitude: number; longitude: number } => isNum(p?.latitude) && isNum(p?.longitude);
+
+const toNum = (v: any, fallback = 0) => {
+    const n = typeof v === "string" ? parseFloat(v) : Number(v);
+    return Number.isFinite(n) ? n : fallback;
 };
 
-type RiderCoord = { latitude: number; longitude: number; heading?: number; ts?: number } | null;
+const toRad = (d: number) => (d * Math.PI) / 180;
+const EARTH_R = 6371000; // meters
+const haversine = (a: { latitude: number; longitude: number }, b: { latitude: number; longitude: number }) => {
+    const dLat = toRad(b.latitude - a.latitude);
+    const dLon = toRad(b.longitude - a.longitude);
+    const la1 = toRad(a.latitude);
+    const la2 = toRad(b.latitude);
+    const h = Math.sin(dLat / 2) ** 2 + Math.cos(la1) * Math.cos(la2) * Math.sin(dLon / 2) ** 2;
+    return 2 * EARTH_R * Math.asin(Math.sqrt(h));
+};
+
+// ~4–6 m selon devices; évite les micro-jitters
+const MIN_MOVE_METERS = 5;
+const MIN_HEADING_DELTA = 4; // °
+const WS_THROTTLE_MS = 400; // >= 250ms pour MapView
+
+// Statuts connus
+const RideStatus = {
+    SEARCHING_FOR_RIDER: "SEARCHING_FOR_RIDER",
+    ACCEPTED: "ACCEPTED",
+    ARRIVED: "ARRIVED",
+    VERIFIED: "VERIFIED",
+    START: "START", // ⚠️ pas STARTED
+    COMPLETED: "COMPLETED",
+    PAYED: "PAYED",
+} as const;
 
 export const LiveRide = () => {
     const { tok, user, setUser, currentRide, setCurrentRide, clearCurrentRide } = useStore();
@@ -32,14 +69,13 @@ export const LiveRide = () => {
     const [car, setDataCar] = useState<any>(null);
     const [rating, setRating] = useState<any>(null);
 
-    // Position live en mémoire
+    // Live position in-memory + last cached
     const [riderCoords, setRiderCoords] = useState<RiderCoord>(null);
-    // Dernière position connue (persistée)
     const [cachedRider, setCachedRider] = useState<RiderCoord>(null);
 
     const { id } = useLocalSearchParams();
 
-    const bottomSheetRef = useRef(null);
+    const bottomSheetRef = useRef<BottomSheet | null>(null);
     const snapPoints = useMemo(() => (Platform.OS === "ios" ? iosHeights : androidHeights), []);
     const [mapHeight, setMapHeight] = useState(snapPoints[1]);
     const [showWebview, setShowWebview] = useState(false);
@@ -47,22 +83,20 @@ export const LiveRide = () => {
     const [duration, setDuration] = useState<number>(0);
     const [load, setLoad] = useState<boolean>(false);
 
-    // ---- Helpers de stabilité ----
-    const resolvedRideId = useMemo<string | null>(
-        () => ((id as string) || currentRide?._id || null),
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-        [id, currentRide?._id]
-    );
+    // ---------- Ride ID resolution ----------
+    const resolvedRideId = useMemo<string | null>(() => ((id as string) || currentRide?._id || null), [id, currentRide?._id]);
 
-    // Mémorise le dernier snapshot utilisé pour le store pour éviter les re-writes inutiles
+    // Avoid redundant store writes
     const lastStoreRideRef = useRef<any>(null);
 
-    // Refs pour le throttle WS position (déclarées tout en haut)
+    // WS throttle refs
     const lastLocRef = useRef<RiderCoord>(null);
     const lastTsRef = useRef<number>(0);
-    const throttleMs = 400;
 
-    // ---------- Helpers cache ----------
+    // Track current riderId subscribed (so we can unsubscribe precisely)
+    const subscribedRiderIdRef = useRef<string | null>(null);
+
+    // ==================== Cache helpers ====================
     const saveRideSnapshot = useCallback(async (snap: any) => {
         try {
             await AsyncStorage.setItem(CACHE_KEYS.rideSnapshot, JSON.stringify(snap));
@@ -112,6 +146,7 @@ export const LiveRide = () => {
         } catch { }
     }, []);
 
+    // ==================== Ride setters ====================
     const hasMeaningfulChange = useCallback((prev: any, next: any) => {
         if (!prev) return true;
         if (!next) return false;
@@ -131,10 +166,10 @@ export const LiveRide = () => {
             if (incomingRating !== undefined) setRating(incomingRating);
             setRideData(incomingRide);
 
-            // Sauvegarde snapshot local (offline-first)
+            // Offline-first snapshot
             saveRideSnapshot(incomingRide).catch(() => { });
 
-            // N'écrit dans le store que si changement significatif
+            // Only write to store when meaningful
             if (hasMeaningfulChange(lastStoreRideRef.current, incomingRide)) {
                 lastStoreRideRef.current = incomingRide;
                 setCurrentRide(incomingRide);
@@ -143,7 +178,7 @@ export const LiveRide = () => {
         [hasMeaningfulChange, setCurrentRide, saveRideSnapshot]
     );
 
-    /** Fermeture du WebView */
+    // ==================== Bottom sheet ====================
     const hideModal = () => setShowWebview(false);
 
     const handleSheetChanges = useCallback(
@@ -154,30 +189,24 @@ export const LiveRide = () => {
         [snapPoints]
     );
 
-    /** Chargement ride par API (une seule écriture store si nécessaire) */
+    // ==================== API ====================
     const getRide = useCallback(
         async (rideId: string) => {
-            const res = await apiRequest({
-                method: "GET",
-                endpoint: "ride/getRideById/" + rideId,
-                token: tok,
-            });
-
-            if (res.success === true) {
+            const res = await apiRequest({ method: "GET", endpoint: "ride/getRideById/" + rideId, token: tok });
+            if (res?.success === true) {
                 setRideSafely(res.ride, res.car, res.rating);
             }
         },
         [tok, setRideSafely]
     );
 
-    // ---- WebSocket Handlers (stables) ----
+    // ==================== WS handlers (stable) ====================
     const handleRideData = useCallback(
         (data: any) => {
             const r = data?.ride;
             if (!r) return;
             setRideSafely(r, data.car, data.rating);
-
-            if (r?.status === "SEARCHING_FOR_RIDER" && resolvedRideId) {
+            if (r?.status === RideStatus.SEARCHING_FOR_RIDER && resolvedRideId) {
                 emit("searchrider", resolvedRideId);
             }
         },
@@ -205,17 +234,17 @@ export const LiveRide = () => {
         [clearCurrentRide, clearRideSnapshot, clearLastRider]
     );
 
-    const handleError = useCallback(
+    const handleAnyError = useCallback(
         (error: any) => {
             showError(error?.message || "Erreur");
-            // On ne supprime pas forcément le snapshot : cela permet de ré-afficher après reconnect
+            // Ne pas supprimer le snapshot pour permettre un ré-affichage après reconnect
             clearCurrentRide();
             router.replace("/(tabs)");
         },
         [clearCurrentRide]
     );
 
-    /** Gestion des WS : un seul abonnement par rideId */
+    // ==================== WS lifecycle (per ride) ====================
     useEffect(() => {
         if (!resolvedRideId) return;
 
@@ -225,19 +254,19 @@ export const LiveRide = () => {
         on("rideUpdate", handleRideUpdate);
         on("rideCanceled", handleRideCanceled);
         on("riderCanceled", showInfo);
-        on("error", handleError);
+        on("error", handleAnyError);
 
         return () => {
-            off("rideData");
-            off("rideUpdate");
-            off("rideCanceled");
-            off("riderCanceled");
-            off("error");
+            off("rideData", handleRideData);
+            off("rideUpdate", handleRideUpdate);
+            off("rideCanceled", handleRideCanceled);
+            off("riderCanceled", showInfo as any);
+            off("error", handleAnyError);
             emit("unsubscribeRide", resolvedRideId);
         };
-    }, [resolvedRideId, emit, on, off, handleRideData, handleRideUpdate, handleRideCanceled, handleError]);
+    }, [resolvedRideId, emit, on, off, handleRideData, handleRideUpdate, handleRideCanceled, handleAnyError]);
 
-    /** Rehydratation à froid (client revient après déconnexion) */
+    // ==================== Cold rehydration ====================
     useEffect(() => {
         (async () => {
             // Priorité à un ride déjà présent en store / URL
@@ -247,13 +276,12 @@ export const LiveRide = () => {
                 return;
             }
 
-            // Sinon, on restaure le snapshot persistant pour afficher vite
+            // Sinon, restaurer le snapshot pour afficher vite
             const snap = await loadRideSnapshot();
             if (snap?._id) {
                 setRideData(snap);
                 lastStoreRideRef.current = snap;
-                // Optionnel : refléter dans le store pour cohérence globale
-                setCurrentRide(snap);
+                setCurrentRide(snap); // garde le store cohérent
             }
             const last = await loadLastRider();
             if (last) setCachedRider(last);
@@ -261,48 +289,56 @@ export const LiveRide = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    /** Chargement initial depuis API */
+    // ==================== Initial API load ====================
     useEffect(() => {
         if (id) {
             getRide(id as string);
         } else if (!id && currentRide?._id) {
-            // reprend depuis le store puis resynchronise
             setRideData(currentRide);
             lastStoreRideRef.current = currentRide;
             getRide(currentRide._id);
         }
     }, [id, currentRide, getRide]);
 
-    /** WS position rider — throttle léger et filtre de "petits" mouvements */
+    // ==================== WS rider live position ====================
     useEffect(() => {
-        if (!rideData?.rider?._id) return;
+        const rid = rideData?.rider?._id as string | undefined;
+        if (!rid) return;
 
-        const riderId = rideData.rider._id;
-
-        emit("subscribeToriderLocation", riderId);
+        // subscribe one-time per rider
+        if (subscribedRiderIdRef.current !== rid) {
+            // Unsubscribe previous if needed
+            if (subscribedRiderIdRef.current) {
+                emit("unsubscribeToriderLocation", subscribedRiderIdRef.current);
+            }
+            emit("subscribeToriderLocation", rid);
+            subscribedRiderIdRef.current = rid;
+        }
 
         const handleRiderLoc = (data: any) => {
             const c = data?.coords;
-            if (!c || typeof c.latitude !== "number" || typeof c.longitude !== "number") return;
+            if (!c || !isLatLng(c)) return;
 
             const now = Date.now();
-            if (now - lastTsRef.current < throttleMs) return;
+            if (now - lastTsRef.current < WS_THROTTLE_MS) return; // global throttle
 
             const last = lastLocRef.current;
-            // ~5m à l'équateur ~ 0.000045°
-            const movedEnough =
-                !last ||
-                Math.abs(c.latitude - (last?.latitude ?? 0)) > 0.000045 ||
-                Math.abs(c.longitude - (last?.longitude ?? 0)) > 0.000045 ||
-                (c.heading ?? 0) !== (last?.heading ?? 0);
+            const movedEnough = !last ||
+                haversine({ latitude: c.latitude, longitude: c.longitude }, { latitude: last.latitude!, longitude: last.longitude! }) > MIN_MOVE_METERS ||
+                Math.abs((c.heading ?? 0) - (last.heading ?? 0)) > MIN_HEADING_DELTA;
 
             if (!movedEnough) return;
 
-            const withTs = { latitude: c.latitude, longitude: c.longitude, heading: c.heading ?? 0, ts: now };
+            const withTs: RiderCoord = {
+                latitude: c.latitude,
+                longitude: c.longitude,
+                heading: isNum(c.heading) ? c.heading : 0,
+                ts: now,
+            };
+
             lastLocRef.current = withTs;
             lastTsRef.current = now;
 
-            // mémoire + persistance
             setRiderCoords(withTs);
             saveLastRider(withTs).catch(() => { });
         };
@@ -310,42 +346,21 @@ export const LiveRide = () => {
         on("riderLocationUpdate", handleRiderLoc);
 
         return () => {
-            off("riderLocationUpdate");
-            emit("unsubscribeToriderLocation", riderId);
+            off("riderLocationUpdate", handleRiderLoc);
         };
     }, [emit, on, off, rideData?.rider?._id, saveLastRider]);
 
-    /** Suppression ride en cours si terminée/annulée/payée + purge cache */
+    // ==================== Auto purge when paid ====================
     useEffect(() => {
-        if (["COMPLETED", "CANCELED", "PAYED"].includes(rideData?.status)) {
+        if ([RideStatus.PAYED].includes(rideData?.status)) {
             clearCurrentRide();
             clearRideSnapshot().catch(() => { });
             clearLastRider().catch(() => { });
         }
     }, [rideData?.status, clearCurrentRide, clearRideSnapshot, clearLastRider]);
 
-    /** Paiement — empêcher les déclenchements multiples */
+    // ==================== Payment ====================
     const paymentStartedRef = useRef<string | null>(null);
-
-    const handlePayment = useCallback(async () => {
-        const res = await apiRequest({
-            method: "POST",
-            endpoint: "fedaPayment",
-            token: tok,
-            data: {
-                amount: rideData?.fare,
-                user: user,
-            },
-        });
-
-        if (res.success === true) {
-            showSuccess(res.message);
-            setUrlPayment(res.data.url);
-            setShowWebview(true);
-        } else {
-            showError(res.message);
-        }
-    }, [rideData?.fare, tok, user]);
 
     const payRideFromWallet = useCallback(async () => {
         setLoad(true);
@@ -353,65 +368,52 @@ export const LiveRide = () => {
             method: "POST",
             endpoint: "ride/payRideFromWallet",
             token: tok,
-            data: {
-                rideId: rideData?._id,
-                userId: user._id,
-            },
+            data: { rideId: rideData?._id, userId: user._id },
         });
 
-        if (res.success === true) {
+        if (res?.success === true) {
             showSuccess(res.message);
             setUser(res.user);
             clearCurrentRide();
-            // purge
             clearRideSnapshot().catch(() => { });
             clearLastRider().catch(() => { });
             router.replace("/(tabs)");
         } else {
-            showError(res.message);
+            showError(res?.message || "Paiement échoué");
         }
         setLoad(false);
     }, [rideData?._id, setUser, tok, user._id, clearCurrentRide, clearRideSnapshot, clearLastRider]);
 
     useEffect(() => {
         if (!rideData) return;
-        if (rideData.status !== "COMPLETED") return;
-
-        // évite double déclenchement si rideUpdate arrive plusieurs fois
-        if (paymentStartedRef.current === rideData._id) return;
+        if (rideData.status !== RideStatus.COMPLETED) return;
+        if (paymentStartedRef.current === rideData._id) return; // évite double déclenchement
         paymentStartedRef.current = rideData._id;
 
         if (rideData.paymentMethod === "wallet") {
             payRideFromWallet();
         } else {
-            handlePayment();
+            // TODO: init payment flow webview si nécessaire
+            // setUrlPayment(...); setShowWebview(true);
         }
-    }, [rideData, handlePayment, payRideFromWallet]);
+    }, [rideData, payRideFromWallet]);
 
-    /** Validation paiement */
     const handleStatut = async () => {
         setLoad(true);
-        const res = await apiRequest({
-            method: "PUT",
-            endpoint: "ride/update/" + rideData._id,
-            token: tok,
-            data: { status: "PAYED" },
-        });
-
-        if (res.success === true) {
+        const res = await apiRequest({ method: "PUT", endpoint: "ride/update/" + rideData._id, token: tok, data: { status: RideStatus.PAYED } });
+        if (res?.success === true) {
             showSuccess(res.message);
             clearCurrentRide();
-            // purge
             clearRideSnapshot().catch(() => { });
             clearLastRider().catch(() => { });
             router.replace("/(tabs)");
         } else {
-            showError(res.message);
+            showError(res?.message || "Mise à jour échouée");
         }
         setLoad(false);
     };
 
-    function onNavigationStateChange({ url }: { url: string }) {
+    const onNavigationStateChange = ({ url }: { url: string }) => {
         if (url.includes("success")) {
             setLoad(false);
             hideModal();
@@ -426,22 +428,18 @@ export const LiveRide = () => {
             hideModal();
             showError("Paiement refusé");
         }
-    }
+    };
 
-    // ---------- Normalisations ----------
-    const toNum = (v: any) => (typeof v === "string" ? parseFloat(v) : Number(v));
-
-    // Rider effectif à transmettre à la Map :
-    // - si la course est en phase de déplacement (ACCEPTED, ARRIVED, VERIFIED, START) → rider live OU dernière position connue
-    // - sinon → pas de rider ({}), la Map utilisera pickup/drop
+    // ==================== Normalisations ====================
     const shouldUseRider = (s?: string) =>
-        s === "ACCEPTED" || s === "ARRIVED" || s === "VERIFIED" || s === "START";
+        s === RideStatus.ACCEPTED || s === RideStatus.ARRIVED || s === RideStatus.VERIFIED || s === RideStatus.START;
 
     const effectiveRider: RiderCoord = useMemo(() => {
         if (!shouldUseRider(rideData?.status)) return null;
         return riderCoords || cachedRider || null;
     }, [rideData?.status, riderCoords, cachedRider]);
 
+    // ==================== Render ====================
     return (
         <View className="flex-1 bg-white">
             {rideData ? (
@@ -450,38 +448,39 @@ export const LiveRide = () => {
                         setDuration={setDuration}
                         bottomSheetHeight={mapHeight}
                         height={mapHeight}
-                        status={rideData?.status} // ⚠️ Assure-toi que LiveTrackingMap gère "START" (pas "STARTED")
+                        status={rideData?.status}
                         drop={{
-                            latitude: toNum(rideData?.drop?.latitude),
-                            longitude: toNum(rideData?.drop?.longitude),
+                            latitude: toNum(rideData?.drop?.latitude, 0),
+                            longitude: toNum(rideData?.drop?.longitude, 0),
                         }}
                         pickup={{
-                            latitude: toNum(rideData?.pickup?.latitude),
-                            longitude: toNum(rideData?.pickup?.longitude),
+                            latitude: toNum(rideData?.pickup?.latitude, 0),
+                            longitude: toNum(rideData?.pickup?.longitude, 0),
                         }}
                         rider={
                             effectiveRider
                                 ? {
-                                    latitude: toNum(effectiveRider.latitude),
-                                    longitude: toNum(effectiveRider.longitude),
-                                    heading: typeof effectiveRider.heading === "number" ? effectiveRider.heading : 0,
+                                    latitude: toNum(effectiveRider.latitude, 0),
+                                    longitude: toNum(effectiveRider.longitude, 0),
+                                    heading: isNum(effectiveRider.heading) ? effectiveRider.heading : 0,
                                 }
                                 : {}
                         }
                     />
 
                     <BottomSheet
-                        ref={bottomSheetRef}
+                        ref={(r) => (bottomSheetRef.current = r as any)}
                         index={1}
                         handleIndicatorStyle={{ backgroundColor: "#ccc" }}
                         enableOverDrag={false}
-                        enableDynamicSizing
+                        // ⚠️ Quand on utilise des snapPoints fixes, éviter enableDynamicSizing sauf si nécessaire
+                        // enableDynamicSizing
                         style={{ zIndex: 4 }}
                         snapPoints={snapPoints}
                         onChange={handleSheetChanges}
                     >
                         <BottomSheetScrollView>
-                            {rideData?.status === "SEARCHING_FOR_RIDER" ? (
+                            {rideData?.status === RideStatus.SEARCHING_FOR_RIDER ? (
                                 <SearchingRiderSheet duration={duration} item={rideData} />
                             ) : (
                                 <LiveTrackingSheet car={car} rating={rating} duration={duration} item={rideData} />
@@ -509,7 +508,7 @@ export const LiveRide = () => {
                         onMessage={(event: WebViewMessageEvent) => {
                             try {
                                 const message = JSON.parse(event.nativeEvent.data);
-                                console.log(message?.type);
+                                // console.log(message?.type);
                             } catch {
                                 // ignore invalid JSON from the webview
                             }

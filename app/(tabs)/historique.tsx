@@ -137,14 +137,14 @@ export default function HistoriqueScreen() {
         <View className="flex-row items-center space-x-3">
           <TouchableOpacity
             onPress={() => router.push('/(tabs)/profil')}
-            className="w-12 h-12 rounded-full bg-primary border border-primary justify-center items-center"
+            className="w-11 h-11 rounded-full bg-primary border border-primary justify-center items-center"
           >
             <Icon type="font-awesome" name="user" size={20} color="#fff" />
           </TouchableOpacity>
         </View>
         <TouchableOpacity
           onPress={() => router.push('/notifications')}
-          className="w-12 h-12 rounded-full bg-primary border border-primary ml-2 justify-center items-center"
+          className="w-11 h-11 rounded-full bg-primary border border-primary ml-2 justify-center items-center"
         >
           <Icon type="font-awesome" name="bell" size={20} color="#fff" />
         </TouchableOpacity>

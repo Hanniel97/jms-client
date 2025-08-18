@@ -422,12 +422,12 @@ export default function HomeScreen() {
         style={{ position: 'absolute', top: insets.top }}
       >
         <View style={{ flex: 0.75 }} className='h-14 flex-row items-center'>
-          <TouchableOpacity onPress={() => router.push('/(tabs)/profil')} className="w-12 h-12 justify-center items-center rounded-full bg-primary border border-primary">
+          <TouchableOpacity onPress={() => router.push('/(tabs)/profil')} className="w-11 h-11 justify-center items-center rounded-full bg-primary border border-primary">
             <Icon type="font-awesome" name="user" size={20} color="#FFFFFF" />
           </TouchableOpacity>
         </View>
 
-        <TouchableOpacity onPress={() => router.push('/notifications')} className="w-12 h-12 justify-center items-center rounded-full bg-primary border border-primary ml-2">
+        <TouchableOpacity onPress={() => router.push('/notifications')} className="w-11 h-11 justify-center items-center rounded-full bg-primary border border-primary ml-2">
           <Icon type="font-awesome" name="bell" size={20} color="#FFFFFF" />
         </TouchableOpacity>
       </View>

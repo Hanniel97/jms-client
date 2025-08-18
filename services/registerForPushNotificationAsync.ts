@@ -43,7 +43,7 @@ export async function registerForPushNotificationsAsync(tok: string){
             })
                 .then(response => response.json())
                 .then(res => {
-                    console.log(res)
+                    // console.log(res)
                 })
                 .catch(e => {
                     console.log(e)

@@ -56,6 +56,6 @@ export const NotificationListener = () => {
     return () => {
         if (unsubscribeOnMessage) unsubscribeOnMessage();
         if (unsubscribeOnNotificationOpenedApp) unsubscribeOnNotificationOpenedApp();
-        if (unsubscribeForegroundClick) Notifications.removeNotificationSubscription(unsubscribeForegroundClick);
+        if (unsubscribeForegroundClick) unsubscribeForegroundClick.remove();
     };
 };

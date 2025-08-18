@@ -3,12 +3,14 @@ import useStore from "@/store/useStore";
 import polyline from "@mapbox/polyline";
 import { Icon } from "@rneui/base";
 import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Image, useColorScheme, View } from "react-native";
+import { useColorScheme, View } from "react-native";
 import MapView, { Marker, Polyline } from "react-native-maps";
+import * as Location from "expo-location";
 import darkMapStyle from "../services/mapStyleDark.json";
 import lightMapStyle from "../services/mapStyleLight.json";
 import { CustomButton } from "./CustomButton";
 
+/******************** Types ********************/
 type LatLng = { latitude: number; longitude: number; heading?: number };
 
 interface Props {
@@ -21,16 +23,17 @@ interface Props {
     setDuration: (min: number) => void;
 }
 
+/******************** Constantes ********************/
 const EPS_COORD = 0.000045; // ≈ ~5m
 const EPS_HEADING = 5; // degrés
 const SNAP_MAX_METERS = 30;
-const LOOKAHEAD_METERS = 140;           // ↑ un peu, meilleure anticipation caméra
-const MARKER_LOOKAHEAD_METERS = 70;     // ↑ un peu, meilleure stabilité marker
-const FOLLOW_THROTTLE_MS = 600;
+const LOOKAHEAD_METERS = 140;
+const MARKER_LOOKAHEAD_METERS = 70;
 
-// ZOOM/PITCH
-const FOLLOW_ZOOM = 18.8;
-const FIT_MIN_ZOOM = 17.2;
+const CAMERA_ANIM_MS = 600;
+const FOLLOW_THROTTLE_MS = 700;
+const COMPASS_THROTTLE_MS = 180;
+
 const FOLLOW_PITCH = 45;
 
 // Lissage
@@ -39,9 +42,21 @@ const CENTER_MOVE_DEADBAND_M = 2.0;
 const HEADING_DEADBAND_DEG = 2.0;
 const HEADING_MAX_STEP_DEG = 22.5;
 
-// Décalage “voir devant” : on centre vers le look-ahead (voiture un peu bas de l’écran)
+// Décalage “voir devant”
 const CENTER_LOOKAHEAD_FACTOR = 0.65;
 
+// Orientation image
+const CAR_HEADING_OFFSET_DEG = -5;
+
+// Rotation de la carte pendant le suivi
+const ROTATE_WHEN_FOLLOWING = true;
+
+// Limites de zoom utilisateur
+const MAX_ZOOM_LEVEL = 20;
+
+const carIcon = require("../assets/images/driver.png");
+
+/******************** Utils ********************/
 const isNum = (n: any) => typeof n === "number" && !Number.isNaN(n);
 const isLatLng = (p: any) => isNum(p?.latitude) && isNum(p?.longitude);
 const toRad = (d: number) => (d * Math.PI) / 180;
@@ -110,7 +125,7 @@ function pointAlongRoute(
     tInSeg: number,
     advanceMeters: number
 ): { point: LatLng; segIdx: number; t: number } {
-    if (!route.length) return { point: route[0], segIdx: 0, t: 0 };
+    if (!route.length) return { point: route[0], segIdx: 0, t: 0 } as any;
     let idx = segIndex;
     let t = tInSeg;
     let current = {
@@ -141,6 +156,7 @@ function pointAlongRoute(
     return { point: current, segIdx: Math.min(idx, route.length - 2), t };
 }
 
+/******************** Composant ********************/
 export const LiveTrackingMap: React.FC<Props> = ({
     drop,
     status,
@@ -157,14 +173,25 @@ export const LiveTrackingMap: React.FC<Props> = ({
 
     const [trafficColor, setTrafficColor] = useState("#16B84E");
     const [coords, setCoords] = useState<{ latitude: number; longitude: number }[]>([]);
-    const [isFollowing, setIsFollowing] = useState(true);
 
-    // Lissages caméra
+    // Modes
+    const [isFollowing, setIsFollowing] = useState(false);
+    const [isCompassMode, setIsCompassMode] = useState(false);
+
+    // Lissages / états caméra
     const smoothCenterRef = useRef<LatLng | null>(null);
     const smoothHeadingRef = useRef<number | null>(null);
-    const lastAnimRef = useRef<{ lat: number; lng: number; heading: number; ts: number } | null>(null);
+    const animatingRef = useRef<boolean>(false);
+    const lastAnimTsRef = useRef<number>(0);
 
-    // ---- Mémos
+    // Camera heading
+    const cameraHeadingRef = useRef<number>(0);
+
+    // Subscription boussole (Promise ou Subscription suivant le timing)
+    const compassSubRef = useRef<Promise<Location.LocationSubscription> | Location.LocationSubscription | null>(null);
+    const lastCompassTsRef = useRef(0);
+
+    // ---- Mémos entrée ----
     const riderMemo = useMemo(
         () =>
             isLatLng(rider)
@@ -211,7 +238,13 @@ export const LiveTrackingMap: React.FC<Props> = ({
         position.longitude
     ]);
 
-    // ---- États course
+    // ---- Padding pour fitToCoordinates (prend en compte le bottom sheet)
+    const edgePadding = useMemo(
+        () => ({ top: 60, right: 40, bottom: bottomSheetHeight + 40, left: 40 }),
+        [bottomSheetHeight]
+    );
+
+    // ---- États course ----
     const goingToPickup = status === "ACCEPTED" || status === "ARRIVED" || status === "VERIFIED";
     const onTrip = status === "START";
 
@@ -234,7 +267,7 @@ export const LiveTrackingMap: React.FC<Props> = ({
         [dirOrigin, dirDest, status]
     );
 
-    // ---- Directions
+    /******************** Directions ********************/
     const fetchDirections = useCallback(async () => {
         if (!dirOrigin || !dirDest) return;
         try {
@@ -250,8 +283,12 @@ export const LiveTrackingMap: React.FC<Props> = ({
             });
 
             const points = polyline.decode(bestRoute.overview_polyline.points);
-            const mapped: LatLng[] = points.map(([latitude, longitude]: [number, number]) => ({ latitude, longitude }));
+            const mapped: LatLng[] = points.map(([latitude, longitude]: [number, number]) => ({
+                latitude,
+                longitude
+            }));
 
+            // Met à jour si ça a vraiment changé
             const sameLen = mapped.length === coords.length;
             const sameEnds =
                 sameLen &&
@@ -269,8 +306,7 @@ export const LiveTrackingMap: React.FC<Props> = ({
             const mins = Math.round(trafficDur / 60);
             setDuration((prev) => (prev !== mins ? mins : prev));
 
-            const newColor =
-                trafficDur > baseDur * 1.5 ? "#DE2916" : trafficDur > baseDur * 1.2 ? "#FFA500" : "#16B84E";
+            const newColor = trafficDur > baseDur * 1.5 ? "#DE2916" : trafficDur > baseDur * 1.2 ? "#FFA500" : "#16B84E";
             if (newColor !== trafficColor) setTrafficColor(newColor);
         } catch (err) {
             console.error("Erreur Directions API:", err);
@@ -291,30 +327,37 @@ export const LiveTrackingMap: React.FC<Props> = ({
     useEffect(() => {
         if (!dirKey) return;
         fetchDirections();
-        const interval = setInterval(fetchDirections, 30000);
+        const interval = setInterval(fetchDirections, 15000);
         return () => clearInterval(interval);
     }, [dirKey, fetchDirections]);
 
-    // ---- Snap util
-    type SnapInfo = { snapped: LatLng; segIdx: number; t: number; distMeters: number } | null;
-
-    const snapToRoute = useCallback(
-        (pos: LatLng | undefined): SnapInfo => {
-            if (!pos || coords.length < 2) return null;
-            let best: { dist: number; segIdx: number; t: number; proj: LatLng } | null = null;
-            for (let i = 0; i < coords.length - 1; i++) {
-                const a = coords[i] as LatLng;
-                const b = coords[i + 1] as LatLng;
-                const r = projectOnSegment(pos, a, b);
-                if (!best || r.dist < best.dist) best = { dist: r.dist, segIdx: i, t: r.t, proj: r.proj };
-            }
-            if (!best) return null;
-            return { snapped: best.proj, segIdx: best.segIdx, t: best.t, distMeters: best.dist };
+    /******************** Camera helpers (sans zoom direct) ********************/
+    const animateCameraSafe = useCallback(
+        (
+            p: Partial<
+                Pick<Parameters<NonNullable<MapView["animateCamera"]>>[0], "center" | "heading" | "pitch">
+            >
+        ) => {
+            if (!mapRef.current) return;
+            if (animatingRef.current) return;
+            animatingRef.current = true;
+            lastAnimTsRef.current = Date.now();
+            mapRef.current.animateCamera(
+                {
+                    center: p.center,
+                    heading: p.heading,
+                    pitch: p.pitch
+                },
+                { duration: CAMERA_ANIM_MS }
+            );
+            setTimeout(() => {
+                animatingRef.current = false;
+            }, CAMERA_ANIM_MS);
         },
-        [coords]
+        []
     );
 
-    // ---- Suivi caméra (orientation + centrage)
+    /******************** Suivi caméra ********************/
     useEffect(() => {
         if (!isFollowing) return;
         if (!mapRef.current) return;
@@ -323,10 +366,9 @@ export const LiveTrackingMap: React.FC<Props> = ({
 
         const snap = snapToRoute(riderMemo);
         const useSnap = snap && snap.distMeters <= SNAP_MAX_METERS;
-
         const carPos = useSnap ? snap!.snapped : riderMemo;
 
-        // ★ Heading de référence : route si possible, sinon vers drop
+        // Heading idéal
         let desiredHeading = riderMemo.heading ?? 0;
         let ahead: LatLng | null = null;
         if (useSnap) {
@@ -337,14 +379,13 @@ export const LiveTrackingMap: React.FC<Props> = ({
             ahead = dropMemo;
         }
 
-        // ★ Centre légèrement avancé vers la route devant
-        const centerTarget =
-            ahead
-                ? {
-                    latitude: carPos.latitude + (ahead.latitude - carPos.latitude) * CENTER_LOOKAHEAD_FACTOR,
-                    longitude: carPos.longitude + (ahead.longitude - carPos.longitude) * CENTER_LOOKAHEAD_FACTOR
-                }
-                : carPos;
+        // Centre anticipé
+        const centerTarget = ahead
+            ? {
+                latitude: carPos.latitude + (ahead.latitude - carPos.latitude) * CENTER_LOOKAHEAD_FACTOR,
+                longitude: carPos.longitude + (ahead.longitude - carPos.longitude) * CENTER_LOOKAHEAD_FACTOR
+            }
+            : carPos;
 
         // Lissage du centre
         const prevCenter = smoothCenterRef.current ?? centerTarget;
@@ -367,123 +408,166 @@ export const LiveTrackingMap: React.FC<Props> = ({
                 : prevHeading + clamp(delta, -HEADING_MAX_STEP_DEG, HEADING_MAX_STEP_DEG);
         smoothHeadingRef.current = (nextHeading + 360) % 360;
 
-        // Throttle + apply
-        const now = Date.now();
-        const last = lastAnimRef.current;
-        const movedEnough =
-            !last ||
-            haversine({ latitude: last.lat, longitude: last.lng }, smoothedCenter) > CENTER_MOVE_DEADBAND_M ||
-            Math.abs(norm180(nextHeading - (last.heading ?? 0))) > HEADING_DEADBAND_DEG;
-        const throttled = !last || now - last.ts >= FOLLOW_THROTTLE_MS;
+        const finalHeading = ROTATE_WHEN_FOLLOWING ? smoothHeadingRef.current! : cameraHeadingRef.current;
 
-        if (movedEnough && throttled) {
-            lastAnimRef.current = { lat: smoothedCenter.latitude, lng: smoothedCenter.longitude, heading: nextHeading, ts: now };
-            mapRef.current.animateCamera(
-                { center: smoothedCenter, pitch: FOLLOW_PITCH, heading: nextHeading, zoom: FOLLOW_ZOOM },
-                { duration: 800 }
-            );
+        animateCameraSafe({
+            center: smoothedCenter,
+            heading: finalHeading,
+            pitch: FOLLOW_PITCH
+        });
+    }, [isFollowing, status, riderMemo, coords, dropMemo, animateCameraSafe]);
+
+    /******************** Boussole ********************/
+    const startCompass = useCallback(async () => {
+        if (compassSubRef.current) return;
+        try {
+            const sub = await Location.watchHeadingAsync((h) => {
+                const now = Date.now();
+                if (now - lastCompassTsRef.current < COMPASS_THROTTLE_MS) return;
+                lastCompassTsRef.current = now;
+                const heading = h.trueHeading ?? h.magHeading ?? 0;
+                cameraHeadingRef.current = heading;
+                animateCameraSafe({ heading, pitch: FOLLOW_PITCH });
+            });
+            compassSubRef.current = sub;
+        } catch (e) {
+            console.warn("watchHeadingAsync error:", e);
         }
-    }, [riderMemo, isFollowing, status, coords, dropMemo, snapToRoute]);
+    }, [animateCameraSafe]);
 
-    // ---- Fit sur trajet restant (init + bouton)
-    const fitToRemainingRoute = useCallback(() => {
-        if (!mapRef.current) return;
-
-        const snap = snapToRoute(riderMemo as LatLng | undefined);
-        let points: LatLng[] = [];
-
-        if (coords.length >= 2 && snap && snap.distMeters <= SNAP_MAX_METERS) {
-            const startIdx = Math.max(0, Math.min(coords.length - 2, snap.segIdx));
-            points = coords.slice(startIdx);
-            points = [snap.snapped, ...points];
-        } else if (coords.length >= 2) {
-            points = coords;
-        } else {
-            const tmp: LatLng[] = [];
-            if (pickupMemo) tmp.push(pickupMemo);
-            if (dropMemo) tmp.push(dropMemo);
-            if (riderMemo) tmp.push({ latitude: riderMemo.latitude, longitude: riderMemo.longitude });
-            if (tmp.length) {
-                mapRef.current.fitToCoordinates(tmp, {
-                    edgePadding: { top: 40, right: 40, bottom: Math.max(40, bottomSheetHeight + 20), left: 40 },
-                    animated: true
-                });
-                mapRef.current.getCamera?.().then((cam) => {
-                    if (!cam) return;
-                    if (cam.zoom < FIT_MIN_ZOOM) {
-                        mapRef.current?.animateCamera(
-                            { center: cam.center, heading: cam.heading, pitch: FOLLOW_PITCH, zoom: FIT_MIN_ZOOM },
-                            { duration: 350 }
-                        );
-                    }
-                });
+    const stopCompass = useCallback(async () => {
+        try {
+            const maybeSub = await Promise.resolve(compassSubRef.current as any);
+            if (maybeSub) {
+                if (typeof maybeSub.remove === "function") {
+                    maybeSub.remove();
+                } else if (typeof maybeSub.unsubscribe === "function") {
+                    maybeSub.unsubscribe();
+                }
             }
+        } catch { }
+        compassSubRef.current = null;
+    }, []);
+
+    useEffect(() => {
+        return () => {
+            void stopCompass();
+        };
+    }, [stopCompass]);
+
+    /******************** Actions ********************/
+    // Recentrer: on centre/fit le TRAJET dans l’aire visible (tient compte du bottom sheet)
+    const recenterOnce = useCallback(async () => {
+        if (!mapRef.current) return;
+        setIsFollowing(false);
+
+        // 1) Si on a une polyline de trajet, on la fit entièrement avec padding
+        if (coords.length > 1) {
+            mapRef.current.fitToCoordinates(coords as LatLng[], {
+                edgePadding,
+                animated: true
+            });
             return;
         }
 
-        if (points.length) {
-            mapRef.current.fitToCoordinates(points, {
-                edgePadding: { top: 40, right: 40, bottom: Math.max(40, bottomSheetHeight + 20), left: 40 },
+        // 2) Sinon, si on a au moins deux points parmi pickup / drop / rider, on fit ces points
+        const points: LatLng[] = [];
+        if (pickupMemo) points.push(pickupMemo);
+        if (dropMemo) points.push(dropMemo);
+        if (riderMemo) points.push({ latitude: riderMemo.latitude, longitude: riderMemo.longitude });
+
+        const uniqPoints = points.filter(Boolean) as LatLng[];
+        const uniqKey = (p: LatLng) => `${p.latitude.toFixed(6)},${p.longitude.toFixed(6)}`;
+        const dedup = Array.from(new Map(uniqPoints.map((p) => [uniqKey(p), p])).values());
+
+        if (dedup.length >= 2) {
+            mapRef.current.fitToCoordinates(dedup, {
+                edgePadding,
                 animated: true
             });
-            mapRef.current.getCamera?.().then((cam) => {
-                if (!cam) return;
-                if (cam.zoom < FIT_MIN_ZOOM) {
-                    mapRef.current?.animateCamera(
-                        { center: cam.center, heading: cam.heading, pitch: FOLLOW_PITCH, zoom: FIT_MIN_ZOOM },
-                        { duration: 350 }
-                    );
-                }
-            });
+            return;
         }
-    }, [coords, pickupMemo, dropMemo, riderMemo, bottomSheetHeight, snapToRoute]);
 
-    // Fit initial quand la polyline arrive
-    useEffect(() => {
-        if (!coords.length) return;
-        fitToRemainingRoute();
-    }, [coords.length, fitToRemainingRoute]);
+        // 3) Dernier recours: on recentre sur le point disponible, sans zoomer/dézoomer
+        const center = dedup[0] ?? riderMemo ?? pickupMemo ?? dropMemo;
+        if (center) {
+            try {
+                const cam = await mapRef.current.getCamera?.();
+                cameraHeadingRef.current = cam?.heading ?? cameraHeadingRef.current;
+            } catch { }
+            animateCameraSafe({ center, heading: cameraHeadingRef.current, pitch: FOLLOW_PITCH });
+        }
+    }, [coords, pickupMemo, dropMemo, riderMemo, edgePadding, animateCameraSafe]);
 
-    // ★ Quand la course démarre, on force un “setup” clean : fit + follow
-    useEffect(() => {
-        if (status !== "START") return;
-        setIsFollowing(true);
-        fitToRemainingRoute();
-        // petit délai pour être sûr que la caméra s’est posée avant de passer en follow
-        setTimeout(() => {
-            // un petit coup d’alignement initial si on a déjà le rider
-            if (mapRef.current && riderMemo) {
-                const snap = snapToRoute(riderMemo);
-                const base = snap && snap.distMeters <= SNAP_MAX_METERS ? snap.snapped : riderMemo;
-                const toward = dropMemo ?? base;
-                const head = bearing(base, toward);
-                mapRef.current.animateCamera(
-                    { center: base, heading: head, pitch: FOLLOW_PITCH, zoom: FOLLOW_ZOOM },
-                    { duration: 500 }
-                );
-            }
-        }, 300);
-    }, [status, fitToRemainingRoute, riderMemo, dropMemo, snapToRoute]);
-
-    const recenterOnContext = useCallback(() => {
+    // Toggle Suivi
+    const toggleFollow = useCallback(async () => {
         if (!mapRef.current) return;
-        setIsFollowing(true);
+        const willFollow = !isFollowing;
+        setIsFollowing(willFollow);
+        if (willFollow) {
+            try {
+                const cam = await mapRef.current.getCamera?.();
+                cameraHeadingRef.current = cam?.heading ?? 0;
+            } catch { }
+            const center = riderMemo ?? pickupMemo ?? dropMemo;
+            if (center) animateCameraSafe({ center, heading: cameraHeadingRef.current, pitch: FOLLOW_PITCH });
+            if (isCompassMode) setIsCompassMode(false);
+            await stopCompass();
+        }
+    }, [isFollowing, riderMemo, pickupMemo, dropMemo, animateCameraSafe, isCompassMode, stopCompass]);
 
-        const begun = onTrip || goingToPickup; // ACCEPTED / ARRIVED / VERIFIED / START
-        const center = riderMemo ?? pickupMemo ?? dropMemo;
-        if (!center) return;
+    // Toggle Boussole
+    const toggleCompass = useCallback(async () => {
+        const willUseCompass = !isCompassMode;
+        setIsCompassMode(willUseCompass);
+        if (willUseCompass) {
+            setIsFollowing(false);
+            try {
+                const { status: perm } = await Location.requestForegroundPermissionsAsync();
+                if (perm !== "granted") {
+                    setIsCompassMode(false);
+                    return;
+                }
+            } catch {
+                setIsCompassMode(false);
+                return;
+            }
+            await startCompass();
+        } else {
+            await stopCompass();
+        }
+    }, [isCompassMode, startCompass, stopCompass]);
 
-        mapRef.current.animateCamera(
-            {
-                center,
-                zoom: begun ? FOLLOW_ZOOM : Math.max(FOLLOW_ZOOM - 0.8, 16),
-                heading: begun ? (smoothHeadingRef.current ?? 0) : 0,
-                pitch: begun ? FOLLOW_PITCH : 0
-            },
-            { duration: 600 }
-        );
-    }, [onTrip, goingToPickup, riderMemo, pickupMemo, dropMemo]);
+    /******************** Map events ********************/
+    const onUserGesture = useCallback(() => {
+        setIsFollowing(false);
+    }, []);
 
+    const onRegionChangeComplete = useCallback(async () => {
+        if (!mapRef.current) return;
+        if (animatingRef.current) return;
+        try {
+            const cam = await mapRef.current.getCamera?.();
+            cameraHeadingRef.current = cam?.heading ?? cameraHeadingRef.current;
+        } catch { }
+    }, []);
+
+    /******************** Snap util ********************/
+    type SnapInfo = { snapped: LatLng; segIdx: number; t: number; distMeters: number } | null;
+    const snapToRoute = useCallback((pos: LatLng | undefined): SnapInfo => {
+        if (!pos || coords.length < 2) return null;
+        let best: { dist: number; segIdx: number; t: number; proj: LatLng } | null = null;
+        for (let i = 0; i < coords.length - 1; i++) {
+            const a = coords[i] as LatLng;
+            const b = coords[i + 1] as LatLng;
+            const r = projectOnSegment(pos, a, b);
+            if (!best || r.dist < best.dist) best = { dist: r.dist, segIdx: i, t: r.t, proj: r.proj };
+        }
+        if (!best) return null;
+        return { snapped: best.proj, segIdx: best.segIdx, t: best.t, distMeters: best.dist };
+    }, [coords]);
+
+    /******************** Render ********************/
     return (
         <View className="flex-1 bg-white">
             <MapView
@@ -499,8 +583,11 @@ export const LiveTrackingMap: React.FC<Props> = ({
                 showsScale={false}
                 showsTraffic={false}
                 provider="google"
-                rotateEnabled
-                onPanDrag={() => setIsFollowing(false)}
+                rotateEnabled={true}
+                maxZoomLevel={MAX_ZOOM_LEVEL}
+                onPanDrag={onUserGesture}
+                onRegionChangeComplete={onRegionChangeComplete}
+                mapPadding={{ top: 20, right: 20, bottom: bottomSheetHeight + 20, left: 20 }}
             >
                 {dropMemo && (
                     <Marker anchor={{ x: 0.3, y: 0.6 }} coordinate={dropMemo} zIndex={1} title="Destination" pinColor="red">
@@ -519,19 +606,36 @@ export const LiveTrackingMap: React.FC<Props> = ({
                 {riderMemo && <SnappedCarMarker rider={riderMemo} coords={coords as LatLng[]} />}
             </MapView>
 
-            {/* Recentrage */}
-            <View style={{ position: "absolute", right: 16, bottom: bottomSheetHeight + 16, zIndex: 10 }}>
-                <CustomButton
-                    icon={<Icon name="my-location" type="material-icon" size={24} color="#ff6d00" />}
+            {/* Actions */}
+            <View style={{ position: "absolute", right: 16, bottom: bottomSheetHeight + 16, zIndex: 10, gap: 12 }}>
+                {/* <CustomButton
+                    icon={<Icon name="my-location" type="material-icons" size={22} color="#222" />}
                     buttonClassNames="bg-white shadow-xl w-12 h-12 rounded-full items-center justify-center"
-                    onPress={recenterOnContext}
+                    onPress={recenterOnce}
+                /> */}
+                <CustomButton
+                    icon={
+                        <Icon
+                            name={isFollowing ? "gps-fixed" : "gps-not-fixed"}
+                            type="material-icons"
+                            size={22}
+                            color={isFollowing ? "#16B84E" : "#ff6d00"}
+                        />
+                    }
+                    buttonClassNames="bg-white shadow-xl w-12 h-12 rounded-full items-center justify-center"
+                    onPress={toggleFollow}
+                />
+                <CustomButton
+                    icon={<Icon name="explore" type="material-icons" size={22} color={isCompassMode ? "#0ea5e9" : "#555"} />}
+                    buttonClassNames="bg-white shadow-xl w-12 h-12 rounded-full items-center justify-center"
+                    onPress={toggleCompass}
                 />
             </View>
         </View>
     );
 };
 
-// ------ Marker snappé (orientation route + lissage) ------
+/******************** Marker snappé (orientation) ********************/
 const SnappedCarMarker: React.FC<{ rider: LatLng; coords: LatLng[] }> = ({ rider, coords }) => {
     const snap = useMemo(() => {
         if (!coords || coords.length < 2) return null;
@@ -550,33 +654,47 @@ const SnappedCarMarker: React.FC<{ rider: LatLng; coords: LatLng[] }> = ({ rider
 
     let desiredHeading = rider.heading ?? 0;
     if (useSnap) {
-        const ahead = pointAlongRoute(coords as LatLng[], (snap as any).segIdx, (snap as any).t, MARKER_LOOKAHEAD_METERS).point;
-        desiredHeading = bearing(basePos, ahead); // ★ vers la route devant
+        const ahead = pointAlongRoute(
+            coords as LatLng[],
+            (snap as any).segIdx,
+            (snap as any).t,
+            MARKER_LOOKAHEAD_METERS
+        ).point;
+        desiredHeading = bearing(basePos, ahead);
     }
 
     const headingRef = useRef<number>(desiredHeading);
     const prev = headingRef.current;
     const delta = norm180(desiredHeading - prev);
-    const next = Math.abs(delta) < HEADING_DEADBAND_DEG ? prev : prev + clamp(delta, -HEADING_MAX_STEP_DEG, HEADING_MAX_STEP_DEG);
+    const next =
+        Math.abs(delta) < HEADING_DEADBAND_DEG
+            ? prev
+            : prev + clamp(delta, -HEADING_MAX_STEP_DEG, HEADING_MAX_STEP_DEG);
     headingRef.current = (next + 360) % 360;
 
     return (
-        <Marker anchor={{ x: 0.5, y: 0.5 }} coordinate={{ latitude: basePos.latitude, longitude: basePos.longitude }} zIndex={3}>
-            <Image
-                source={require("../assets/images/driver.png")}
-                style={{ height: 50, width: 50, resizeMode: "contain", transform: [{ rotate: `${headingRef.current}deg` }] }}
-            />
-        </Marker>
+        <Marker
+            anchor={{ x: 0.5, y: 0.5 }}
+            coordinate={{ latitude: basePos.latitude, longitude: basePos.longitude }}
+            zIndex={3}
+            flat
+            rotation={(headingRef.current + CAR_HEADING_OFFSET_DEG + 360) % 360}
+            image={carIcon}
+            tracksViewChanges={false}
+        />
     );
 };
 
-// ---- Comparateur de props
-const near = (a?: number, b?: number) => (isNum(a) && isNum(b) ? Math.abs((a as number) - (b as number)) < EPS_COORD : a === b);
+/******************** Comparateur de props ********************/
+const near = (a?: number, b?: number) =>
+    isNum(a) && isNum(b) ? Math.abs((a as number) - (b as number)) < EPS_COORD : a === b;
 
 const riderNearEq = (p?: LatLng, n?: LatLng) =>
     near(p?.latitude, n?.latitude) &&
     near(p?.longitude, n?.longitude) &&
-    (isNum(p?.heading) && isNum(n?.heading) ? Math.abs((p!.heading as number) - (n!.heading as number)) < EPS_HEADING : p?.heading === n?.heading);
+    (isNum(p?.heading) && isNum(n?.heading)
+        ? Math.abs((p!.heading as number) - (n!.heading as number)) < EPS_HEADING
+        : p?.heading === n?.heading);
 
 const propsAreEqual = (prev: Props, next: Props) => {
     if (prev.status !== next.status) return false;

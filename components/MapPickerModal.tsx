@@ -185,7 +185,7 @@ const MapPickerModal: React.FC<Props> = ({ visible, title, selectedLocation, onC
                 className="flex-row items-start px-3 py-2"
             >
                 <Icon name="location-pin" type="entypo" size={18} color="#222" />
-                <Text numberOfLines={2} className="ml-2 text-[14px] text-gray-900 flex-1">
+                <Text numberOfLines={2} className="ml-2 text-[14px] text-gray-900 flex-1 font-['RubikMedium']">
                     {item.description}
                 </Text>
             </TouchableOpacity>
@@ -209,7 +209,7 @@ const MapPickerModal: React.FC<Props> = ({ visible, title, selectedLocation, onC
                             placeholder={title === "pickup" ? "Chercher un point de départ" : "Chercher une destination"}
                             value={query}
                             onChangeText={setQuery}
-                            className="flex-1 h-10 bg-gray-100 rounded-md px-3 text-sm text-gray-900"
+                            className="flex-1 h-10 bg-gray-100 rounded-md px-3 text-sm text-gray-900 font-['RubikRegular']"
                             returnKeyType="search"
                             autoCorrect={false}
                             autoCapitalize="none"
@@ -222,7 +222,7 @@ const MapPickerModal: React.FC<Props> = ({ visible, title, selectedLocation, onC
                     </View>
 
                     <TouchableOpacity onPress={confirm} className="w-12 h-10 items-center justify-center">
-                        <Text className="text-green-600 font-bold">OK</Text>
+                        <Text className="text-green-600 font-['RubikBold']">OK</Text>
                     </TouchableOpacity>
                 </View>
 
@@ -266,12 +266,12 @@ const MapPickerModal: React.FC<Props> = ({ visible, title, selectedLocation, onC
                 {/* footer */}
                 <View className="flex-row items-center border-t border-gray-200 p-3">
                     <View className="flex-1 pr-3">
-                        <Text className="text-xs text-gray-500 mb-1">Adresse sélectionnée</Text>
+                        <Text className="text-xs text-gray-500 mb-1 font-['RubikBold']">Adresse sélectionnée</Text>
                         <View className="min-h-[40px] px-2 py-2 border border-gray-200 rounded-md justify-center">
                             {loadingAddr ? (
                                 <ActivityIndicator />
                             ) : (
-                                <Text numberOfLines={2} className="text-sm text-gray-900">
+                                <Text numberOfLines={2} className="text-sm text-gray-900 font-['RubikMedium']">
                                     {addr || "Déplace la carte pour choisir…"}
                                 </Text>
                             )}

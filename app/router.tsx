@@ -60,8 +60,24 @@ const Routes = ({ isConnected }: Props) => {
     }, []);
 
     return (
-        <Stack screenOptions={{headerShown: false}}>
-            {
+        <Stack screenOptions={{ headerShown: false }}>
+            <Stack.Screen name="index" options={{ headerShown: false }} />
+            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+            <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+            <Stack.Screen name="editprofil" options={{ headerShown: false }} />
+            <Stack.Screen name="rechargewallet" options={{ headerShown: false }} />
+            <Stack.Screen name="changepassword" options={{ headerShown: false }} />
+            <Stack.Screen name="policy" options={{ headerShown: false }} />
+            <Stack.Screen name="contactus" options={{ headerShown: false }} />
+            <Stack.Screen name="notifications" options={{ headerShown: false }} />
+            <Stack.Screen name="deleteaccount" options={{ headerShown: false }} />
+            <Stack.Screen name="addcourse" options={{ headerShown: false }} />
+            <Stack.Screen name="liveride" options={{ headerShown: false }} />
+            <Stack.Screen name="ridedetails" options={{ headerShown: false }} />
+            <Stack.Screen name="wallet" options={{ headerShown: false }} />
+            <Stack.Screen name="_offline" options={{ headerShown: false }} />
+            
+            {/* {
                 isConnected ? (
                     <>
                         <Stack.Screen name="index" options={{ headerShown: false }} />
@@ -85,7 +101,7 @@ const Routes = ({ isConnected }: Props) => {
                     :
                     (
                         <Stack.Screen name="_offline" options={{ headerShown: false }} />
-                    )}
+                    )} */}
 
         </Stack>
     )

@@ -1,6 +1,6 @@
 import { View, Text, TouchableOpacity } from "react-native";
 import { useRouter } from "expo-router";
-import { ReactNode } from "react";
+import React, { ReactNode } from "react";
 import { Icon } from "@rneui/themed"; // ou de ton système d’icônes habituel
 
 interface CustomHeaderProps {
@@ -20,7 +20,7 @@ const CustomHeader = ({ title, showTitle = true, showBack = true, right }: Custo
                     <TouchableOpacity
                         onPress={() => router.back()}
                         // className="h-10 w-10 rounded-xl justify-center items-center"
-                        className="h-12 w-12 rounded-full bg-green-600/70 justify-center items-center border-[1px] border-gray-300"
+                        className="h-11 w-11 rounded-full bg-green-600/70 justify-center items-center border-[1px] border-gray-300"
                     >
                         <Icon name="arrow-left" type="feather" size={25} color="#FFFFFF" />
                     </TouchableOpacity>
