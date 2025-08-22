@@ -40,6 +40,7 @@ export const NotificationListener = () => {
                 body: remoteMessage.notification?.body || "",
                 data: remoteMessage.data,
                 priority: "high",
+                sound: "notification.wav",
             },
             trigger: null,
         });

@@ -3,7 +3,9 @@ import { DisplayLoading } from '@/components/DisplayLoading';
 import RenderEnCours from '@/components/RenderEnCours';
 import RenderHistorique from '@/components/RenderHistorique';
 import { apiRequest } from '@/services/api';
+import { useWS } from '@/services/WSProvider';
 import useStore from '@/store/useStore';
+import { IRide } from '@/types';
 import { groupByDate } from '@/utils/groupByDate';
 import { Icon } from '@rneui/base';
 import { router } from 'expo-router';
@@ -23,6 +25,8 @@ import { SceneMap, TabBar, TabView } from 'react-native-tab-view';
 const initialLayout = { width: Dimensions.get('window').width };
 
 export default function HistoriqueScreen() {
+  const {emit} = useWS();
+
   const insets = useSafeAreaInsets();
 
   const { tok, isAuthenticated, historiques, setHistorique, enCours, setEnCours } = useStore();
@@ -64,6 +68,10 @@ export default function HistoriqueScreen() {
     }
   };
 
+  const onCancel = async (ride: IRide) => {
+    emit('cancelRide', ride?._id)
+  }
+
   // Définition des scènes pour chaque onglet
   const EnCoursScene = () => {
     if (loading) return <DisplayLoading />;
@@ -74,7 +82,7 @@ export default function HistoriqueScreen() {
         contentContainerStyle={{ padding: 16 }}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
         renderItem={({ item }) => (
-          <RenderEnCours ride={item} /> // composant spécifique aux courses en cours
+          <RenderEnCours ride={item} onCancel={onCancel} /> // composant spécifique aux courses en cours
         )}
         ListEmptyComponent={
           <View className="items-center mt-16">

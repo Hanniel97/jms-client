@@ -184,6 +184,7 @@ export default function AddCourse() {
         endpoint: "ride/calculateCourseDetails",
         token: tok,
         data: {
+          vehicle: selectedCar,
           pickup: pickupCoords,
           drop: dropCoords,
         },
@@ -203,7 +204,7 @@ export default function AddCourse() {
     } finally {
       setPricingLoading(false);
     }
-  }, [dropCoords, pickupCoords, pressHandler, tok]);
+  }, [dropCoords, pickupCoords, pressHandler, selectedCar, tok]);
 
   /** Déclenche le calcul dès que pickup & drop prêts */
   useEffect(() => {

@@ -3,8 +3,8 @@ import useStore from "@/store/useStore";
 import polyline from "@mapbox/polyline";
 import { Icon } from "@rneui/base";
 import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { useColorScheme, View } from "react-native";
-import MapView, { Marker, Polyline } from "react-native-maps";
+import { useColorScheme, View, Image } from "react-native";
+import MapView, { AnimatedRegion, Marker, Polyline } from "react-native-maps";
 import * as Location from "expo-location";
 import darkMapStyle from "../services/mapStyleDark.json";
 import lightMapStyle from "../services/mapStyleLight.json";
@@ -52,7 +52,8 @@ const CAR_HEADING_OFFSET_DEG = -5;
 const ROTATE_WHEN_FOLLOWING = true;
 
 // Limites de zoom utilisateur
-const MAX_ZOOM_LEVEL = 20;
+const MAX_ZOOM_LEVEL = 18;
+const MIN_ZOOM_LEVEL = 13
 
 const carIcon = require("../assets/images/driver.png");
 
@@ -117,6 +118,12 @@ function projectOnSegment(p: LatLng, a: LatLng, b: LatLng) {
     const dist = haversine(p, proj);
     return { proj, t, dist };
 }
+
+// Vitesse "perçue" cible pour l'animation du marqueur
+const TARGET_SPEED_MPS = 12; // ≈ 43 km/h
+const MIN_ANIM_MS = 180;
+const MAX_ANIM_MS = 1400;
+const TELEPORT_THRESHOLD_M = 120; // au-delà, on saute sans animer
 
 // point le long de la polyline
 function pointAlongRoute(
@@ -576,8 +583,8 @@ export const LiveTrackingMap: React.FC<Props> = ({
                 customMapStyle={mapStyle}
                 showsUserLocation={true}
                 showsCompass={false}
-                showsIndoors={false}
-                zoomEnabled
+                showsIndoors={true}
+                zoomEnabled={true}
                 initialRegion={initialRegion}
                 showsBuildings={false}
                 showsScale={false}
@@ -587,7 +594,7 @@ export const LiveTrackingMap: React.FC<Props> = ({
                 maxZoomLevel={MAX_ZOOM_LEVEL}
                 onPanDrag={onUserGesture}
                 onRegionChangeComplete={onRegionChangeComplete}
-                mapPadding={{ top: 20, right: 20, bottom: bottomSheetHeight + 20, left: 20 }}
+                mapPadding={{ top: 20, right: 5, bottom: bottomSheetHeight + 20, left: 20 }}
             >
                 {dropMemo && (
                     <Marker anchor={{ x: 0.3, y: 0.6 }} coordinate={dropMemo} zIndex={1} title="Destination" pinColor="red">
@@ -601,9 +608,12 @@ export const LiveTrackingMap: React.FC<Props> = ({
                     </Marker>
                 )}
 
-                {coords.length > 1 && <Polyline coordinates={coords} strokeColor={trafficColor} strokeWidth={5} />}
+                {coords.length > 1 && <Polyline coordinates={coords} strokeColor={trafficColor} strokeWidth={2} />}
 
-                {riderMemo && <SnappedCarMarker rider={riderMemo} coords={coords as LatLng[]} />}
+                {/* {riderMemo && <SnappedCarMarker rider={riderMemo} coords={coords as LatLng[]} />} */}
+
+                {riderMemo && <AnimatedCarMarker rider={riderMemo} coords={coords as LatLng[]} />}
+
             </MapView>
 
             {/* Actions */}
@@ -636,7 +646,8 @@ export const LiveTrackingMap: React.FC<Props> = ({
 };
 
 /******************** Marker snappé (orientation) ********************/
-const SnappedCarMarker: React.FC<{ rider: LatLng; coords: LatLng[] }> = ({ rider, coords }) => {
+const AnimatedCarMarker: React.FC<{ rider: LatLng; coords: LatLng[] }> = ({ rider, coords }) => {
+    // --- Snap à la route (identique à ta logique) ---
     const snap = useMemo(() => {
         if (!coords || coords.length < 2) return null;
         let best: { dist: number; segIdx: number; t: number; proj: LatLng } | null = null;
@@ -650,40 +661,137 @@ const SnappedCarMarker: React.FC<{ rider: LatLng; coords: LatLng[] }> = ({ rider
     }, [coords, rider]);
 
     const useSnap = !!snap && (snap as any).dist <= SNAP_MAX_METERS;
-    const basePos = useSnap ? ((snap as any).proj as LatLng) : rider;
+    const basePos: LatLng = useSnap ? ((snap as any).proj as LatLng) : rider;
 
+    // --- Direction (heading) avec lookahead sur la polyline ---
     let desiredHeading = rider.heading ?? 0;
     if (useSnap) {
-        const ahead = pointAlongRoute(
-            coords as LatLng[],
-            (snap as any).segIdx,
-            (snap as any).t,
-            MARKER_LOOKAHEAD_METERS
-        ).point;
+        const ahead = pointAlongRoute(coords as LatLng[], (snap as any).segIdx, (snap as any).t, MARKER_LOOKAHEAD_METERS).point;
         desiredHeading = bearing(basePos, ahead);
     }
 
+    // --- AnimatedRegion pour lisser la position ---
+    const coordinateRef = useRef(
+        new AnimatedRegion({
+            latitude: basePos.latitude,
+            longitude: basePos.longitude,
+            latitudeDelta: 0,
+            longitudeDelta: 0
+        })
+    ).current;
+
+    const lastPosRef = useRef<LatLng>(basePos);
+
+    // --- Lissage du heading (même logique que chez toi) ---
     const headingRef = useRef<number>(desiredHeading);
-    const prev = headingRef.current;
-    const delta = norm180(desiredHeading - prev);
-    const next =
-        Math.abs(delta) < HEADING_DEADBAND_DEG
-            ? prev
-            : prev + clamp(delta, -HEADING_MAX_STEP_DEG, HEADING_MAX_STEP_DEG);
-    headingRef.current = (next + 360) % 360;
+    {
+        const prev = headingRef.current;
+        const delta = norm180(desiredHeading - prev);
+        const next =
+            Math.abs(delta) < HEADING_DEADBAND_DEG
+                ? prev
+                : prev + clamp(delta, -HEADING_MAX_STEP_DEG, HEADING_MAX_STEP_DEG);
+        headingRef.current = (next + 360) % 360;
+    }
+
+    // --- À chaque update de basePos : animer vers la nouvelle coordonnée ---
+    useEffect(() => {
+        const prev = lastPosRef.current;
+        const next = basePos;
+        const d = haversine(prev, next);
+
+        // Téléport si trop loin (perte GPS / changement brutal)
+        if (d > TELEPORT_THRESHOLD_M) {
+            coordinateRef.setValue({
+                latitude: next.latitude,
+                longitude: next.longitude,
+                latitudeDelta: 0,
+                longitudeDelta: 0
+            });
+            lastPosRef.current = next;
+            return;
+        }
+
+        // Durée proportionnelle à la distance pour vitesse “constante perçue”
+        const duration = clamp(Math.round((d / TARGET_SPEED_MPS) * 1000), MIN_ANIM_MS, MAX_ANIM_MS);
+
+        coordinateRef.timing(
+            {
+                latitude: next.latitude,
+                longitude: next.longitude,
+                duration,
+                useNativeDriver: false
+            } as any
+        ).start(() => {
+            // fin d'anim : on fige la référence
+            lastPosRef.current = next;
+        });
+    }, [basePos.latitude, basePos.longitude, coordinateRef]);
 
     return (
-        <Marker
+        <Marker.Animated
+            coordinate={coordinateRef as any}
             anchor={{ x: 0.5, y: 0.5 }}
-            coordinate={{ latitude: basePos.latitude, longitude: basePos.longitude }}
-            zIndex={3}
             flat
             rotation={(headingRef.current + CAR_HEADING_OFFSET_DEG + 360) % 360}
-            image={carIcon}
-            tracksViewChanges={false}
-        />
+            zIndex={3}
+        >
+            <Image
+                source={carIcon}
+                style={{ width: 45, height: 45, resizeMode: "contain" }}
+            />
+        </Marker.Animated>
     );
 };
+
+// const SnappedCarMarker: React.FC<{ rider: LatLng; coords: LatLng[] }> = ({ rider, coords }) => {
+//     const snap = useMemo(() => {
+//         if (!coords || coords.length < 2) return null;
+//         let best: { dist: number; segIdx: number; t: number; proj: LatLng } | null = null;
+//         for (let i = 0; i < coords.length - 1; i++) {
+//             const a = coords[i] as LatLng;
+//             const b = coords[i + 1] as LatLng;
+//             const r = projectOnSegment(rider, a, b);
+//             if (!best || r.dist < best.dist) best = { dist: r.dist, segIdx: i, t: r.t, proj: r.proj };
+//         }
+//         return best;
+//     }, [coords, rider]);
+
+//     const useSnap = !!snap && (snap as any).dist <= SNAP_MAX_METERS;
+//     const basePos = useSnap ? ((snap as any).proj as LatLng) : rider;
+
+//     let desiredHeading = rider.heading ?? 0;
+//     if (useSnap) {
+//         const ahead = pointAlongRoute(
+//             coords as LatLng[],
+//             (snap as any).segIdx,
+//             (snap as any).t,
+//             MARKER_LOOKAHEAD_METERS
+//         ).point;
+//         desiredHeading = bearing(basePos, ahead);
+//     }
+
+//     const headingRef = useRef<number>(desiredHeading);
+//     const prev = headingRef.current;
+//     const delta = norm180(desiredHeading - prev);
+//     const next =
+//         Math.abs(delta) < HEADING_DEADBAND_DEG
+//             ? prev
+//             : prev + clamp(delta, -HEADING_MAX_STEP_DEG, HEADING_MAX_STEP_DEG);
+//     headingRef.current = (next + 360) % 360;
+
+//     return (
+//         <Marker
+//             anchor={{ x: 0.5, y: 0.5 }}
+//             coordinate={{ latitude: basePos.latitude, longitude: basePos.longitude }}
+//             zIndex={3}
+//             flat
+//             rotation={(headingRef.current + CAR_HEADING_OFFSET_DEG + 360) % 360}
+//             image={carIcon}
+//             tracksViewChanges={false}
+//         />
+//     );
+// };
 
 /******************** Comparateur de props ********************/
 const near = (a?: number, b?: number) =>

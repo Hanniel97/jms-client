@@ -29,9 +29,20 @@
       },
       "config": {
         "googleMapsApiKey": "AIzaSyB6_OxzEd6VT4yqdW2zS0wjT7Gc6w9xxTw"
-      }
+      },
+      "sound": true
+    },
+    "notification": {
+      "icon": "./assets/images/notification-icon.png",
+      "color": "#ffffff",
+      "androidMode": "default",
+      "androidCollapsedTitle": "Nouvelles notifications"
     },
     "android": {
+      "sound": true,
+      "resources": [
+        "./assets/sound/notification.wav"
+      ],
       "config": {
         "googleMaps": {
           "apiKey": "AIzaSyB6_OxzEd6VT4yqdW2zS0wjT7Gc6w9xxTw"
@@ -57,7 +68,7 @@
         "expo-splash-screen",
         {
           "image": "./assets/images/splash-icon.png",
-          "imageWidth": 200,
+          "imageWidth": 400,
           "resizeMode": "contain",
           "backgroundColor": "#FF6D00"
         }

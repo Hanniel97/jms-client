@@ -69,6 +69,7 @@ export default function notifications() {
                         // keyExtractor={(item) => item._id}
                         keyExtractor={(item) => item.title}
                         contentContainerStyle={{ padding: 16 }}
+                        showsVerticalScrollIndicator={false}
                         // renderItem={({ item }: { item: INotification }) => (
                         //     <RenderNotification
                         //         notification={item}

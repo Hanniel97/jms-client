@@ -342,7 +342,7 @@ export default function HomeScreen() {
         style={{ flex: 1 }}
         ref={mapRef}
         customMapStyle={mapStyle}
-        // maxZoomLevel={16}
+        maxZoomLevel={18}
         // minZoomLevel={12}
         showsUserLocation={true}
         showsMyLocationButton={false}
@@ -392,7 +392,7 @@ export default function HomeScreen() {
               <View style={{ transform: [{ rotate: `${marker?.rotation}deg` }] }}>
                 <Image
                   source={
-                    marker.type === "auto" ? require('../../assets/images/driver.png') : require('../../assets/images/customer.png')
+                    marker.type === "confort" ? require('../../assets/images/driver.png') : require('../../assets/images/customer.png')
                   }
                   style={{ height: 40, width: 40, resizeMode: "contain" }}
                 />

@@ -79,7 +79,7 @@ const RenderHistorique: React.FC<Props> = ({ ride }) => {
         paddingHorizontal: padH,
         borderRadius: radius,
         borderWidth: 1,
-        borderColor: "rgba(59,130,246,0.40)", // primary/40
+        borderColor: "rgba(255, 109, 0,0.40)", // primary/40
         marginVertical: vs(6, height),
         // petite ombre cross-platform
         shadowColor: "#000",

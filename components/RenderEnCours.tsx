@@ -343,20 +343,23 @@ export default function RenderEnCours({ ride, onCancel }: Props) {
                             accessibilityRole="button"
                             accessibilityLabel="Annuler la course"
                         >
-                            <View style={{ flexDirection: "row", alignItems: "center" }}>
-                                <Icon name="x-circle" type="feather" size={iconLg} color={canCancel ? "#dc2626" : "#6b7280"} />
-                                <Text
-                                    style={{
-                                        marginLeft: hs(10, width),
-                                        fontSize: fsMd,
-                                        fontWeight: "700",
-                                        color: canCancel ? "#dc2626" : "#6b7280",
-                                    }}
-                                >
-                                    Annuler la course
-                                </Text>
+                            <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", margin: 5 }}>
+                                <View style={{ flexDirection: "row", alignItems: "center" }}>
+                                    <Icon name="x-circle" type="feather" size={iconLg} color={canCancel ? "#dc2626" : "#6b7280"} />
+                                    <Text
+                                        style={{
+                                            marginLeft: hs(10, width),
+                                            fontSize: fsMd,
+                                            fontWeight: "700",
+                                            color: canCancel ? "#dc2626" : "#6b7280",
+                                        }}
+                                    >
+                                        Annuler la course
+                                    </Text>
+                                </View>
+
+                                {/* <Icon name="chevron-right" type="feather" size={iconMd} color={canCancel ? "#dc2626" : "#9ca3af"} /> */}
                             </View>
-                            <Icon name="chevron-right" type="feather" size={iconMd} color={canCancel ? "#dc2626" : "#9ca3af"} />
                         </Pressable>
 
                         {/* Séparateur */}
@@ -376,20 +379,23 @@ export default function RenderEnCours({ ride, onCancel }: Props) {
                             accessibilityRole="button"
                             accessibilityLabel="Fermer le menu"
                         >
-                            <View style={{ flexDirection: "row", alignItems: "center" }}>
-                                <Icon name="x" type="feather" size={iconLg} color="#111827" />
-                                <Text
-                                    style={{
-                                        marginLeft: hs(10, width),
-                                        fontSize: fsMd,
-                                        fontWeight: "700",
-                                        color: "#111827",
-                                    }}
-                                >
-                                    Fermer
-                                </Text>
+                            <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", margin: 5 }}>
+                                <View style={{ flexDirection: "row", alignItems: "center" }}>
+                                    <Icon name="x" type="feather" size={iconLg} color="#111827" />
+                                    <Text
+                                        style={{
+                                            marginLeft: hs(10, width),
+                                            fontSize: fsMd,
+                                            fontWeight: "700",
+                                            color: "#111827",
+                                        }}
+                                    >
+                                        Fermer
+                                    </Text>
+                                </View>
+
+                                {/* <Icon name="chevron-right" type="feather" size={iconMd} color="#9ca3af" /> */}
                             </View>
-                            <Icon name="chevron-right" type="feather" size={iconMd} color="#9ca3af" />
                         </Pressable>
                     </View>
                 </View>
