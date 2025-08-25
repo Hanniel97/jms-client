@@ -3,13 +3,32 @@ import { WSProvider } from '@/services/WSProvider';
 import { useFonts } from 'expo-font';
 import { useKeepAwake } from 'expo-keep-awake';
 import { StatusBar } from 'expo-status-bar';
-import React, { JSX, Suspense } from 'react';
+import React, { JSX, Suspense, useEffect } from 'react';
 import { ActivityIndicator } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import 'react-native-reanimated';
 import Toast, { BaseToast, BaseToastProps, ErrorToast } from 'react-native-toast-message';
 import { TailwindProvider } from 'tailwindcss-react-native';
 import Routes from './router';
+import NotificationTopBanner from '@/components/NotificationTopBanner';
+import { useNotificationStore } from "@/store/notificationStore";
+import { router } from 'expo-router';
+
+export const NotificationNavigator = () => {
+  const { pendingRoute, setPendingRoute } = useNotificationStore();
+
+  useEffect(() => {
+    if (pendingRoute) {
+      router.push({
+        pathname: pendingRoute.url,
+        params: { id: pendingRoute.id },
+      });
+      setPendingRoute(null);
+    }
+  }, [pendingRoute]);
+
+  return null; // pas d'UI
+};
 
 function Loading() {
   return <ActivityIndicator size="large" color="orange" />;
@@ -83,9 +102,11 @@ export default function RootLayout() {
         <StatusBar style={colorScheme === "dark" ? "light" : "dark"} />
         <Suspense fallback={<Loading />}>
           <GestureHandlerRootView style={{ flex: 1 }}>
-            <Routes/>
+            <Routes />
+            <NotificationNavigator />
           </GestureHandlerRootView>
         </Suspense>
+        <NotificationTopBanner />
         <Toast config={toastConfig} />
       </WSProvider>
     </TailwindProvider>

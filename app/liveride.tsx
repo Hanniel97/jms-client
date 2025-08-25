@@ -1,9 +1,11 @@
 import { LiveTrackingMap } from "@/components/LiveTrackingMap";
+import { LiveTrackingMapV2 } from "@/components/LiveTrackingMapV2";
 import LiveTrackingSheet from "@/components/LiveTrackingSheet";
 import SearchingRiderSheet from "@/components/SearchingRiderSheet";
 import { apiRequest } from "@/services/api";
 import { useWS } from "@/services/WSProvider";
 import useStore from "@/store/useStore";
+import * as Speech from "expo-speech";
 import { showError, showInfo, showSuccess } from "@/utils/showToast";
 import BottomSheet, { BottomSheetScrollView } from "@gorhom/bottom-sheet";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -145,6 +147,7 @@ export const LiveRide = () => {
             await AsyncStorage.removeItem(CACHE_KEYS.lastRider);
         } catch { }
     }, []);
+
 
     // ==================== Ride setters ====================
     const hasMeaningfulChange = useCallback((prev: any, next: any) => {
@@ -444,7 +447,7 @@ export const LiveRide = () => {
         <View className="flex-1 bg-white">
             {rideData ? (
                 <>
-                    <LiveTrackingMap
+                    <LiveTrackingMapV2
                         setDuration={setDuration}
                         bottomSheetHeight={mapHeight}
                         height={mapHeight}
@@ -466,6 +469,17 @@ export const LiveRide = () => {
                                 }
                                 : {}
                         }
+                        onOffRoute={(meters) => {
+                            // Simple : afficher un toast quand le rider s’écarte trop de l’itinéraire
+                            if (meters > 50) {
+                                showInfo(`Hors itinéraire (${meters.toFixed(0)} m)`);
+                            }
+                        }}
+                        onStepChange={(step) => {
+                            if (!step) return;
+                            // mise à jour UI passager (bannière, distance vers prochaine manœuvre)
+                            showInfo(`${step.distanceText} — ${step.instruction}`);
+                        }}
                     />
 
                     <BottomSheet

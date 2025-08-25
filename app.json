@@ -68,14 +68,20 @@
         "expo-splash-screen",
         {
           "image": "./assets/images/splash-icon.png",
-          "imageWidth": 400,
+          "imageWidth": 200,
           "resizeMode": "contain",
           "backgroundColor": "#FF6D00"
         }
       ],
       "expo-asset",
       "expo-font",
-      "expo-web-browser"
+      "expo-web-browser",
+      [
+        "expo-notifications",
+        {
+          "sounds": ["./assets/sound/notification.wav"]
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true

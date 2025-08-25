@@ -43,7 +43,7 @@ export async function registerForPushNotificationsAsync(tok: string){
             })
                 .then(response => response.json())
                 .then(res => {
-                    // console.log(res)
+                    // console.log(token)
                 })
                 .catch(e => {
                     console.log(e)
@@ -56,8 +56,8 @@ export async function registerForPushNotificationsAsync(tok: string){
     }
 
     if (Platform.OS === 'android') {
-        await Notifications.setNotificationChannelAsync('default', {
-            name: 'default',
+        await Notifications.setNotificationChannelAsync('new_ride', {
+            name: 'Notification de course',
             importance: Notifications.AndroidImportance.MAX,
             vibrationPattern: [0, 250, 250, 250],
             lightColor: '#FF231F7C',

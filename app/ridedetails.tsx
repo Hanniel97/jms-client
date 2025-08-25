@@ -1,4 +1,3 @@
-
 import BottomSheetScrollView, { BottomSheetMethods } from "@/components/BottomSheetScrollView";
 import { CustomButton } from "@/components/CustomButton";
 import CustomHeader from "@/components/CustomHeader";
@@ -8,16 +7,17 @@ import useStore from "@/store/useStore";
 import { ICar, IRide } from "@/types";
 import { showError, showSuccess } from "@/utils/showToast";
 import polyline from "@mapbox/polyline";
-// import { Icon, Rating } from "@rneui/base";
 import Rating from "@/components/Rating";
 import { Icon } from '@rneui/themed';
 import { useLocalSearchParams } from "expo-router";
 import moment from "moment";
 import "moment/locale/fr";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useMemo, useState } from "react";
 import {
     Dimensions,
     Image,
+    Modal,
+    Pressable,
     ScrollView,
     Text,
     TouchableOpacity,
@@ -42,6 +42,9 @@ export default function RideDetails() {
     const [car, setCar] = useState<ICar | null>(null);
     const [note, setNote] = useState<number>(0);
 
+    // Modal facture
+    const [invoiceVisible, setInvoiceVisible] = useState(false);
+
     const bottomSheetRef = useRef<BottomSheetMethods>(null);
 
     const pressHandler = useCallback(() => {
@@ -60,8 +63,6 @@ export default function RideDetails() {
                 endpoint: `ride/getRideByIdForDetail/${id}`,
                 token: tok,
             });
-
-            // console.log(res)
 
             if (res.success) {
                 setRide(res.data.ride);
@@ -89,8 +90,6 @@ export default function RideDetails() {
                 rider: ride?.rider?._id
             },
         });
-
-        // console.log('dfdbfk jd', res)
 
         if (res.success === false) {
             setLoading2(false)
@@ -139,6 +138,33 @@ export default function RideDetails() {
         if (ride) fetchDirections();
     }, [fetchDirections, ride]);
 
+    // Calcul minutes total (start/end si dispo sinon fallback)
+    const totalMinutes = useMemo(() => {
+        if (!ride) return undefined;
+        if (ride.startTime && ride.endTime) {
+            const start = new Date(ride.startTime as any).getTime();
+            const end = new Date(ride.endTime as any).getTime();
+            if (Number.isFinite(start) && Number.isFinite(end) && end > start) {
+                return Math.round((end - start) / 60000);
+            }
+        }
+        // fallback: try extracting a number from estimatedDurationFormatted
+        const n = parseInt(String(ride?.estimatedDurationFormatted || "").replace(/\D/g, ""), 10);
+        return Number.isFinite(n) ? n : undefined;
+    }, [ride?.startTime, ride?.endTime, ride?.estimatedDurationFormatted]);
+
+    const paymentLabel = useMemo(() => {
+        if (!ride) return "";
+        const method = (ride.paymentMethod || "").toLowerCase();
+        if (ride.status === "PAYED") {
+            if (method === "wallet") return "Payé par portefeuille";
+            if (method === "cash") return "Payé en espèces";
+            if (method === "card" || method === "carte") return "Payé par carte";
+            return "Payé";
+        }
+        return "Non payé";
+    }, [ride]);
+
     if (loading) return <DisplayLoading />;
 
     if (!ride) {
@@ -152,7 +178,6 @@ export default function RideDetails() {
     return (
         <View style={{ paddingBottom: insets.bottom }} className="flex-1 bg-white">
             <CustomHeader title="Détails de la course" showBack />
-            {/* <CustomHeader title={`Course N° ${ride._id?.slice(-6).toUpperCase()}`} showBack /> */}
 
             <ScrollView showsVerticalScrollIndicator={false} className="px-4">
                 {/* Date */}
@@ -175,7 +200,6 @@ export default function RideDetails() {
                         </Text>
                     </View>
                 </View>
-
 
                 {/* Infos Chauffeur */}
                 <View className="justify-center mt-1">
@@ -204,29 +228,12 @@ export default function RideDetails() {
 
                     <View className="mt-3 flex flex-row justify-between items-center">
                         <View>
-                            {/* <Text className="text-gray-600 font-['RubikSemiBold']">Noter</Text> */}
-                            {/* <View>
-                                <Rating
-                                    showRating
-                                    type="star"
-                                    fractions={1}
-                                    startingValue={ride.rider?.moyenne}
-                                    readonly
-                                    imageSize={40}
-                                    onFinishRating={ratingCompleted}
-                                    style={{ paddingVertical: 10 }}
-                                />
-                            </View> */}
-
                             <Rating value={ride.rider?.moyenne} editable={false} onChange={setNote} />
-
                         </View>
                         <TouchableOpacity onPress={pressHandler} className="bg-primary px-4 py-2 rounded-full">
                             <Text className="text-white font-['RubikSemiBold']">Noter</Text>
                         </TouchableOpacity>
                     </View>
-
-
                 </View>
 
                 {/* Résumé course */}
@@ -236,7 +243,6 @@ export default function RideDetails() {
                             <Icon name="map-marker-distance" type="material-community" size={25} color="#4b5563" />
                             <Text className="text-gray-600 font-['RubikSemiBold'] ml-2">Distance</Text>
                         </View>
-                        {/* <Text className="text-gray-600 font-['RubikSemiBold']">Distance</Text> */}
                         <Text className="font-['RubikBold']">{ride.distance?.toFixed(2)} km</Text>
                     </View>
                     <View className="flex-row justify-between mb-2">
@@ -245,7 +251,7 @@ export default function RideDetails() {
                             <Text className="text-gray-600 font-['RubikSemiBold'] ml-2">Durée</Text>
                         </View>
 
-                        <Text className="font-['RubikBold']">{ride?.estimatedDurationFormatted} min</Text>
+                        <Text className="font-['RubikBold']">{typeof totalMinutes === "number" ? `${totalMinutes} min` : `${ride?.estimatedDurationFormatted} min`}</Text>
                     </View>
                     <View className="flex-row justify-between mb-2">
                         <View className="flex flex-row justify-center items-center">
@@ -255,9 +261,9 @@ export default function RideDetails() {
 
                         <Text className="font-['RubikBold']">{ride.fare} F</Text>
                     </View>
-                    {/* <TouchableOpacity className="p-3 self-center">
-                        <Text className="text-primary text-sm font-semibold">Voir la facture →</Text>
-                    </TouchableOpacity> */}
+                    <TouchableOpacity className="p-3 self-center" onPress={() => setInvoiceVisible(true)}>
+                        <Text className="text-primary text-sm font-semibold">Voir tarif →</Text>
+                    </TouchableOpacity>
                 </View>
 
                 {/* Carte */}
@@ -287,31 +293,17 @@ export default function RideDetails() {
                         title="Destination"
                         pinColor="red"
                     />
-                    <Polyline coordinates={coords} strokeColor={trafficColor} strokeWidth={5} />
+                    <Polyline coordinates={coords} strokeColor={trafficColor} strokeWidth={2} />
                 </MapView>
 
                 {/* Lieux + horaires */}
-                {/* <View className="mt-4 mb-10">
-                    <View className="flex-row justify-between mb-1">
-                        <Text className="text-gray-500">Départ</Text>
-                        <Text className="text-sm">{moment(ride.createdAt).add(6, "minutes").format("HH:mm")}</Text>
-                    </View>
-                    <Text className="font-semibold text-gray-800 mb-2">{ride.pickup.address}</Text>
-
-                    <View className="flex-row justify-between mb-1">
-                        <Text className="text-gray-500">Arrivée</Text>
-                        <Text className="text-sm">{moment(ride.createdAt).add(28, "minutes").format("HH:mm")}</Text>
-                    </View>
-                    <Text className="font-semibold text-gray-800">{ride.drop.address}</Text>
-                </View> */}
-
                 <View className="mt-4 mb-10">
                     <View className="py-1 px-2 w-full flex-row justify-center  items-center">
                         <Icon name="dot-fill" type='octicon' size={25} color="#000000" />
                         <View className="my-2 ml-2 py-1 px-3 justify-center w-full h-16">
                             <View className="flex flex-row justify-between items-center">
                                 <Text className="text-gray-500 font-['RubikSemiBold'] text-lg">Départ</Text>
-                                <Text className="text-lg font-['RubikRegular']">{moment(ride.startTime).format("HH:mm")}</Text>
+                                <Text className="font-['RubikRegular'] text-lg">{moment(ride.startTime).format("HH:mm")}</Text>
                             </View>
 
                             <Text numberOfLines={2} className="font-['RubikRegular'] text-lg">{ride.pickup.address}</Text>
@@ -335,6 +327,83 @@ export default function RideDetails() {
                 </View>
             </ScrollView>
 
+            {/* ---------- MODAL FACTURE ---------- */}
+            <Modal transparent animationType="slide" visible={invoiceVisible} onRequestClose={() => setInvoiceVisible(false)}>
+                <View className="flex-1 bg-black/40">
+                    <Pressable className="flex-1" onPress={() => setInvoiceVisible(false)} />
+                    <View style={{ paddingBottom: insets.bottom + 12 }} className="bg-white rounded-t-3xl px-4 pt-3 pb-4">
+                        <View className="w-12 h-1.5 bg-gray-300 rounded-full self-center mb-3" />
+
+                        <View className="flex-row items-center justify-between mb-1">
+                            <Text className="text-xl font-['RubikBold']">Détail du tarif</Text>
+                            <TouchableOpacity onPress={() => setInvoiceVisible(false)} className="p-2 rounded-full bg-gray-100">
+                                <Icon name="close" type="material" size={18} color="#111827" />
+                            </TouchableOpacity>
+                        </View>
+
+                        {/* Bandeau véhicule */}
+                        <View className="flex-row items-center bg-gray-50 p-3 rounded-xl mt-2">
+                            <Image
+                                source={
+                                    ride.vehicle === "eco"
+                                        ? require("../assets/images/Taxi_confort_gris_miroir.png")
+                                        : require("../assets/images/Taxi_confort_blanc_recadre.png")
+                                }
+                                className="w-20 h-10 mr-3"
+                            />
+                            <View className="flex-1">
+                                <Text className="font-['RubikBold']">{ride.vehicle}</Text>
+                                <Text className="text-gray-600 text-xs">
+                                    JMS Transport vous garantie une expérience de voyage confortable, sécuritaire et économique.
+                                    Merci de choisir JMS Transport.
+                                </Text>
+                            </View>
+                        </View>
+
+                        {/* Détails de la course */}
+                        <View className="mt-4">
+                            <Text className="font-['RubikBold'] text-base mb-2">Détails de la course</Text>
+
+                            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingVertical: 8 }}>
+                                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                                    <Icon name="run" type="material-community" size={20} color="#4b5563" />
+                                    <Text style={{ marginLeft: 8, color: '#374151' }}>Distance parcourue</Text>
+                                </View>
+                                <Text className="font-['RubikBold']">{ride.distance?.toFixed(2)} km</Text>
+                            </View>
+
+                            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingVertical: 8 }}>
+                                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                                    <Icon name="clock-outline" type="material-community" size={20} color="#4b5563" />
+                                    <Text style={{ marginLeft: 8, color: '#374151' }}>Temps total</Text>
+                                </View>
+                                <Text className="font-['RubikBold']">{typeof totalMinutes === "number" ? `${totalMinutes} min` : `${ride.estimatedDurationFormatted} min`}</Text>
+                            </View>
+                        </View>
+
+                        <View className="h-[1px] bg-gray-200 my-3 mt-3" />
+
+                        {/* Détails de paiement */}
+                        <View className="bg-green-50 rounded-xl p-3">
+                            <Text className="font-['RubikBold'] mb-2">Détails de paiement</Text>
+                            <View className="flex-row justify-between items-center">
+                                <View className="flex-row items-center">
+                                    <Icon name="wallet" type="ionicon" size={18} color="#111827" />
+                                    <Text className="ml-2">{paymentLabel}</Text>
+                                </View>
+                                <Text className="font-['RubikBold']">{ride.fare} F</Text>
+                            </View>
+                        </View>
+
+                        <View className="flex-row justify-between items-center mt-3">
+                            <Text className="font-['RubikBold'] text-base">Montant de la course</Text>
+                            <Text className="font-['RubikBold'] text-base">{ride.fare} F</Text>
+                        </View>
+                    </View>
+                </View>
+            </Modal>
+            {/* ---------- /MODAL FACTURE ---------- */}
+
             <BottomSheetScrollView
                 ref={bottomSheetRef}
                 snapTo={'35%'}
@@ -342,16 +411,8 @@ export default function RideDetails() {
                 backDropColor={'black'}
             >
                 <View className="p-3">
-
                     <View className="self-center">
                         <Text className="text-gray-600 font-['RubikSemiBold'] py-3">Noter le chauffeur pour la course effectuée</Text>
-                        {/* <AirbnbRating
-                            count={5}
-                            size={35}
-                            defaultRating={note}
-                            showRating={false}
-                            onFinishRating={value => setNote(value)}
-                        /> */}
                         <Rating value={note} onChange={setNote} />
                     </View>
 
@@ -367,6 +428,382 @@ export default function RideDetails() {
         </View>
     );
 }
+
+
+
+// import BottomSheetScrollView, { BottomSheetMethods } from "@/components/BottomSheetScrollView";
+// import { CustomButton } from "@/components/CustomButton";
+// import CustomHeader from "@/components/CustomHeader";
+// import { DisplayLoading } from "@/components/DisplayLoading";
+// import { apiRequest, GOOGLE_API_KEY, photoUrl } from "@/services/api";
+// import useStore from "@/store/useStore";
+// import { ICar, IRide } from "@/types";
+// import { showError, showSuccess } from "@/utils/showToast";
+// import polyline from "@mapbox/polyline";
+// // import { Icon, Rating } from "@rneui/base";
+// import Rating from "@/components/Rating";
+// import { Icon } from '@rneui/themed';
+// import { useLocalSearchParams } from "expo-router";
+// import moment from "moment";
+// import "moment/locale/fr";
+// import React, { useCallback, useEffect, useRef, useState } from "react";
+// import {
+//     Dimensions,
+//     Image,
+//     ScrollView,
+//     Text,
+//     TouchableOpacity,
+//     View,
+// } from "react-native";
+// import MapView, { Marker, Polyline } from "react-native-maps";
+// import { useSafeAreaInsets } from "react-native-safe-area-context";
+
+// moment.locale("fr");
+// const { width } = Dimensions.get("window");
+
+// export default function RideDetails() {
+//     const insets = useSafeAreaInsets();
+//     const { tok } = useStore();
+//     const { id } = useLocalSearchParams();
+
+//     const [coords, setCoords] = useState<{ latitude: number; longitude: number }[]>([]);
+//     const [trafficColor, setTrafficColor] = useState("#16B84E");
+//     const [loading, setLoading] = useState(true);
+//     const [loading2, setLoading2] = useState(false);
+//     const [ride, setRide] = useState<IRide | null>(null);
+//     const [car, setCar] = useState<ICar | null>(null);
+//     const [note, setNote] = useState<number>(0);
+
+//     const bottomSheetRef = useRef<BottomSheetMethods>(null);
+
+//     const pressHandler = useCallback(() => {
+//         bottomSheetRef.current?.expand();
+//     }, []);
+
+//     const close = useCallback(() => {
+//         bottomSheetRef.current?.close();
+//     }, []);
+
+//     const getRide = useCallback(async () => {
+//         try {
+//             setLoading(true);
+//             const res = await apiRequest({
+//                 method: "GET",
+//                 endpoint: `ride/getRideByIdForDetail/${id}`,
+//                 token: tok,
+//             });
+
+//             // console.log(res)
+
+//             if (res.success) {
+//                 setRide(res.data.ride);
+//                 setCar(res.data.car);
+//             }
+//         } catch (e) {
+//             console.error("Erreur récupération course :", e);
+//         } finally {
+//             setLoading(false);
+//         }
+//     }, [id, tok]);
+
+//     useEffect(() => {
+//         getRide();
+//     }, [getRide]);
+
+//     const onSubmit = async () => {
+//         setLoading2(true)
+//         const res = await apiRequest({
+//             method: 'POST',
+//             endpoint: 'rating/add',
+//             token: tok,
+//             data: {
+//                 note,
+//                 rider: ride?.rider?._id
+//             },
+//         });
+
+//         // console.log('dfdbfk jd', res)
+
+//         if (res.success === false) {
+//             setLoading2(false)
+//             showError(res.message)
+//             return;
+//         }
+
+//         if (res.success === true) {
+//             close()
+//             setLoading2(false)
+//             showSuccess(res.message)
+//             getRide()
+//         }
+//     };
+
+//     const fetchDirections = useCallback(async () => {
+//         if (!ride) return;
+
+//         try {
+//             const origin = `${ride.pickup.latitude},${ride.pickup.longitude}`;
+//             const destination = `${ride.drop.latitude},${ride.drop.longitude}`;
+//             const url = `https://maps.googleapis.com/maps/api/directions/json?origin=${origin}&destination=${destination}&key=${GOOGLE_API_KEY}&departure_time=now&mode=driving`;
+
+//             const response = await fetch(url);
+//             const json = await response.json();
+
+//             if (!json.routes.length) return;
+
+//             const points = polyline.decode(json.routes[0].overview_polyline.points);
+//             const mapped = points.map(([latitude, longitude]) => ({ latitude, longitude }));
+//             setCoords(mapped);
+
+//             const leg = json.routes[0].legs[0];
+//             const duration = leg.duration.value;
+//             const traffic = leg.duration_in_traffic?.value || duration;
+
+//             if (traffic > duration * 1.5) setTrafficColor("#DE2916");
+//             else if (traffic > duration * 1.2) setTrafficColor("#FFA500");
+//             else setTrafficColor("#16B84E");
+//         } catch (err) {
+//             console.error("Erreur Directions API:", err);
+//         }
+//     }, [ride]);
+
+//     useEffect(() => {
+//         if (ride) fetchDirections();
+//     }, [fetchDirections, ride]);
+
+//     if (loading) return <DisplayLoading />;
+
+//     if (!ride) {
+//         return (
+//             <View className="flex-1 justify-center items-center bg-white">
+//                 <Text className="text-lg text-gray-500">Détails non disponibles.</Text>
+//             </View>
+//         );
+//     }
+
+//     return (
+//         <View style={{ paddingBottom: insets.bottom }} className="flex-1 bg-white">
+//             <CustomHeader title="Détails de la course" showBack />
+//             {/* <CustomHeader title={`Course N° ${ride._id?.slice(-6).toUpperCase()}`} showBack /> */}
+
+//             <ScrollView showsVerticalScrollIndicator={false} className="px-4">
+//                 {/* Date */}
+//                 <View className="flex flex-row justify-between items-center">
+//                     <Text className="text-lg text-gray-500 mt-2 font-['RubikBold'] ">
+//                         {moment(ride.createdAt).format("DD MMM YYYY, HH:mm")}
+//                     </Text>
+
+//                     <View className="justify-center items-center">
+//                         <Image
+//                             source={
+//                                 ride.vehicle === "eco"
+//                                     ? require("../assets/images/Taxi_confort_gris_miroir.png")
+//                                     : require("../assets/images/Taxi_confort_blanc_recadre.png")
+//                             }
+//                             className="w-20 h-10"
+//                         />
+//                         <Text className="font-['RubikSemiBold'] text-gray-800 text-lg">
+//                             {ride.vehicle}
+//                         </Text>
+//                     </View>
+//                 </View>
+
+
+//                 {/* Infos Chauffeur */}
+//                 <View className="justify-center mt-1">
+//                     <View className="flex-row items-center py-3 space-x-3 border-b-[1px] border-gray-100">
+//                         <Image
+//                             source={
+//                                 ride.rider?.photo
+//                                     ? { uri: `${photoUrl}${ride.rider.photo}` }
+//                                     : require("../assets/images/profil1.png")
+//                             }
+//                             className="w-14 h-14 rounded-full"
+//                         />
+//                         <View className="gap-2">
+//                             <Text className="font-['RubikSemiBold'] text-gray-800 text-lg">
+//                                 {ride.rider?.prenom} {ride.rider?.nom?.[0]}.
+//                             </Text>
+//                             <Text className="text-sm text-gray-500 font-['RubikSemiBold']">
+//                                 {car?.marque} - {car?.model} - {car?.immatriculation}
+//                             </Text>
+//                             <View className="bg-primary px-2 py-1 w-20 rounded-full justify-center items-center">
+//                                 <Text numberOfLines={1} adjustsFontSizeToFit className="text-white font-['RubikSemiBold']">★ {ride.rider?.moyenne} </Text>
+//                             </View>
+
+//                         </View>
+//                     </View>
+
+//                     <View className="mt-3 flex flex-row justify-between items-center">
+//                         <View>
+//                             {/* <Text className="text-gray-600 font-['RubikSemiBold']">Noter</Text> */}
+//                             {/* <View>
+//                                 <Rating
+//                                     showRating
+//                                     type="star"
+//                                     fractions={1}
+//                                     startingValue={ride.rider?.moyenne}
+//                                     readonly
+//                                     imageSize={40}
+//                                     onFinishRating={ratingCompleted}
+//                                     style={{ paddingVertical: 10 }}
+//                                 />
+//                             </View> */}
+
+//                             <Rating value={ride.rider?.moyenne} editable={false} onChange={setNote} />
+
+//                         </View>
+//                         <TouchableOpacity onPress={pressHandler} className="bg-primary px-4 py-2 rounded-full">
+//                             <Text className="text-white font-['RubikSemiBold']">Noter</Text>
+//                         </TouchableOpacity>
+//                     </View>
+
+
+//                 </View>
+
+//                 {/* Résumé course */}
+//                 <View className="bg-gray-50 px-2 py-4 rounded-xl mt-6 gap-x-3">
+//                     <View className="flex-row justify-between mb-2">
+//                         <View className="flex flex-row justify-center items-center">
+//                             <Icon name="map-marker-distance" type="material-community" size={25} color="#4b5563" />
+//                             <Text className="text-gray-600 font-['RubikSemiBold'] ml-2">Distance</Text>
+//                         </View>
+//                         {/* <Text className="text-gray-600 font-['RubikSemiBold']">Distance</Text> */}
+//                         <Text className="font-['RubikBold']">{ride.distance?.toFixed(2)} km</Text>
+//                     </View>
+//                     <View className="flex-row justify-between mb-2">
+//                         <View className="flex flex-row justify-center items-center">
+//                             <Icon name="clock-time-four" type="material-community" size={25} color="#4b5563" />
+//                             <Text className="text-gray-600 font-['RubikSemiBold'] ml-2">Durée</Text>
+//                         </View>
+
+//                         <Text className="font-['RubikBold']">{ride?.estimatedDurationFormatted} min</Text>
+//                     </View>
+//                     <View className="flex-row justify-between mb-2">
+//                         <View className="flex flex-row justify-center items-center">
+//                             <Icon name="money-bill-wave-alt" type="font-awesome-5" size={20} color="#4b5563" />
+//                             <Text className="text-gray-600 font-['RubikSemiBold'] ml-2">Montant</Text>
+//                         </View>
+
+//                         <Text className="font-['RubikBold']">{ride.fare} F</Text>
+//                     </View>
+//                     <TouchableOpacity className="p-3 self-center">
+//                         <Text className="text-primary text-sm font-semibold">Voir la facture →</Text>
+//                     </TouchableOpacity>
+//                 </View>
+
+//                 {/* Carte */}
+//                 <MapView
+//                     style={{
+//                         width: width - 32,
+//                         height: 100,
+//                         borderRadius: 12,
+//                         marginTop: 20,
+//                     }}
+//                     initialRegion={{
+//                         latitude: ride.pickup.latitude,
+//                         longitude: ride.pickup.longitude,
+//                         latitudeDelta: 0.05,
+//                         longitudeDelta: 0.05,
+//                     }}
+//                     scrollEnabled={false}
+//                     showsTraffic
+//                 >
+//                     <Marker
+//                         coordinate={ride.pickup}
+//                         title="Départ"
+//                         pinColor="green"
+//                     />
+//                     <Marker
+//                         coordinate={ride.drop}
+//                         title="Destination"
+//                         pinColor="red"
+//                     />
+//                     <Polyline coordinates={coords} strokeColor={trafficColor} strokeWidth={5} />
+//                 </MapView>
+
+//                 {/* Lieux + horaires */}
+//                 {/* <View className="mt-4 mb-10">
+//                     <View className="flex-row justify-between mb-1">
+//                         <Text className="text-gray-500">Départ</Text>
+//                         <Text className="text-sm">{moment(ride.createdAt).add(6, "minutes").format("HH:mm")}</Text>
+//                     </View>
+//                     <Text className="font-semibold text-gray-800 mb-2">{ride.pickup.address}</Text>
+
+//                     <View className="flex-row justify-between mb-1">
+//                         <Text className="text-gray-500">Arrivée</Text>
+//                         <Text className="text-sm">{moment(ride.createdAt).add(28, "minutes").format("HH:mm")}</Text>
+//                     </View>
+//                     <Text className="font-semibold text-gray-800">{ride.drop.address}</Text>
+//                 </View> */}
+
+//                 <View className="mt-4 mb-10">
+//                     <View className="py-1 px-2 w-full flex-row justify-center  items-center">
+//                         <Icon name="dot-fill" type='octicon' size={25} color="#000000" />
+//                         <View className="my-2 ml-2 py-1 px-3 justify-center w-full h-16">
+//                             <View className="flex flex-row justify-between items-center">
+//                                 <Text className="text-gray-500 font-['RubikSemiBold'] text-lg">Départ</Text>
+//                                 <Text className="text-lg font-['RubikRegular']">{moment(ride.startTime).format("HH:mm")}</Text>
+//                             </View>
+
+//                             <Text numberOfLines={2} className="font-['RubikRegular'] text-lg">{ride.pickup.address}</Text>
+//                         </View>
+//                     </View>
+
+//                     <View className="bg-black w-1 h-20 absolute bottom-14 left-0.5" />
+
+//                     <View className="py-1 px-1 w-full flex-row justify-center  items-center">
+//                         <Icon name="pin-drop" type='material-icon' size={30} color="#000000" />
+
+//                         <View className="my-2 py-1 px-3 justify-center w-full h-16">
+//                             <View className="flex flex-row justify-between items-center">
+//                                 <Text className="text-gray-500 font-['RubikSemiBold'] text-lg">Arrivée</Text>
+//                                 <Text className="text-lg font-['RubikRegular']">{moment(ride.endTime).format("HH:mm")}</Text>
+//                             </View>
+
+//                             <Text numberOfLines={2} className="font-['RubikRegular'] text-lg">{ride.drop.address}</Text>
+//                         </View>
+//                     </View>
+//                 </View>
+//             </ScrollView>
+
+//             <BottomSheetScrollView
+//                 ref={bottomSheetRef}
+//                 snapTo={'35%'}
+//                 backgroundColor={'white'}
+//                 backDropColor={'black'}
+//             >
+//                 <View className="p-3">
+
+//                     <View className="self-center">
+//                         <Text className="text-gray-600 font-['RubikSemiBold'] py-3">Noter le chauffeur pour la course effectuée</Text>
+//                         {/* <AirbnbRating
+//                             count={5}
+//                             size={35}
+//                             defaultRating={note}
+//                             showRating={false}
+//                             onFinishRating={value => setNote(value)}
+//                         /> */}
+//                         <Rating value={note} onChange={setNote} />
+//                     </View>
+
+//                     <CustomButton
+//                         buttonText="Noter"
+//                         loading={loading2}
+//                         buttonClassNames="bg-primary shadow-xl h-12 rounded-full items-center justify-center mt-4"
+//                         textClassNames="text-white text-lg font-['RubikBold']"
+//                         onPress={onSubmit}
+//                     />
+//                 </View>
+//             </BottomSheetScrollView>
+//         </View>
+//     );
+// }
+
+
+
+
+
 
 
 

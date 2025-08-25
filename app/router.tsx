@@ -22,26 +22,27 @@ const Routes = () => {
 
     return (
         <Stack screenOptions={{ headerShown: false }}>
-        {isOnline ? (
-            <>
             <Stack.Screen name="index" />
             <Stack.Screen name="(tabs)" />
             <Stack.Screen name="(auth)" />
-            <Stack.Screen name="editprofil" />
-            <Stack.Screen name="rechargewallet" />
-            <Stack.Screen name="changepassword" />
-            <Stack.Screen name="policy" />
-            <Stack.Screen name="contactus" />
-            <Stack.Screen name="notifications" />
-            <Stack.Screen name="deleteaccount" />
-            <Stack.Screen name="addcourse" />
-            <Stack.Screen name="liveride" />
-            <Stack.Screen name="ridedetails" />
-            <Stack.Screen name="wallet" />
-            </>
-        ) : (
-            <Stack.Screen name="_offline" />
-        )}
+            <Stack.Screen name="editprofil" options={{ animation: "slide_from_right" }}/>
+            <Stack.Screen name="rechargewallet" options={{ animation: "slide_from_right" }}/>
+            <Stack.Screen name="changepassword" options={{ animation: "slide_from_right" }}/>
+            <Stack.Screen name="policy" options={{ animation: "slide_from_right" }}/>
+            <Stack.Screen name="contactus" options={{ animation: "slide_from_right" }}/>
+            <Stack.Screen name="notifications" options={{ animation: "slide_from_right" }}/>
+            <Stack.Screen name="deleteaccount" options={{ animation: "slide_from_right" }}/>
+            <Stack.Screen name="addcourse" options={{ animation: "slide_from_right" }}/>
+            <Stack.Screen name="liveride" options={{ animation: "slide_from_right" }}/>
+            <Stack.Screen name="ridedetails" options={{ animation: "slide_from_right" }}/>
+            <Stack.Screen name="wallet" options={{ animation: "slide_from_right" }}/>
+            {/* {isOnline ? (
+                <>
+                
+                </>
+            ) : (
+                <Stack.Screen name="_offline" />
+            )} */}
         </Stack>
     );
 };
