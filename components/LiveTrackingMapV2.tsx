@@ -279,20 +279,21 @@ export const LiveTrackingMapV2: React.FC<Props> = ({
         if (ttsMuted) return;
         // Speech.VoiceQuality.Enhanced;
         if (status === "ACCEPTED") {
-            Speech.speak("Votre chauffeur est en route. Veuillez patienter jusqu'à ce que votre chauffeur soit à votre destination. Nous vous remercions pour votre confiance", { language: "fr-FR", pitch: 1, rate: 1, volume: 1, voice: "fr-FR" });
+            Speech.speak("Votre chauffeur est en route. Veuillez patienter jusqu'à ce qu'il soit à votre destination. Nous vous remercions pour votre confiance.", { language: "fr-FR", pitch: 1, rate: 1, volume: 1, voice: "fr-FR" });
         } else if (status === "ARRIVED") {
             Speech.speak("Votre chauffeur est arrivé.", { language: "fr-FR", pitch: 1, rate: 1, volume: 1, voice: "fr-FR" });
         } else if (status === "START") {
-            Speech.speak("JMS Transport film votre trajet pour garantir votre sécurité. Merci et bon trajet à vous", { language: "fr-FR", pitch: 1, rate: 1, volume: 1, voice: "fr-FR" });
+            Speech.speak("JMS Transport film votre trajet pour garantir votre sécurité. Merci et bon trajet à vous.", { language: "fr-FR", pitch: 1, rate: 1, volume: 1, voice: "fr-FR" });
         } else if (status === "COMPLETED") {
-            Speech.speak("Merci d'avoir choisi JMS Transport. Nous vous remercions pour votre confiance", { language: "fr-FR", pitch: 1, rate: 1, volume: 1, voice: "fr-FR" });
+            Speech.speak("Merci d'avoir choisi JMS Transport. Nous vous remercions pour votre confiance.", { language: "fr-FR", pitch: 1, rate: 1, volume: 1, voice: "fr-FR" });
         }
     }, [status, ttsMuted])
 
-    const pickupMemo = useMemo(() => (isLatLng(pickup) ? { latitude: pickup.latitude, longitude: pickup.longitude } : undefined), [pickup?.latitude, pickup?.longitude]);
-    const dropMemo = useMemo(() => (isLatLng(drop) ? { latitude: drop.latitude, longitude: drop.longitude } : undefined), [drop?.latitude, drop?.longitude]);
+    const pickupMemo = useMemo(() => (isLatLng(pickup) ? { latitude: pickup.latitude, longitude: pickup.longitude } : {latitude: position.latitude, longitude: position.longitude}), [pickup?.latitude, pickup?.longitude]);
+    const dropMemo = useMemo(() => (isLatLng(drop) ? { latitude: drop.latitude, longitude: drop.longitude } : {latitude: position.latitude, longitude: position.longitude}), [drop?.latitude, drop?.longitude]);
 
     const initialRegion = useMemo(() => {
+        // console.log("initialRegion", pickupMemo, dropMemo);
         if (pickupMemo && dropMemo) {
             const latitude = (pickupMemo.latitude + dropMemo.latitude) / 2;
             const longitude = (pickupMemo.longitude + dropMemo.longitude) / 2;
@@ -330,7 +331,7 @@ export const LiveTrackingMapV2: React.FC<Props> = ({
     const fetchDirections = useCallback(async () => {
         if (!dirOrigin || !dirDest) return;
         try {
-            const url = `https://maps.googleapis.com/maps/api/directions/json?origin=${dirOrigin}&destination=${dirDest}&key=${GOOGLE_API_KEY}&departure_time=now&traffic_model=best_guess&mode=driving&alternatives=true`;
+            const url = `https://maps.googleapis.com/maps/api/directions/json?origin=${dirOrigin}&destination=${dirDest}&key=${GOOGLE_API_KEY}&departure_time=now&traffic_model=best_guess&mode=driving&alternatives=true&language=fr`;
             const response = await fetch(url);
             const json = await response.json();
             if (!json.routes?.length) return;
