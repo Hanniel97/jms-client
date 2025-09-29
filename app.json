@@ -64,6 +64,13 @@
     },
     "plugins": [
       "expo-router",
+      "@maplibre/maplibre-react-native",
+      [
+        "@rnmapbox/maps",
+        {
+          "RNMapboxMapsDownloadToken": "sk.eyJ1Ijoiam1zdGF4aSIsImEiOiJjbWYyeDA2MXUyZGFsMmtzaHljMnFqazdqIn0.E7PXdSczPuons3QL5ZakOQ"
+        }
+      ],
       [
         "expo-splash-screen",
         {

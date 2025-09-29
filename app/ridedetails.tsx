@@ -105,38 +105,38 @@ export default function RideDetails() {
         }
     };
 
-    const fetchDirections = useCallback(async () => {
-        if (!ride) return;
+    // const fetchDirections = useCallback(async () => {
+    //     if (!ride) return;
 
-        try {
-            const origin = `${ride.pickup.latitude},${ride.pickup.longitude}`;
-            const destination = `${ride.drop.latitude},${ride.drop.longitude}`;
-            const url = `https://maps.googleapis.com/maps/api/directions/json?origin=${origin}&destination=${destination}&key=${GOOGLE_API_KEY}&departure_time=now&mode=driving`;
+    //     try {
+    //         const origin = `${ride.pickup.latitude},${ride.pickup.longitude}`;
+    //         const destination = `${ride.drop.latitude},${ride.drop.longitude}`;
+    //         const url = `https://maps.googleapis.com/maps/api/directions/json?origin=${origin}&destination=${destination}&key=${GOOGLE_API_KEY}&departure_time=now&mode=driving`;
 
-            const response = await fetch(url);
-            const json = await response.json();
+    //         const response = await fetch(url);
+    //         const json = await response.json();
 
-            if (!json.routes.length) return;
+    //         if (!json.routes.length) return;
 
-            const points = polyline.decode(json.routes[0].overview_polyline.points);
-            const mapped = points.map(([latitude, longitude]) => ({ latitude, longitude }));
-            setCoords(mapped);
+    //         const points = polyline.decode(json.routes[0].overview_polyline.points);
+    //         const mapped = points.map(([latitude, longitude]) => ({ latitude, longitude }));
+    //         setCoords(mapped);
 
-            const leg = json.routes[0].legs[0];
-            const duration = leg.duration.value;
-            const traffic = leg.duration_in_traffic?.value || duration;
+    //         const leg = json.routes[0].legs[0];
+    //         const duration = leg.duration.value;
+    //         const traffic = leg.duration_in_traffic?.value || duration;
 
-            if (traffic > duration * 1.5) setTrafficColor("#DE2916");
-            else if (traffic > duration * 1.2) setTrafficColor("#FFA500");
-            else setTrafficColor("#16B84E");
-        } catch (err) {
-            console.error("Erreur Directions API:", err);
-        }
-    }, [ride]);
+    //         if (traffic > duration * 1.5) setTrafficColor("#DE2916");
+    //         else if (traffic > duration * 1.2) setTrafficColor("#FFA500");
+    //         else setTrafficColor("#16B84E");
+    //     } catch (err) {
+    //         console.error("Erreur Directions API:", err);
+    //     }
+    // }, [ride]);
 
-    useEffect(() => {
-        if (ride) fetchDirections();
-    }, [fetchDirections, ride]);
+    // useEffect(() => {
+    //     if (ride) fetchDirections();
+    // }, [fetchDirections, ride]);
 
     // Calcul minutes total (start/end si dispo sinon fallback)
     const totalMinutes = useMemo(() => {

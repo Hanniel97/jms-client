@@ -43,6 +43,11 @@ interface IAdress {
     longitude: number,
 }
 
+type GeoJSONLineString = {
+    type: "LineString";
+    coordinates: [number, number][];
+};
+
 export interface IRide {
     _id: string,
     vehicle: string,
@@ -55,6 +60,27 @@ export interface IRide {
     status: string,
     estimatedDurationFormatted: string,
     paymentMethod: string,
+    routes: {
+        initial: {
+            geometry: GeoJSONLineString,
+            distance: number,
+            duration: number,
+            lastRecalcAt: date,
+        },
+        driverToPickup: {
+            geometry: GeoJSONLineString,
+            distance: number,
+            duration: number,
+            lastRecalcAt: date,
+        },
+        pickupToDrop: {
+            geometry: GeoJSONLineString,
+            distance: number,
+            duration: number,
+            lastRecalcAt: date,
+        },
+    },
+    routeGeometry: GeoJSONLineString;
     otp: string,
     startTime: date,
     endTime: date,

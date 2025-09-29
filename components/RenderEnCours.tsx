@@ -43,7 +43,7 @@ const statusLabels: Record<string, string> = {
 };
 
 // Statuts autorisés à l'annulation
-const CANCELLABLE = new Set(["SEARCHING_FOR_RIDER", "ACCEPTED", "ARRIVED", "VERIFIED"]);
+const CANCELLABLE = new Set(["SEARCHING_FOR_RIDER", "ACCEPTED", "ARRIVED", "VERIFIED", "START"]);
 
 /** --- Helpers responsive (base iPhone 11 ~ 375x812) --- */
 const BASE_W = 375;

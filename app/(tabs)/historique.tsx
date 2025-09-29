@@ -2,7 +2,9 @@ import { DisplayLoading } from '@/components/DisplayLoading';
 import RenderEnCours from '@/components/RenderEnCours';
 import RenderHistorique from '@/components/RenderHistorique';
 import { apiRequest } from '@/services/api';
+import { useWS } from '@/services/WSProvider';
 import useStore from '@/store/useStore';
+import { IRide } from '@/types';
 import { groupByDate } from '@/utils/groupByDate';
 import { Icon } from '@rneui/base';
 import { router } from 'expo-router';
@@ -28,6 +30,8 @@ type Grouped = { title: string; data: Ride[] };
 
 export default function HistoriqueScreen() {
   const insets = useSafeAreaInsets();
+
+  const { emit } = useWS()
 
   // ✅ Ne garder que ce qui est nécessaire du store pour éviter des re-render inutiles
   const { tok, isAuthenticated, setHistorique, setEnCours } = useStore();
@@ -161,6 +165,12 @@ export default function HistoriqueScreen() {
     }
   };
 
+  const onCancel = async (ride: IRide) => {
+    console.log(ride._id)
+    emit('cancelRideCustomer', ride?._id)
+    onRefresh()
+  }
+
   /* ---------- FlatList onEndReached handlers ---------- */
   const loadMoreEnCours = () => {
     if (loadingEnCours || loadingMoreEnCours) return;
@@ -188,7 +198,7 @@ export default function HistoriqueScreen() {
         refreshControl={
           <RefreshControl refreshing={refreshingEnCours} onRefresh={onRefresh} />
         }
-        renderItem={({ item }) => <RenderEnCours ride={item} />}
+        renderItem={({ item }) => <RenderEnCours ride={item} onCancel={onCancel} />}
         onEndReachedThreshold={0.5}
         onEndReached={loadMoreEnCours}
         ListEmptyComponent={

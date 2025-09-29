@@ -5,20 +5,22 @@ import useStore from "@/store/useStore";
 
 export const GOOGLE_API_KEY = "AIzaSyB6_OxzEd6VT4yqdW2zS0wjT7Gc6w9xxTw";
 
+export const MAPBOX_ACCESS_TOKEN = "pk.eyJ1Ijoiam1zdGF4aSIsImEiOiJjbWYyb2ZnMjAyZWlsMm1zaHp5NWF1bnQ5In0.0RxF1gJzX-lgbtyczTDTFg"
+
 const test: boolean = __DEV__;
 
 export const apiUrl: string = test ?
-    "http://192.168.100.4:5000/api/"
+    "http://192.168.100.15:5000/api/"
     :
     "https://api.jmstaxi.com/api/"
 
 export const socketUrl: string = test ?
-    "http://192.168.100.4:5000"
+    "http://192.168.100.15:5000"
     :
     "https://api.jmstaxi.com"
 
 export const photoUrl: string = test ?
-    "http://192.168.100.4:5000/"
+    "http://192.168.100.15:5000/"
     :
     "https://api.jmstaxi.com/"
 
@@ -152,6 +154,29 @@ export interface Coordinates {
 //     }
 // };
 
+// export const searchPlaces = async (text: string) => {
+//     if (text.length < 3) return [];
+
+//     const store = useStore.getState();
+
+//     try {
+//         const res = await fetch(
+//             `https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${encodeURIComponent(
+//                 text
+//             )}&key=${GOOGLE_API_KEY}&language=fr&components=country:${store.user.countryCode}`
+//         );
+
+//         const json = await res.json();
+
+//         console.log(json)
+
+//         return Array.isArray(json.predictions) ? json.predictions : [];
+//     } catch (error) {
+//         console.error("Erreur API Google Autocomplete :", error);
+//         return [];
+//     }
+// };
+
 export const searchPlaces = async (text: string) => {
     if (text.length < 3) return [];
 
@@ -159,45 +184,106 @@ export const searchPlaces = async (text: string) => {
 
     try {
         const res = await fetch(
-            `https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${encodeURIComponent(
+            `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(
                 text
-            )}&key=${GOOGLE_API_KEY}&language=fr&components=country:${store.user.countryCode}`
+            )}.json?access_token=${MAPBOX_ACCESS_TOKEN}&language=fr&country=${store.user.countryCode}&types=country,region,place,district,locality,postcode,neighborhood,address,poi&autocomplete=true`
         );
 
         const json = await res.json();
 
-        return Array.isArray(json.predictions) ? json.predictions : [];
+        console.log('==> ', json)
+
+        if (!json.features) return [];
+
+        return json.features.map((feature: any) => ({
+            description: feature.place_name,
+            place_id: feature.id,
+            latitude: feature.center[1],
+            longitude: feature.center[0],
+            address: feature.place_name,
+            feature: feature
+        }));
     } catch (error) {
-        console.error("Erreur API Google Autocomplete :", error);
+        console.error("Erreur API Mapbox Geocoding :", error);
         return [];
     }
 };
 
-
 export const getPlaceDetails = async (placeId: string): Promise<Coordinates | null> => {
     try {
         const res = await fetch(
-            `https://maps.googleapis.com/maps/api/place/details/json?placeid=${placeId}&key=${GOOGLE_API_KEY}`
+            `https://api.mapbox.com/geocoding/v5/mapbox.places/${placeId}.json?access_token=${MAPBOX_ACCESS_TOKEN}`
         );
 
         const json = await res.json();
 
-        // console.log(json)
+        console.log('=====> ', json)
 
-        if (json.status !== 'OK' || !json.result?.geometry?.location) {
+        if (!json.features || json.features.length === 0) {
             return null;
         }
 
-        const location = json.result.geometry.location;
-        const address = json.result.formatted_address;
+        const feature = json.features[0];
+        const location = feature.center;
 
         return {
-            latitude: location.lat,
-            longitude: location.lng,
-            address,
+            latitude: location[1],
+            longitude: location[0],
+            address: feature.place_name,
         };
     } catch (error) {
-        console.error('Erreur API Google Place Details :', error);
+        console.error('Erreur API Mapbox Place Details :', error);
         return null;
     }
 };
+
+// Fonction pour le géocodage inverse (reverse geocoding)
+export const reverseGeocode = async (lat: number, lng: number): Promise<string> => {
+    try {
+        const res = await fetch(
+            `https://api.mapbox.com/geocoding/v5/mapbox.places/${lng},${lat}.json?access_token=${MAPBOX_ACCESS_TOKEN}&language=fr&types=address,place,poi`
+        );
+
+        const json = await res.json();
+
+        console.log(json);
+
+        if (!json.features || json.features.length === 0) {
+            return `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
+        }
+
+        return json.features[0].place_name || `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
+    } catch (error) {
+        console.error('Erreur API Mapbox Reverse Geocoding :', error);
+        return `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
+    }
+};
+
+
+// export const getPlaceDetails = async (placeId: string): Promise<Coordinates | null> => {
+//     try {
+//         const res = await fetch(
+//             `https://maps.googleapis.com/maps/api/place/details/json?placeid=${placeId}&key=${GOOGLE_API_KEY}`
+//         );
+
+//         const json = await res.json();
+
+//         // console.log(json)
+
+//         if (json.status !== 'OK' || !json.result?.geometry?.location) {
+//             return null;
+//         }
+
+//         const location = json.result.geometry.location;
+//         const address = json.result.formatted_address;
+
+//         return {
+//             latitude: location.lat,
+//             longitude: location.lng,
+//             address,
+//         };
+//     } catch (error) {
+//         console.error('Erreur API Google Place Details :', error);
+//         return null;
+//     }
+// };

@@ -3,7 +3,7 @@ import { CustomButton } from "@/components/CustomButton";
 import CustomHeader from "@/components/CustomHeader";
 import { CustomLocationTextInput } from "@/components/CustomTextInput";
 import MapPickerModal from "@/components/MapPickerModal";
-import { apiRequest, Coordinates, getPlaceDetails, searchPlaces } from "@/services/api";
+import { apiRequest, Coordinates, getPlaceDetails, searchPlaces, MAPBOX_ACCESS_TOKEN } from "@/services/api";
 import { getDistanceFromLatLonInKm } from "@/services/distanceCalculator";
 import useStore from "@/store/useStore";
 import { showError, showSuccess } from "@/utils/showToast";
@@ -113,24 +113,45 @@ export default function AddCourse() {
 
   /** Sélection depuis Google Places (liste) */
   const handlePlaceSelect = useCallback(
-    async (placeId: string) => {
-      try {
-        const location: Coordinates | null = await getPlaceDetails(placeId);
-        if (!location) return;
+    // async (placeId: string) => {
+    //   try {
+    //     const location: Coordinates | null = await getPlaceDetails(placeId);
+    //     if (!location) return;
 
-        if (focusedInput === "drop") {
-          setDrop(location.address ?? "");
-          setDropCoords(location);
-        } else {
-          setPickup(location.address ?? "");
-          setPickupCoords(location);
-        }
-        setSuggestions([]);
-        Keyboard.dismiss();
-      } catch {
-        // silencieux
-      }
-    },
+    //     if (focusedInput === "drop") {
+    //       setDrop(location.address ?? "");
+    //       setDropCoords(location);
+    //     } else {
+    //       setPickup(location.address ?? "");
+    //       setPickupCoords(location);
+    //     }
+    //     setSuggestions([]);
+    //     Keyboard.dismiss();
+    //   } catch {
+    //     // silencieux
+    //   }
+    // },
+
+    (item: any) => {
+    // item contient déjà latitude, longitude et address
+    if (!item) return;
+
+    const location: Coordinates = { 
+      latitude: item.latitude, 
+      longitude: item.longitude, 
+      address: item.address 
+    };
+
+    if (focusedInput === "drop") {
+      setDrop(location.address ?? "");
+      setDropCoords(location);
+    } else {
+      setPickup(location.address ?? "");
+      setPickupCoords(location);
+    }
+    setSuggestions([]);
+    Keyboard.dismiss();
+  },
     [focusedInput]
   );
 
@@ -142,6 +163,26 @@ export default function AddCourse() {
     Number(a.longitude) === Number(b.longitude);
 
   const lastComputedRef = useRef<{ p?: Coordinates | null; d?: Coordinates | null } | null>(null);
+
+  // Fonction pour calculer la distance avec Mapbox
+  const calculateMapboxDistance = async (lat1: number, lon1: number, lat2: number, lon2: number): Promise<number> => {
+    try {
+      const url = `https://api.mapbox.com/directions/v5/mapbox/driving/${lon1},${lat1};${lon2},${lat2}?access_token=${MAPBOX_ACCESS_TOKEN}&geometries=geojson`;
+      
+      const response = await fetch(url);
+      const data = await response.json();
+      
+      if (!data.routes || data.routes.length === 0) {
+        throw new Error("Aucun itinéraire trouvé");
+      }
+      
+      // Distance en mètres, conversion en km
+      return data.routes[0].distance / 1000;
+    } catch (error) {
+      console.error("Erreur Mapbox Directions:", error);
+      throw error;
+    }
+  };
 
   /** Calcul distance + tarifs (après que pickup & drop soient définis) */
   const checkDistanceAndPrice = useCallback(async () => {
@@ -164,16 +205,24 @@ export default function AddCourse() {
       return;
     }
 
-    const distance = getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2);
-    const minDistance = 0.5;
-    const maxDistance = 50;
+    // Utilisez Mapbox pour calculer la distance et la durée
+    try {
+      const distance = await calculateMapboxDistance(lat1, lon1, lat2, lon2);
+      const minDistance = 0.5;
+      const maxDistance = 50;
 
-    if (distance < minDistance) {
-      showError("L'emplacement choisi est trop proche");
-      return;
-    }
-    if (distance > maxDistance) {
-      showError("L'emplacement choisi est trop éloigné");
+      if (distance < minDistance) {
+        showError("L'emplacement choisi est trop proche");
+        return;
+      }
+      if (distance > maxDistance) {
+        showError("L'emplacement choisi est trop éloigné");
+        return;
+      }
+
+      setPricingLoading(true);
+    } catch (error) {
+      showError("Erreur lors du calcul de la distance");
       return;
     }
 
@@ -352,7 +401,8 @@ export default function AddCourse() {
             item?.description && item?.place_id ? (
               <TouchableOpacity
                 key={item.place_id}
-                onPress={() => handlePlaceSelect(item.place_id)}
+                onPress={() => handlePlaceSelect(item)}
+                // onPress={() => handlePlaceSelect(item.place_id)}
                 className="flex-row items-center border-[1px] border-primary/10 px-4 py-4 rounded-lg mb-2"
               >
                 <Icon name="location-pin" type="entypo" size={20} color="#000000" />

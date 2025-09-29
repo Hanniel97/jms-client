@@ -4,7 +4,7 @@ import { useFonts } from 'expo-font';
 import { useKeepAwake } from 'expo-keep-awake';
 import { StatusBar } from 'expo-status-bar';
 import React, { JSX, Suspense, useEffect } from 'react';
-import { ActivityIndicator } from 'react-native';
+import { ActivityIndicator, LogBox } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import 'react-native-reanimated';
 import Toast, { BaseToast, BaseToastProps, ErrorToast } from 'react-native-toast-message';
@@ -13,6 +13,16 @@ import Routes from './router';
 import NotificationTopBanner from '@/components/NotificationTopBanner';
 import { useNotificationStore } from "@/store/notificationStore";
 import { router } from 'expo-router';
+import Mapbox from '@rnmapbox/maps';
+
+LogBox.ignoreLogs([
+  'new NativeEventEmitter',
+  'ViewTagResolver',
+]);
+
+const MAPBOX_TOKEN = process.env.EXPO_PUBLIC_MAPBOX_TOKEN ?? '';
+Mapbox.setAccessToken(MAPBOX_TOKEN);
+Mapbox.setTelemetryEnabled(false);
 
 export const NotificationNavigator = () => {
   const { pendingRoute, setPendingRoute } = useNotificationStore();

@@ -34,7 +34,7 @@ export const WSProvider: React.FC<{ children: React.ReactNode }> = ({ children }
     const heartbeatRef = useRef<number | null>(null);
     const [connected, setConnected] = useState<boolean>(false);
 
-    const { tok, user } = useStore();
+    const { tok, user, setLogout } = useStore();
 
     // --- Create / init socket (idempotent) ---
     const initializeSocket = useCallback(
