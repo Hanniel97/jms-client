@@ -104,6 +104,7 @@ export const WSProvider: React.FC<{ children: React.ReactNode }> = ({ children }
 
             s.on("connect_error", (err: any) => {
                 console.error("[WS] connect_error", err?.message || err);
+                setLogout()
                 // if the server returns auth error, try to refresh token and reconnect
                 if (err && (err.message === "Authentication error" || err.message?.includes("Authentication"))) {
                     // attempt refresh and re-connect

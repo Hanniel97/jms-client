@@ -27,12 +27,12 @@ interface RideItem {
     paymentMethod: string,
 }
 
-const LiveTrackingSheet: React.FC<{ item: RideItem, duration: number, car: ICar, rating: { moyenne: number, total: number } }> = ({
-    item, duration, car, rating
+const LiveTrackingSheet: React.FC<{ item: RideItem, distance, duration: number, car: ICar, rating: { moyenne: number, total: number } }> = ({
+    item, duration, car, rating, distance
 }) => {
     const { emit } = useWS();
 
-    // console.log('duré de la course:', duration)
+    console.log('duré de la course:', distance)
 
     const cancelOrder = () => {
         emit('cancelRideCustomer', item?._id)
@@ -278,8 +278,8 @@ const LiveTrackingSheet: React.FC<{ item: RideItem, duration: number, car: ICar,
                             <View style={{ flex: 0.60 }} className="p-2 gap-1 flex-row justify-between">
                                 <View className="justify-center items-center">
                                     <Text className="text-gray-500 font-['RubikRegular']">Distance</Text>
-                                    <Text className="font-['RubikBold']">{item?.distance
-                                        ? `${item?.distance.toFixed(2)} Km`
+                                    <Text className="font-['RubikBold']">{distance
+                                        ? `${distance.toFixed(2)} Km`
                                         : '...'}</Text>
                                 </View>
                                 <View className="justify-center items-center">
