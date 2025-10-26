@@ -1,28 +1,26 @@
 import useStore from "@/store/useStore";
-// import { GOOGLE_API_KEY } from '@env';
+import { API_URL, GOOGLE_API_KEY, PHOTO_URL, SOCKET_URL } from '@env';
 
-// import { Platform } from "react-native";
-
-export const GOOGLE_API_KEY = "AIzaSyBM3Ypc87MFlDDs1Efegj82XbwP9HktCRY";
-
-export const MAPBOX_ACCESS_TOKEN = "pk.eyJ1Ijoiam1zdGF4aSIsImEiOiJjbWYyb2ZnMjAyZWlsMm1zaHp5NWF1bnQ5In0.0RxF1gJzX-lgbtyczTDTFg"
+export const apiUrl = API_URL;
+export const socketUrl = SOCKET_URL;
+export const photoUrl = PHOTO_URL;
 
 const test: boolean = __DEV__;
 
-export const apiUrl: string = test ?
-    "http://192.168.100.15:5000/api/"
-    :
-    "https://api.jmstaxi.com/api/"
+// export const apiUrl: string = !test ?
+//     "http://192.168.100.15:5000/api/"
+//     :
+//     "https://api.jmstaxi.com/api/"
 
-export const socketUrl: string = test ?
-    "http://192.168.100.15:5000"
-    :
-    "https://api.jmstaxi.com"
+// export const socketUrl: string = !test ?
+//     "http://192.168.100.15:5000"
+//     :
+//     "https://api.jmstaxi.com"
 
-export const photoUrl: string = test ?
-    "http://192.168.100.15:5000/"
-    :
-    "https://api.jmstaxi.com/"
+// export const photoUrl: string = !test ?
+//     "http://192.168.100.15:5000/"
+//     :
+//     "https://api.jmstaxi.com/"
 
 type Method = 'GET' | 'POST' | 'PUT' | 'DELETE';
 

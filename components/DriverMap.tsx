@@ -127,7 +127,7 @@ function buildGradientSegments(
 
 export default function DriverMap({ rideData, rider }: { rideData: any, rider: { latitude: number, longitude: number, heading: number } }) {
     const insets = useSafeAreaInsets();
-    const { position, setPosition } = useStore()
+    const { position, setPosition, setRideProgress, clearRideProgress } = useStore()
 
     function selectRouteByStatus(ride: any) {
         const status = ride?.status;
@@ -383,6 +383,13 @@ export default function DriverMap({ rideData, rider }: { rideData: any, rider: {
             if (liveAnimRef.current) cancelAnimationFrame(liveAnimRef.current);
         };
     }, [rider?.latitude, rider?.longitude, rider?.heading]);
+
+    // Persist ETA and remaining distance in global store for Home page card
+    useEffect(() => {
+        if (Number.isFinite(remainingMs) && Number.isFinite(remainingMeters)) {
+            try { setRideProgress(remainingMs, remainingMeters); } catch {}
+        }
+    }, [remainingMs, remainingMeters]);
 
     // format helpers
     function formatDistance(m: number) {

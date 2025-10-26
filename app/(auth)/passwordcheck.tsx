@@ -77,19 +77,19 @@ export default function passwordcheck() {
 
     return (
         <View className="flex-1 bg-white dark:bg-black">
-            <CustomHeader showBack={true} showTitle={false} />
+            <CustomHeader showBack={true} title="Mot de passe" />
             <KeyboardAvoidWrapper>
                 <View className="px-3 flex-1 h-full">
-                    <Text className="text-sm font-['RubikBold'] text-black dark:text-white mb-2">
+                    {/* <Text className="text-sm font-['RubikBold'] text-black dark:text-white mb-2">
                         Entrer votre mot de passe
-                    </Text>
+                    </Text> */}
 
-                    <Text className="text-gray-500 font-['RubikRegular'] text-sm dark:text-white mb-8">
+                    <Text className="text-gray-500 font-['RubikRegular'] text-sm dark:text-white mt-2 mb-8">
                         Entrer votre mot de passe pour vous connecter.
                     </Text>
 
                     <CustomTextInput
-                        placeholder="Mot de passe"
+                        placeholder="**********"
                         icon0={<Icon name="locked" type="fontisto" size={20} color="#000000" />}
                         icon={
                             secureText ? (

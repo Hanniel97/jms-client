@@ -1,20 +1,9 @@
 import { INotification, IPosition, IPrice, IRide, ITransaction, IUser } from "@/types";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
+import { persist, createJSONStorage } from 'zustand/middleware';
 
-const AsyncStore = {
-    getItem: async (key: string) => {
-        const value = await AsyncStorage.getItem(key);
-        return value ? JSON.parse(value) : null;
-    },
-    setItem: async (key: string, value: any) => {
-        await AsyncStorage.setItem(key, JSON.stringify(value));
-    },
-    removeItem: async (key: string) => {
-        await AsyncStorage.removeItem(key);
-    },
-};
+// Use JSON storage adapter recommended for React Native
 
 interface Store {
     tok: string,
@@ -29,6 +18,10 @@ interface Store {
     historiques: IRide[];
     enCours: IRide[];
     currentRide: IRide | null;
+    currentRideEtaMs: number | null;
+    currentRideRemainingMeters: number | null;
+    currentRideEtaUpdatedAt: number | null;
+    driverLocation: { latitude: number; longitude: number; heading?: number } | null;
     prices: IPrice[];
     setPrices: (prices: IPrice[]) => void;
     setTok: (tok: string) => void;
@@ -44,6 +37,9 @@ interface Store {
     setEnCours: (enCours: IRide[]) => void;
     setCurrentRide: (ride: IRide | null) => void;
     clearCurrentRide: () => void;
+    setRideProgress: (etaMs: number, remainingMeters: number) => void;
+    clearRideProgress: () => void;
+    setDriverLocation: (loc: { latitude: number; longitude: number; heading?: number } | null) => void;
     setLogout: () => void;
 }
 
@@ -84,6 +80,10 @@ const useStore = create<Store>()(
             historiques: [],
             enCours: [],
             currentRide: null,
+            currentRideEtaMs: null,
+            currentRideRemainingMeters: null,
+            currentRideEtaUpdatedAt: null,
+            driverLocation: null,
             prices: [],
             setPrices: (prices) => set({ prices }),
             setTok: (tok) => set({ tok }),
@@ -99,6 +99,9 @@ const useStore = create<Store>()(
             setEnCours: (enCours) => set({ enCours }),
             setCurrentRide: (ride) => set({ currentRide: ride }),
             clearCurrentRide: () => set({ currentRide: null }),
+            setRideProgress: (etaMs, remainingMeters) => set({ currentRideEtaMs: etaMs, currentRideRemainingMeters: remainingMeters, currentRideEtaUpdatedAt: Date.now() }),
+            clearRideProgress: () => set({ currentRideEtaMs: null, currentRideRemainingMeters: null, currentRideEtaUpdatedAt: null }),
+            setDriverLocation: (loc) => set({ driverLocation: loc }),
             setLogout: () => {
                 set({
                     isAuthenticated: false,
@@ -133,13 +136,17 @@ const useStore = create<Store>()(
                     historiques: [],
                     enCours: [],
                     currentRide: null,
+                    currentRideEtaMs: null,
+                    currentRideRemainingMeters: null,
+                    currentRideEtaUpdatedAt: null,
+                    driverLocation: null,
                     prices: [],
                 })
             }
         }),
         {
             name: 'app-storage', // Nom du stockage dans AsyncStorage
-            storage: AsyncStore, // Utilisation d'AsyncStorage
+            storage: createJSONStorage(() => AsyncStorage),
         }
     )
 )
