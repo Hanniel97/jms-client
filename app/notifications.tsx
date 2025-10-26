@@ -4,6 +4,7 @@ import { DisplayLoading } from "@/components/DisplayLoading";
 import RenderNotification from "@/components/RenderNotifications";
 import { apiRequest } from "@/services/api";
 import useStore from "@/store/useStore";
+import { INotification } from "@/types";
 import { groupNotificationsByDate } from "@/utils/groupNotificationsByDate";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import {
@@ -21,7 +22,7 @@ export default function notifications() {
     const { user, tok, isAuthenticated, notifications, setNotification } = useStore();
 
     // Etats de pagination + données locales
-    const [notificationData, setNotificationData] = useState([]); // tableau aplati
+    const [notificationData, setNotificationData] = useState<INotification[]>([]); // tableau aplati
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
 
@@ -72,7 +73,7 @@ export default function notifications() {
                 const total = res?.pagination?.total ?? res?.total ?? (listFromRes.length || 0);
                 const totalP = res?.pagination?.totalPages ?? (total ? Math.max(1, Math.ceil(total / PAGE_LIMIT)) : 1);
 
-                setPage(parseInt(requestedPage, 10));
+                setPage(requestedPage);
                 setTotalPages(parseInt(totalP, 10));
             } catch (e) {
                 console.error("Erreur récupération notifications :", e);

@@ -1,4 +1,4 @@
-import { IUser, INotification, IPosition, ITransaction, IRide } from "@/types";
+import { INotification, IPosition, IPrice, IRide, ITransaction, IUser } from "@/types";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
@@ -29,11 +29,13 @@ interface Store {
     historiques: IRide[];
     enCours: IRide[];
     currentRide: IRide | null;
+    prices: IPrice[];
+    setPrices: (prices: IPrice[]) => void;
     setTok: (tok: string) => void;
     setRefreshTok: (refreshtok: string) => void;
     setIsAuthenticated: (isAuthenticated: boolean) => void;
     setUser: (newUser: IUser) => void;
-    setTransaction: (transactions: ITransaction) => void;
+    setTransaction: (transactions: ITransaction[]) => void;
     setOutOfRange: (data: boolean) => void;
     setPosition: (position: IPosition) => void;
     setFirst: (first: boolean) => void;
@@ -82,6 +84,8 @@ const useStore = create<Store>()(
             historiques: [],
             enCours: [],
             currentRide: null,
+            prices: [],
+            setPrices: (prices) => set({ prices }),
             setTok: (tok) => set({ tok }),
             setRefreshTok: (refresh_tok) => set({ refresh_tok }),
             setIsAuthenticated: (isAuthenticated) => set({ isAuthenticated }),
@@ -129,6 +133,7 @@ const useStore = create<Store>()(
                     historiques: [],
                     enCours: [],
                     currentRide: null,
+                    prices: [],
                 })
             }
         }),

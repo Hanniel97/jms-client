@@ -1,6 +1,6 @@
+import DriverMap from "@/components/DriverMap";
 import LiveTrackingSheet from "@/components/LiveTrackingSheet";
 import SearchingRiderSheet from "@/components/SearchingRiderSheet";
-import { TrackingMapV3 } from "@/components/TrackingMapV3";
 import { apiRequest } from "@/services/api";
 import { useWS } from "@/services/WSProvider";
 import useStore from "@/store/useStore";
@@ -148,67 +148,26 @@ export const LiveRide = () => {
         } catch { }
     }, []);
 
+    // const playStartRideSound = async () => {
+    //     try {
+    //         // Charger le fichier audio depuis les assets
+    //         const { sound } = await Audio.Sound.createAsync(
+    //             require("../assets/sound/voice.m4a") // chemin vers ton fichier
+    //         );
 
-    // ==================== Helper: choisir la route active selon status ====================
-    // const getActiveRoute = useCallback((ride: any) => {
-    //     if (!ride) return null;
+    //         // Jouer le son
+    //         await sound.playAsync();
 
-    //     // console.log("initial ride", ride.routes.initial)
-    //     // console.log("driver to pickup", ride.routes.driverToPickup)
-    //     // console.log("pickup to drop", ride.routes.pickupToDrop)
-
-    //     // routes container (guard)
-    //     const routes = ride.routes ?? {};
-
-    //     const status = String(ride.status ?? "").toUpperCase();
-
-    //     // Priority selection per status
-    //     if (status === RideStatus.SEARCHING_FOR_RIDER) {
-    //         if (routes.initial?.geometry) {
-    //             return { geometry: routes.initial.geometry, distance: routes.initial.distance, duration: routes.initial.duration, key: "initial" };
-    //         }
-    //         if (ride.routeGeometry) {
-    //             return { geometry: ride.routeGeometry, distance: ride.distance, duration: ride.estimatedDuration, key: "legacy_initial" };
-    //         }
-    //         return null;
+    //         // Libérer la ressource après la lecture
+    //         sound.setOnPlaybackStatusUpdate((status) => {
+    //             if (status.isLoaded && status.didJustFinish) {
+    //                 sound.unloadAsync();
+    //             }
+    //         });
+    //     } catch (error) {
+    //         console.error("Erreur lecture audio:", error);
     //     }
-
-    //     if (status === RideStatus.ACCEPTED) {
-    //         if (routes.driverToPickup?.geometry) {
-    //             return { geometry: routes.driverToPickup.geometry, distance: routes.driverToPickup.distance, duration: routes.driverToPickup.duration, key: "driverToPickup" };
-    //         }
-    //         // fallback to initial / legacy
-    //         if (routes.initial?.geometry) {
-    //             return { geometry: routes.initial.geometry, distance: routes.initial.distance, duration: routes.initial.duration, key: "initial" };
-    //         }
-    //         if (ride.routeGeometry) {
-    //             return { geometry: ride.routeGeometry, distance: ride.distance, duration: ride.estimatedDuration, key: "legacy_initial" };
-    //         }
-    //         return null;
-    //     }
-
-    //     if ([RideStatus.ARRIVED, RideStatus.VERIFIED, RideStatus.START].includes(status)) {
-    //         if (routes.pickupToDrop?.geometry) {
-    //             return { geometry: routes.pickupToDrop.geometry, distance: routes.pickupToDrop.distance, duration: routes.pickupToDrop.duration, key: "pickupToDrop" };
-    //         }
-    //         // fallback chain
-    //         if (routes.initial?.geometry) {
-    //             return { geometry: routes.initial.geometry, distance: routes.initial.distance, duration: routes.initial.duration, key: "initial" };
-    //         }
-    //         if (ride.routeGeometry) {
-    //             return { geometry: ride.routeGeometry, distance: ride.distance, duration: ride.estimatedDuration, key: "legacy_initial" };
-    //         }
-    //         return null;
-    //     }
-
-    //     // default fallback: prefer pickupToDrop > driverToPickup > initial > routeGeometry
-    //     if (routes.pickupToDrop?.geometry) return { geometry: routes.pickupToDrop.geometry, distance: routes.pickupToDrop.distance, duration: routes.pickupToDrop.duration, key: "pickupToDrop" };
-    //     if (routes.driverToPickup?.geometry) return { geometry: routes.driverToPickup.geometry, distance: routes.driverToPickup.distance, duration: routes.driverToPickup.duration, key: "driverToPickup" };
-    //     if (routes.initial?.geometry) return { geometry: routes.initial.geometry, distance: routes.initial.distance, duration: routes.initial.duration, key: "initial" };
-    //     if (ride.routeGeometry) return { geometry: ride.routeGeometry, distance: ride.distance, duration: ride.estimatedDuration, key: "legacy_initial" };
-
-    //     return null;
-    // }, []);
+    // };
 
     const getActiveRoute = useCallback((ride: any) => {
         if (!ride) return null;
@@ -487,6 +446,12 @@ export const LiveRide = () => {
         };
     }, [resolvedRideId, emit, on, off, handleRideData, handleRideUpdate, handleRideCanceled, handleAnyError]);
 
+    // useEffect(() => {
+    // if (rideData?.status === "START") {
+    //     playStartRideSound();
+    // }
+    // }, [rideData?.status]);
+
     // ==================== Cold rehydration ====================
     useEffect(() => {
         (async () => {
@@ -520,6 +485,8 @@ export const LiveRide = () => {
             getRide(currentRide._id);
         }
     }, [id, currentRide, getRide]);
+
+    console.log("rideData", JSON.stringify(rideData));
 
     // ==================== WS rider live position ====================
     useEffect(() => {
@@ -669,30 +636,14 @@ export const LiveRide = () => {
 
     return (
         <View className="flex-1 bg-white">
+
             {rideData ? (
                 <>
-                    {/* <TrackingMapV3
-                        key={trackingMapKey}
-                        setDuration={setDuration}
-                        bottomSheetHeight={mapHeight}
-                        height={mapHeight}
-                        status={rideData?.status}
-                        // route chosen according to status & available routes
-                        routeGeometry={activeRoute?.geometry ?? null}
-                        // ETA/distance prefer those of the active route, fallback to top-level fields
-                        serverEtaMin={activeRoute?.duration ?? rideData?.estimatedDuration}
-                        // serverEtaText={rideData?.estimatedDurationFormatted}
-                        serverDistanceKm={activeRoute?.distance ?? rideData?.distance}
-                        drop={{
-                            latitude: toNum(rideData?.drop?.latitude, 0),
-                            longitude: toNum(rideData?.drop?.longitude, 0),
-                            address: rideData?.drop?.address,
-                        }}
-                        pickup={{
-                            latitude: toNum(rideData?.pickup?.latitude, 0),
-                            longitude: toNum(rideData?.pickup?.longitude, 0),
-                            address: rideData?.pickup?.address,
-                        }}
+
+                    {/* <NewTracking
+                        routeKey={trackingMapKey}
+                        selectedRoute={activeRoute ?? null}
+                        rideData={rideData}
                         rider={
                             effectiveRider
                                 ? {
@@ -700,45 +651,12 @@ export const LiveRide = () => {
                                     longitude: toNum(effectiveRider.longitude, 0),
                                     heading: isNum(effectiveRider.heading) ? effectiveRider.heading : 0,
                                 }
-                                : {}
+                                : null
                         }
-                        onOffRoute={(meters) => {
-                            // Affiche l’info; le recalcul est géré côté serveur
-                            if (meters > 50) {
-                                showInfo(`Hors itinéraire (${meters.toFixed(0)} m)`);
-                            }
-                        }}
-                        onStepChange={(step) => {
-                            // Si le front n'a pas de steps (route côté serveur), ce callback peut être null
-                            if (!step) return;
-                            showInfo(`${step.distanceText} — ${step.instruction}`);
-                        }}
                     /> */}
 
-                    <TrackingMapV3
-                        key={trackingMapKey}
-                        setDuration={setDuration}
-                        bottomSheetHeight={mapHeight}
-                        height={mapHeight}
-                        status={rideData?.status}
-                        // route chosen according to status & available routes
-                        routeGeometry={activeRoute?.geometry ?? null}
-                        // ETA/distance prefer those of the active route, fallback to top-level fields
-                        serverEtaMin={activeRoute?.duration ?? rideData?.estimatedDuration}
-                        serverEtaText={rideData?.estimatedDurationFormatted ?? null}
-                        serverDistanceKm={activeRoute?.distance ?? rideData?.distance}
-                        // NEW: pass steps array if available so the map can detect steps and call onStepChange
-                        routeSteps={activeRoute?.steps ?? []}
-                        drop={{
-                            latitude: toNum(rideData?.drop?.latitude, 0),
-                            longitude: toNum(rideData?.drop?.longitude, 0),
-                            address: rideData?.drop?.address,
-                        }}
-                        pickup={{
-                            latitude: toNum(rideData?.pickup?.latitude, 0),
-                            longitude: toNum(rideData?.pickup?.longitude, 0),
-                            address: rideData?.pickup?.address,
-                        }}
+                    <DriverMap
+                        rideData={rideData}
                         rider={
                             effectiveRider
                                 ? {
@@ -746,17 +664,8 @@ export const LiveRide = () => {
                                     longitude: toNum(effectiveRider.longitude, 0),
                                     heading: isNum(effectiveRider.heading) ? effectiveRider.heading : 0,
                                 }
-                                : {}
+                                : null
                         }
-                        onOffRoute={(meters) => {
-                            if (meters > 50) {
-                                showInfo(`Hors itinéraire (${meters.toFixed(0)} m)`);
-                            }
-                        }}
-                        onStepChange={(step) => {
-                            if (!step) return;
-                            showInfo(`${step.distanceText} — ${step.instruction}`);
-                        }}
                     />
 
                     <BottomSheet

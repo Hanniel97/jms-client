@@ -5,6 +5,13 @@ export interface IPosition {
     heading?: number;
 }
 
+export type IPrice = {
+    vehicleType: string,
+    baseFare: number,
+    perKmRate: number,
+    minimumFare: number
+}
+
 export interface IUser {
     _id: string,
     role: string,

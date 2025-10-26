@@ -93,7 +93,7 @@ export default function phonecheck() {
             } else {
                 setUser(res.data)
                 setLoading(false)
-                showSuccess(res.message)
+                // showSuccess(res.message)
                 router.push('/(auth)/passwordcheck')
             }
         }

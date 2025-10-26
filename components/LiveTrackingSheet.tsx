@@ -32,7 +32,7 @@ const LiveTrackingSheet: React.FC<{ item: RideItem, distance, duration: number, 
 }) => {
     const { emit } = useWS();
 
-    console.log('duré de la course:', distance)
+    // console.log('duré de la course:', distance)
 
     const cancelOrder = () => {
         emit('cancelRideCustomer', item?._id)

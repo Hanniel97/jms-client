@@ -1,17 +1,19 @@
+import useConnectivity from '@/hooks/useConnectivity';
 import { NotificationListener } from '@/services/notificationHandler';
 import { registerForPushNotificationsAsync } from '@/services/registerForPushNotificationAsync';
 import useStore from '@/store/useStore';
 import { Stack } from 'expo-router';
 import React, { useEffect } from 'react';
-import useConnectivity from '@/hooks/useConnectivity';
 
 const Routes = () => {
     const { isOnline } = useConnectivity();
     const { isAuthenticated, tok } = useStore();
 
+
     useEffect(() => {
         if (isAuthenticated) {
-        registerForPushNotificationsAsync(tok);
+            registerForPushNotificationsAsync(tok);
+            // console.log("Connectivity:", isOnline);
         }
     }, [tok, isAuthenticated]);
 

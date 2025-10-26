@@ -1,0 +1,2549 @@
+{
+    "pickup": {
+        "address": "C8GJ+2PW, Abomey Calavi, Bénin",
+        "latitude": 6.4233939,
+        "longitude": 2.3303957
+    },
+    "drop": {
+        "address": "Ave Jean-Paul II, Cotonou, Benin",
+        "latitude": 6.3536702,
+        "longitude": 2.3841757
+    },
+    "routes": {
+        "initial": {
+            "geometry": [
+                [
+                    6.42331,
+                    2.33033
+                ],
+                [
+                    6.4236,
+                    2.32995
+                ],
+                [
+                    6.42324,
+                    2.32966
+                ],
+                [
+                    6.4228,
+                    2.32932
+                ],
+                [
+                    6.42429,
+                    2.32768
+                ],
+                [
+                    6.42435,
+                    2.32755
+                ],
+                [
+                    6.42435,
+                    2.32749
+                ],
+                [
+                    6.42432,
+                    2.32743
+                ],
+                [
+                    6.42417,
+                    2.32725
+                ],
+                [
+                    6.4233,
+                    2.32658
+                ],
+                [
+                    6.42279,
+                    2.32618
+                ],
+                [
+                    6.42245,
+                    2.32587
+                ],
+                [
+                    6.42163,
+                    2.32511
+                ],
+                [
+                    6.42093,
+                    2.32447
+                ],
+                [
+                    6.42071,
+                    2.32426
+                ],
+                [
+                    6.42006,
+                    2.32509
+                ],
+                [
+                    6.41962,
+                    2.3256
+                ],
+                [
+                    6.41942,
+                    2.32583
+                ],
+                [
+                    6.41874,
+                    2.3266
+                ],
+                [
+                    6.41821,
+                    2.32715
+                ],
+                [
+                    6.41802,
+                    2.32736
+                ],
+                [
+                    6.41766,
+                    2.3278
+                ],
+                [
+                    6.41686,
+                    2.32877
+                ],
+                [
+                    6.41606,
+                    2.32971
+                ],
+                [
+                    6.41567,
+                    2.33016
+                ],
+                [
+                    6.41431,
+                    2.33173
+                ],
+                [
+                    6.41292,
+                    2.33327
+                ],
+                [
+                    6.41168,
+                    2.33461
+                ],
+                [
+                    6.41043,
+                    2.33607
+                ],
+                [
+                    6.40765,
+                    2.33927
+                ],
+                [
+                    6.40663,
+                    2.34047
+                ],
+                [
+                    6.40643,
+                    2.34071
+                ],
+                [
+                    6.40624,
+                    2.34093
+                ],
+                [
+                    6.40619,
+                    2.34099
+                ],
+                [
+                    6.40578,
+                    2.34146
+                ],
+                [
+                    6.40561,
+                    2.34161
+                ],
+                [
+                    6.40554,
+                    2.34165
+                ],
+                [
+                    6.40544,
+                    2.34168
+                ],
+                [
+                    6.4054,
+                    2.34175
+                ],
+                [
+                    6.40498,
+                    2.3415
+                ],
+                [
+                    6.40471,
+                    2.34139
+                ],
+                [
+                    6.40439,
+                    2.34129
+                ],
+                [
+                    6.40404,
+                    2.34123
+                ],
+                [
+                    6.4035,
+                    2.34121
+                ],
+                [
+                    6.40223,
+                    2.34126
+                ],
+                [
+                    6.40151,
+                    2.34135
+                ],
+                [
+                    6.40125,
+                    2.34139
+                ],
+                [
+                    6.40095,
+                    2.34147
+                ],
+                [
+                    6.39943,
+                    2.34202
+                ],
+                [
+                    6.39803,
+                    2.34255
+                ],
+                [
+                    6.39696,
+                    2.34293
+                ],
+                [
+                    6.39637,
+                    2.34316
+                ],
+                [
+                    6.39614,
+                    2.34329
+                ],
+                [
+                    6.39586,
+                    2.34349
+                ],
+                [
+                    6.39553,
+                    2.34381
+                ],
+                [
+                    6.39521,
+                    2.34418
+                ],
+                [
+                    6.39448,
+                    2.34512
+                ],
+                [
+                    6.39374,
+                    2.34609
+                ],
+                [
+                    6.39353,
+                    2.34644
+                ],
+                [
+                    6.39338,
+                    2.34682
+                ],
+                [
+                    6.3932,
+                    2.34748
+                ],
+                [
+                    6.39303,
+                    2.34792
+                ],
+                [
+                    6.39201,
+                    2.3497
+                ],
+                [
+                    6.39068,
+                    2.35198
+                ],
+                [
+                    6.39011,
+                    2.35297
+                ],
+                [
+                    6.38971,
+                    2.35369
+                ],
+                [
+                    6.38957,
+                    2.35398
+                ],
+                [
+                    6.38945,
+                    2.35433
+                ],
+                [
+                    6.3893,
+                    2.35496
+                ],
+                [
+                    6.38923,
+                    2.35552
+                ],
+                [
+                    6.38924,
+                    2.35674
+                ],
+                [
+                    6.3892,
+                    2.35719
+                ],
+                [
+                    6.389,
+                    2.35933
+                ],
+                [
+                    6.38855,
+                    2.36345
+                ],
+                [
+                    6.38842,
+                    2.36427
+                ],
+                [
+                    6.38828,
+                    2.36496
+                ],
+                [
+                    6.3877,
+                    2.36714
+                ],
+                [
+                    6.3872,
+                    2.36919
+                ],
+                [
+                    6.38669,
+                    2.37137
+                ],
+                [
+                    6.38652,
+                    2.37195
+                ],
+                [
+                    6.38633,
+                    2.37242
+                ],
+                [
+                    6.38589,
+                    2.37318
+                ],
+                [
+                    6.38556,
+                    2.37374
+                ],
+                [
+                    6.38518,
+                    2.37437
+                ],
+                [
+                    6.38501,
+                    2.3747
+                ],
+                [
+                    6.38461,
+                    2.37575
+                ],
+                [
+                    6.38418,
+                    2.37684
+                ],
+                [
+                    6.38392,
+                    2.37734
+                ],
+                [
+                    6.38356,
+                    2.37784
+                ],
+                [
+                    6.38326,
+                    2.37817
+                ],
+                [
+                    6.38308,
+                    2.37833
+                ],
+                [
+                    6.38282,
+                    2.37853
+                ],
+                [
+                    6.38228,
+                    2.37889
+                ],
+                [
+                    6.38181,
+                    2.3791
+                ],
+                [
+                    6.37969,
+                    2.37969
+                ],
+                [
+                    6.37918,
+                    2.37994
+                ],
+                [
+                    6.37875,
+                    2.38026
+                ],
+                [
+                    6.37837,
+                    2.38063
+                ],
+                [
+                    6.3782,
+                    2.38083
+                ],
+                [
+                    6.37792,
+                    2.38123
+                ],
+                [
+                    6.37771,
+                    2.38164
+                ],
+                [
+                    6.37757,
+                    2.38206
+                ],
+                [
+                    6.37746,
+                    2.38273
+                ],
+                [
+                    6.37733,
+                    2.38488
+                ],
+                [
+                    6.37714,
+                    2.38825
+                ],
+                [
+                    6.37702,
+                    2.38947
+                ],
+                [
+                    6.37702,
+                    2.38953
+                ],
+                [
+                    6.37699,
+                    2.38955
+                ],
+                [
+                    6.37696,
+                    2.38958
+                ],
+                [
+                    6.37693,
+                    2.38961
+                ],
+                [
+                    6.37689,
+                    2.38969
+                ],
+                [
+                    6.37673,
+                    2.38984
+                ],
+                [
+                    6.37648,
+                    2.39012
+                ],
+                [
+                    6.37628,
+                    2.39032
+                ],
+                [
+                    6.37596,
+                    2.39056
+                ],
+                [
+                    6.3758,
+                    2.39066
+                ],
+                [
+                    6.37546,
+                    2.39083
+                ],
+                [
+                    6.37436,
+                    2.39136
+                ],
+                [
+                    6.37318,
+                    2.39186
+                ],
+                [
+                    6.37285,
+                    2.39203
+                ],
+                [
+                    6.3725,
+                    2.39229
+                ],
+                [
+                    6.37227,
+                    2.3925
+                ],
+                [
+                    6.37208,
+                    2.39271
+                ],
+                [
+                    6.37186,
+                    2.393
+                ],
+                [
+                    6.37156,
+                    2.39326
+                ],
+                [
+                    6.37118,
+                    2.39344
+                ],
+                [
+                    6.37071,
+                    2.39355
+                ],
+                [
+                    6.36974,
+                    2.39382
+                ],
+                [
+                    6.3685,
+                    2.39414
+                ],
+                [
+                    6.36706,
+                    2.39448
+                ],
+                [
+                    6.36675,
+                    2.39458
+                ],
+                [
+                    6.36645,
+                    2.39469
+                ],
+                [
+                    6.36611,
+                    2.39486
+                ],
+                [
+                    6.3657,
+                    2.39509
+                ],
+                [
+                    6.36488,
+                    2.39559
+                ],
+                [
+                    6.36242,
+                    2.39698
+                ],
+                [
+                    6.36143,
+                    2.39756
+                ],
+                [
+                    6.36047,
+                    2.39815
+                ],
+                [
+                    6.35994,
+                    2.3984
+                ],
+                [
+                    6.35947,
+                    2.39858
+                ],
+                [
+                    6.35853,
+                    2.39884
+                ],
+                [
+                    6.3577,
+                    2.39906
+                ],
+                [
+                    6.35707,
+                    2.39918
+                ],
+                [
+                    6.35665,
+                    2.39927
+                ],
+                [
+                    6.35645,
+                    2.39941
+                ],
+                [
+                    6.35626,
+                    2.39964
+                ],
+                [
+                    6.35612,
+                    2.39988
+                ],
+                [
+                    6.35597,
+                    2.39984
+                ],
+                [
+                    6.35592,
+                    2.3998
+                ],
+                [
+                    6.35569,
+                    2.3994
+                ],
+                [
+                    6.35554,
+                    2.39913
+                ],
+                [
+                    6.35507,
+                    2.39823
+                ],
+                [
+                    6.35491,
+                    2.39785
+                ],
+                [
+                    6.35492,
+                    2.39723
+                ],
+                [
+                    6.35493,
+                    2.39663
+                ],
+                [
+                    6.35496,
+                    2.39568
+                ],
+                [
+                    6.35498,
+                    2.39452
+                ],
+                [
+                    6.355,
+                    2.39409
+                ],
+                [
+                    6.35371,
+                    2.39406
+                ],
+                [
+                    6.35373,
+                    2.39308
+                ],
+                [
+                    6.35381,
+                    2.39098
+                ],
+                [
+                    6.35387,
+                    2.38855
+                ],
+                [
+                    6.35389,
+                    2.38706
+                ],
+                [
+                    6.35421,
+                    2.3868
+                ],
+                [
+                    6.35494,
+                    2.38774
+                ],
+                [
+                    6.35572,
+                    2.38721
+                ],
+                [
+                    6.35571,
+                    2.38701
+                ],
+                [
+                    6.35487,
+                    2.38592
+                ],
+                [
+                    6.35461,
+                    2.38563
+                ],
+                [
+                    6.35445,
+                    2.38559
+                ],
+                [
+                    6.35443,
+                    2.38556
+                ],
+                [
+                    6.35414,
+                    2.38522
+                ],
+                [
+                    6.35354,
+                    2.38443
+                ],
+                [
+                    6.35371,
+                    2.38431
+                ]
+            ],
+            "distance": 15.414,
+            "duration": 30.5,
+            "legs": [
+                {
+                    "distance": {
+                        "text": "15,4 km",
+                        "value": 15414
+                    },
+                    "duration": {
+                        "text": "31 minutes",
+                        "value": 1830
+                    },
+                    "duration_in_traffic": {
+                        "text": "32 minutes",
+                        "value": 1931
+                    },
+                    "end_address": "Aéroport International de Cotonou - Cardinal Bernardin Gantin, Ave Jean-Paul II, Cotonou, Bénin",
+                    "end_location": {
+                        "lat": 6.3537137,
+                        "lng": 2.3843068
+                    },
+                    "start_address": "C8GJ+2PW, Abomey Calavi, Bénin",
+                    "start_location": {
+                        "lat": 6.423310600000001,
+                        "lng": 2.3303304
+                    },
+                    "steps": [
+                        {
+                            "distance": {
+                                "text": "53 m",
+                                "value": 53
+                            },
+                            "duration": {
+                                "text": "1 minute",
+                                "value": 11
+                            },
+                            "end_location": {
+                                "lat": 6.4236019,
+                                "lng": 2.3299539
+                            },
+                            "html_instructions": "Prendre la direction <b>nord-ouest</b>",
+                            "polyline": {
+                                "points": "upef@qcfMy@jA"
+                            },
+                            "start_location": {
+                                "lat": 6.423310600000001,
+                                "lng": 2.3303304
+                            },
+                            "travel_mode": "DRIVING"
+                        },
+                        {
+                            "distance": {
+                                "text": "0,1 km",
+                                "value": 113
+                            },
+                            "duration": {
+                                "text": "1 minute",
+                                "value": 28
+                            },
+                            "end_location": {
+                                "lat": 6.4228042,
+                                "lng": 2.3293183
+                            },
+                            "html_instructions": "Tourner à <b>gauche</b>",
+                            "maneuver": "turn-left",
+                            "polyline": {
+                                "points": "oref@eafMfAx@hAx@LH"
+                            },
+                            "start_location": {
+                                "lat": 6.4236019,
+                                "lng": 2.3299539
+                            },
+                            "travel_mode": "DRIVING"
+                        },
+                        {
+                            "distance": {
+                                "text": "0,3 km",
+                                "value": 262
+                            },
+                            "duration": {
+                                "text": "1 minute",
+                                "value": 63
+                            },
+                            "end_location": {
+                                "lat": 6.424351799999999,
+                                "lng": 2.3275456
+                            },
+                            "html_instructions": "Tourner à <b>droite</b>",
+                            "maneuver": "turn-right",
+                            "polyline": {
+                                "points": "omef@g}eMkApAwDlECBa@b@GJCL"
+                            },
+                            "start_location": {
+                                "lat": 6.4228042,
+                                "lng": 2.3293183
+                            },
+                            "travel_mode": "DRIVING"
+                        },
+                        {
+                            "distance": {
+                                "text": "0,5 km",
+                                "value": 537
+                            },
+                            "duration": {
+                                "text": "2 minutes",
+                                "value": 132
+                            },
+                            "end_location": {
+                                "lat": 6.420787799999999,
+                                "lng": 2.32432
+                            },
+                            "html_instructions": "Tourner à <b>gauche</b>",
+                            "maneuver": "turn-left",
+                            "polyline": {
+                                "points": "ewef@ereMAB@F@BBFDHVX\\VnClBdBnAbA|@rAlAnAhApAjAx@r@Z\\"
+                            },
+                            "start_location": {
+                                "lat": 6.424351799999999,
+                                "lng": 2.3275456
+                            },
+                            "travel_mode": "DRIVING"
+                        },
+                        {
+                            "distance": {
+                                "text": "2,6 km",
+                                "value": 2582
+                            },
+                            "duration": {
+                                "text": "6 minutes",
+                                "value": 371
+                            },
+                            "end_location": {
+                                "lat": 6.4054367,
+                                "lng": 2.3416812
+                            },
+                            "html_instructions": "Tourner à <b>gauche</b>",
+                            "maneuver": "turn-left",
+                            "polyline": {
+                                "points": "}`ef@_~dMLL@A`CeDvAeBBEb@g@DEjAwADEn@u@RSDGnAqADE?ADCBEDEBEDEDEBEDCBEBEDEBEDEBEBEDEBEBEDEBEDEBEBEDEBEDEBEBEDEBEHKDEBEDEBEDEDGBEDEBEDEBEDEDEBEDEBEDEBEDEBEDEDEBEDEBEDEBEDGDEBEDEBEDEBEDEBC@ABEDEBEDEBEDEDEBEDEBEDEDEBEDEBEDEDEBEDEDEBEDEBEDEDEBEBC@ADEBEDEBEz@cARWpBeC@CPSNQf@m@@?DEVYj@q@BC|AgB@C@AdBoBV[xAaBV[FEv@{@h@m@BAh@s@hB{BDGNQ`@e@b@i@HIdAoABE~@gAFGX]HIFIlAyALQx@_AZ_@`@g@lAyA^g@FGb@i@pBeCZ_@\\a@@A?A@??A@A@A@A?A@A@??A@A@??A@A?A@?@A?A@A@A@A@A?A@A@??A@A@A@A?A@A@??A@A@A@A?A@??A@A@A@A?A@?@A?A@A@A@A?A@A@??A@A?A@?@A?A@??A@A@A@A@A?A@??A@A@??A@A?A@?@A?A@A@A@A?A@??A@A@??A@A?A@?@A?A~@gANQ@A\\[BAFCDCLCDA"
+                            },
+                            "start_location": {
+                                "lat": 6.420787799999999,
+                                "lng": 2.32432
+                            },
+                            "travel_mode": "DRIVING"
+                        },
+                        {
+                            "distance": {
+                                "text": "8 m",
+                                "value": 8
+                            },
+                            "duration": {
+                                "text": "1 minute",
+                                "value": 2
+                            },
+                            "end_location": {
+                                "lat": 6.4053973,
+                                "lng": 2.3417452
+                            },
+                            "html_instructions": "Tourner à <b>gauche</b> vers <b>RNIE2</b>",
+                            "maneuver": "turn-left",
+                            "polyline": {
+                                "points": "_abf@ojhMFM"
+                            },
+                            "start_location": {
+                                "lat": 6.4054367,
+                                "lng": 2.3416812
+                            },
+                            "travel_mode": "DRIVING"
+                        },
+                        {
+                            "distance": {
+                                "text": "2,7 km",
+                                "value": 2657
+                            },
+                            "duration": {
+                                "text": "4 minutes",
+                                "value": 238
+                            },
+                            "end_location": {
+                                "lat": 6.389231499999999,
+                                "lng": 2.3555199
+                            },
+                            "html_instructions": "Tourner <b>à droite</b> au 1er croisement et continuer sur <b>RNIE2</b>",
+                            "maneuver": "turn-right",
+                            "polyline": {
+                                "points": "w`bf@}jhMrAp@t@T~@RdAJjBB`EEz@C|AIp@GXEXAj@INEdBc@hEiApFyAd@Or@Q`Dy@bAYp@SNI\\Ob@WROZYJKPQFG^c@^e@`AyAnAaB\\e@t@gAPUl@}@^o@HURk@H_@XcBH_@Ja@Tu@p@uAN]hA_C~@oB`@y@FO`@{@|DaIDKHOr@}Al@kAp@uA\\y@Zy@VeAPy@JcADi@FeA"
+                            },
+                            "start_location": {
+                                "lat": 6.4053973,
+                                "lng": 2.3417452
+                            },
+                            "travel_mode": "DRIVING"
+                        },
+                        {
+                            "distance": {
+                                "text": "4,3 km",
+                                "value": 4258
+                            },
+                            "duration": {
+                                "text": "6 minutes",
+                                "value": 389
+                            },
+                            "end_location": {
+                                "lat": 6.377015099999999,
+                                "lng": 2.3895329
+                            },
+                            "html_instructions": "Continuer sur <b>RNIE1</b>",
+                            "polyline": {
+                                "points": "u{~e@_akMAsFFyAHcC\\gHPoDd@}IJsBTuDP{BFg@Fg@RaBZuBvA}HdA{G\\}BhAyHZyBPy@Ny@V_AL]d@gAp@oAt@yAJUjA}B`@aAd@aBh@oBXcAz@uCVq@Zq@^o@f@s@z@aAb@_@^WRObAm@f@Y|@[^M^IjB[jF_An@Oh@Qz@_@r@c@`@[`@]h@k@`@g@v@oATi@Rg@Lk@Lg@LcAFaADoAR}IBoAHqDHaDL}F@c@ToE?K"
+                            },
+                            "start_location": {
+                                "lat": 6.389231499999999,
+                                "lng": 2.3555199
+                            },
+                            "travel_mode": "DRIVING"
+                        },
+                        {
+                            "distance": {
+                                "text": "2,5 km",
+                                "value": 2544
+                            },
+                            "duration": {
+                                "text": "4 minutes",
+                                "value": 248
+                            },
+                            "end_location": {
+                                "lat": 6.3566861,
+                                "lng": 2.3992523
+                            },
+                            "html_instructions": "Au rond-point, prendre la <b>1re</b> sortie sur <b>Rte de Lomé</b>",
+                            "maneuver": "roundabout-right",
+                            "polyline": {
+                                "points": "ko|e@quqMDCBA@CBA@C@C@C@C@CNMNORU\\a@HG\\_@`@Y\\UDCXORIn@WzEiBjFcBj@STM\\Sf@_@l@i@d@i@Zc@NU`@_@XSRKPGPGRG^G@?z@Ml@KVE|@Q|@Q|@O`@G`AOtAWx@Mb@G~B]`AO\\G^K^KZIXKh@UbAe@LGv@a@jBaApEwBxG}CnBcADAZOr@]BCrAs@x@a@l@[r@Yt@W~@Y\\Ip@Of@Iz@Od@IZGbAQXEj@Kf@GtAOjAM"
+                            },
+                            "start_location": {
+                                "lat": 6.377015099999999,
+                                "lng": 2.3895329
+                            },
+                            "travel_mode": "DRIVING"
+                        },
+                        {
+                            "distance": {
+                                "text": "0,1 km",
+                                "value": 95
+                            },
+                            "duration": {
+                                "text": "1 minute",
+                                "value": 15
+                            },
+                            "end_location": {
+                                "lat": 6.356125,
+                                "lng": 2.3998757
+                            },
+                            "html_instructions": "Continuer sur <b>Rue 390</b>",
+                            "polyline": {
+                                "points": "ipxe@irsMFCf@[d@m@Te@DI"
+                            },
+                            "start_location": {
+                                "lat": 6.3566861,
+                                "lng": 2.3992523
+                            },
+                            "travel_mode": "DRIVING"
+                        },
+                        {
+                            "distance": {
+                                "text": "0,7 km",
+                                "value": 684
+                            },
+                            "duration": {
+                                "text": "2 minutes",
+                                "value": 90
+                            },
+                            "end_location": {
+                                "lat": 6.354997699999999,
+                                "lng": 2.3940868
+                            },
+                            "html_instructions": "Tourner à <b>droite</b>",
+                            "maneuver": "turn-right",
+                            "polyline": {
+                                "points": "wlxe@gvsMF@H@D@D@DBBBR`@Xl@NZLX|ArD^jAAjA?n@At@?`A?XAd@A~@A|@A~@A|@?`A?f@ATA~@"
+                            },
+                            "start_location": {
+                                "lat": 6.356125,
+                                "lng": 2.3998757
+                            },
+                            "travel_mode": "DRIVING"
+                        },
+                        {
+                            "distance": {
+                                "text": "0,1 km",
+                                "value": 143
+                            },
+                            "duration": {
+                                "text": "1 minute",
+                                "value": 24
+                            },
+                            "end_location": {
+                                "lat": 6.3537121,
+                                "lng": 2.3940638
+                            },
+                            "html_instructions": "Tourner à <b>gauche</b> vers <b>Rte De L'Aéroport</b>",
+                            "maneuver": "turn-left",
+                            "polyline": {
+                                "points": "wexe@arrM|D@bAB"
+                            },
+                            "start_location": {
+                                "lat": 6.354997699999999,
+                                "lng": 2.3940868
+                            },
+                            "travel_mode": "DRIVING"
+                        },
+                        {
+                            "distance": {
+                                "text": "0,8 km",
+                                "value": 774
+                            },
+                            "duration": {
+                                "text": "1 minute",
+                                "value": 76
+                            },
+                            "end_location": {
+                                "lat": 6.353885099999999,
+                                "lng": 2.3870634
+                            },
+                            "html_instructions": "Prendre <b>à droite</b> sur <b>Rte De L'Aéroport</b>",
+                            "maneuver": "turn-right",
+                            "polyline": {
+                                "points": "u}we@{qrM?ZA~@AfA?^AP?\\CdB?^A\\CdBAr@At@AhCEhFAh@AfAAvB?dD?@AH"
+                            },
+                            "start_location": {
+                                "lat": 6.3537121,
+                                "lng": 2.3940638
+                            },
+                            "travel_mode": "DRIVING"
+                        },
+                        {
+                            "distance": {
+                                "text": "46 m",
+                                "value": 46
+                            },
+                            "duration": {
+                                "text": "1 minute",
+                                "value": 8
+                            },
+                            "end_location": {
+                                "lat": 6.3542098,
+                                "lng": 2.3867986
+                            },
+                            "html_instructions": "Tourner à <b>droite</b>",
+                            "maneuver": "turn-right",
+                            "polyline": {
+                                "points": "y~we@cfqMC@{@p@"
+                            },
+                            "start_location": {
+                                "lat": 6.353885099999999,
+                                "lng": 2.3870634
+                            },
+                            "travel_mode": "DRIVING"
+                        },
+                        {
+                            "distance": {
+                                "text": "0,1 km",
+                                "value": 132
+                            },
+                            "duration": {
+                                "text": "1 minute",
+                                "value": 23
+                            },
+                            "end_location": {
+                                "lat": 6.354941699999999,
+                                "lng": 2.3877439
+                            },
+                            "html_instructions": "Tourner à <b>droite</b>",
+                            "maneuver": "turn-right",
+                            "polyline": {
+                                "points": "y`xe@odqMiA{AgA_B"
+                            },
+                            "start_location": {
+                                "lat": 6.3542098,
+                                "lng": 2.3867986
+                            },
+                            "travel_mode": "DRIVING"
+                        },
+                        {
+                            "distance": {
+                                "text": "0,1 km",
+                                "value": 105
+                            },
+                            "duration": {
+                                "text": "1 minute",
+                                "value": 23
+                            },
+                            "end_location": {
+                                "lat": 6.3557212,
+                                "lng": 2.387209
+                            },
+                            "html_instructions": "Tourner à <b>gauche</b>",
+                            "maneuver": "turn-left",
+                            "polyline": {
+                                "points": "kexe@kjqMyAz@aAl@"
+                            },
+                            "start_location": {
+                                "lat": 6.354941699999999,
+                                "lng": 2.3877439
+                            },
+                            "travel_mode": "DRIVING"
+                        },
+                        {
+                            "distance": {
+                                "text": "22 m",
+                                "value": 22
+                            },
+                            "duration": {
+                                "text": "1 minute",
+                                "value": 9
+                            },
+                            "end_location": {
+                                "lat": 6.355707499999999,
+                                "lng": 2.3870063
+                            },
+                            "html_instructions": "Tourner à <b>gauche</b>",
+                            "maneuver": "turn-left",
+                            "polyline": {
+                                "points": "gjxe@agqM@f@"
+                            },
+                            "start_location": {
+                                "lat": 6.3557212,
+                                "lng": 2.387209
+                            },
+                            "travel_mode": "DRIVING"
+                        },
+                        {
+                            "distance": {
+                                "text": "0,4 km",
+                                "value": 376
+                            },
+                            "duration": {
+                                "text": "1 minute",
+                                "value": 74
+                            },
+                            "end_location": {
+                                "lat": 6.3535429,
+                                "lng": 2.3844317
+                            },
+                            "html_instructions": "Tourner légèrement à <b>gauche</b>",
+                            "maneuver": "turn-slight-left",
+                            "polyline": {
+                                "points": "ejxe@yeqMfDxEf@n@JH^FBD@Bv@~@|@pAx@jA"
+                            },
+                            "start_location": {
+                                "lat": 6.355707499999999,
+                                "lng": 2.3870063
+                            },
+                            "travel_mode": "DRIVING"
+                        },
+                        {
+                            "distance": {
+                                "text": "23 m",
+                                "value": 23
+                            },
+                            "duration": {
+                                "text": "1 minute",
+                                "value": 6
+                            },
+                            "end_location": {
+                                "lat": 6.3537137,
+                                "lng": 2.3843068
+                            },
+                            "html_instructions": "Tourner à <b>droite</b><div style=\"font-size:0.9em\">Votre destination se trouvera sur la gauche.</div>",
+                            "maneuver": "turn-right",
+                            "polyline": {
+                                "points": "s|we@uupMa@V"
+                            },
+                            "start_location": {
+                                "lat": 6.3535429,
+                                "lng": 2.3844317
+                            },
+                            "travel_mode": "DRIVING"
+                        }
+                    ],
+                    "traffic_speed_entry": [],
+                    "via_waypoint": []
+                }
+            ],
+            "steps": [
+                {
+                    "distance": {
+                        "text": "53 m",
+                        "value": 53
+                    },
+                    "duration": {
+                        "text": "1 minute",
+                        "value": 11
+                    },
+                    "end_location": {
+                        "lat": 6.4236019,
+                        "lng": 2.3299539
+                    },
+                    "html_instructions": "Prendre la direction <b>nord-ouest</b>",
+                    "polyline": {
+                        "points": "upef@qcfMy@jA"
+                    },
+                    "start_location": {
+                        "lat": 6.423310600000001,
+                        "lng": 2.3303304
+                    },
+                    "travel_mode": "DRIVING"
+                },
+                {
+                    "distance": {
+                        "text": "0,1 km",
+                        "value": 113
+                    },
+                    "duration": {
+                        "text": "1 minute",
+                        "value": 28
+                    },
+                    "end_location": {
+                        "lat": 6.4228042,
+                        "lng": 2.3293183
+                    },
+                    "html_instructions": "Tourner à <b>gauche</b>",
+                    "maneuver": "turn-left",
+                    "polyline": {
+                        "points": "oref@eafMfAx@hAx@LH"
+                    },
+                    "start_location": {
+                        "lat": 6.4236019,
+                        "lng": 2.3299539
+                    },
+                    "travel_mode": "DRIVING"
+                },
+                {
+                    "distance": {
+                        "text": "0,3 km",
+                        "value": 262
+                    },
+                    "duration": {
+                        "text": "1 minute",
+                        "value": 63
+                    },
+                    "end_location": {
+                        "lat": 6.424351799999999,
+                        "lng": 2.3275456
+                    },
+                    "html_instructions": "Tourner à <b>droite</b>",
+                    "maneuver": "turn-right",
+                    "polyline": {
+                        "points": "omef@g}eMkApAwDlECBa@b@GJCL"
+                    },
+                    "start_location": {
+                        "lat": 6.4228042,
+                        "lng": 2.3293183
+                    },
+                    "travel_mode": "DRIVING"
+                },
+                {
+                    "distance": {
+                        "text": "0,5 km",
+                        "value": 537
+                    },
+                    "duration": {
+                        "text": "2 minutes",
+                        "value": 132
+                    },
+                    "end_location": {
+                        "lat": 6.420787799999999,
+                        "lng": 2.32432
+                    },
+                    "html_instructions": "Tourner à <b>gauche</b>",
+                    "maneuver": "turn-left",
+                    "polyline": {
+                        "points": "ewef@ereMAB@F@BBFDHVX\\VnClBdBnAbA|@rAlAnAhApAjAx@r@Z\\"
+                    },
+                    "start_location": {
+                        "lat": 6.424351799999999,
+                        "lng": 2.3275456
+                    },
+                    "travel_mode": "DRIVING"
+                },
+                {
+                    "distance": {
+                        "text": "2,6 km",
+                        "value": 2582
+                    },
+                    "duration": {
+                        "text": "6 minutes",
+                        "value": 371
+                    },
+                    "end_location": {
+                        "lat": 6.4054367,
+                        "lng": 2.3416812
+                    },
+                    "html_instructions": "Tourner à <b>gauche</b>",
+                    "maneuver": "turn-left",
+                    "polyline": {
+                        "points": "}`ef@_~dMLL@A`CeDvAeBBEb@g@DEjAwADEn@u@RSDGnAqADE?ADCBEDEBEDEDEBEDCBEBEDEBEDEBEBEDEBEBEDEBEDEBEBEDEBEDEBEBEDEBEHKDEBEDEBEDEDGBEDEBEDEBEDEDEBEDEBEDEBEDEBEDEDEBEDEBEDEBEDGDEBEDEBEDEBEDEBC@ABEDEBEDEBEDEDEBEDEBEDEDEBEDEBEDEDEBEDEDEBEDEBEDEDEBEBC@ADEBEDEBEz@cARWpBeC@CPSNQf@m@@?DEVYj@q@BC|AgB@C@AdBoBV[xAaBV[FEv@{@h@m@BAh@s@hB{BDGNQ`@e@b@i@HIdAoABE~@gAFGX]HIFIlAyALQx@_AZ_@`@g@lAyA^g@FGb@i@pBeCZ_@\\a@@A?A@??A@A@A@A?A@A@??A@A@??A@A?A@?@A?A@A@A@A@A?A@A@??A@A@A@A?A@A@??A@A@A@A?A@??A@A@A@A?A@?@A?A@A@A@A?A@A@??A@A?A@?@A?A@??A@A@A@A@A?A@??A@A@??A@A?A@?@A?A@A@A@A?A@??A@A@??A@A?A@?@A?A~@gANQ@A\\[BAFCDCLCDA"
+                    },
+                    "start_location": {
+                        "lat": 6.420787799999999,
+                        "lng": 2.32432
+                    },
+                    "travel_mode": "DRIVING"
+                },
+                {
+                    "distance": {
+                        "text": "8 m",
+                        "value": 8
+                    },
+                    "duration": {
+                        "text": "1 minute",
+                        "value": 2
+                    },
+                    "end_location": {
+                        "lat": 6.4053973,
+                        "lng": 2.3417452
+                    },
+                    "html_instructions": "Tourner à <b>gauche</b> vers <b>RNIE2</b>",
+                    "maneuver": "turn-left",
+                    "polyline": {
+                        "points": "_abf@ojhMFM"
+                    },
+                    "start_location": {
+                        "lat": 6.4054367,
+                        "lng": 2.3416812
+                    },
+                    "travel_mode": "DRIVING"
+                },
+                {
+                    "distance": {
+                        "text": "2,7 km",
+                        "value": 2657
+                    },
+                    "duration": {
+                        "text": "4 minutes",
+                        "value": 238
+                    },
+                    "end_location": {
+                        "lat": 6.389231499999999,
+                        "lng": 2.3555199
+                    },
+                    "html_instructions": "Tourner <b>à droite</b> au 1er croisement et continuer sur <b>RNIE2</b>",
+                    "maneuver": "turn-right",
+                    "polyline": {
+                        "points": "w`bf@}jhMrAp@t@T~@RdAJjBB`EEz@C|AIp@GXEXAj@INEdBc@hEiApFyAd@Or@Q`Dy@bAYp@SNI\\Ob@WROZYJKPQFG^c@^e@`AyAnAaB\\e@t@gAPUl@}@^o@HURk@H_@XcBH_@Ja@Tu@p@uAN]hA_C~@oB`@y@FO`@{@|DaIDKHOr@}Al@kAp@uA\\y@Zy@VeAPy@JcADi@FeA"
+                    },
+                    "start_location": {
+                        "lat": 6.4053973,
+                        "lng": 2.3417452
+                    },
+                    "travel_mode": "DRIVING"
+                },
+                {
+                    "distance": {
+                        "text": "4,3 km",
+                        "value": 4258
+                    },
+                    "duration": {
+                        "text": "6 minutes",
+                        "value": 389
+                    },
+                    "end_location": {
+                        "lat": 6.377015099999999,
+                        "lng": 2.3895329
+                    },
+                    "html_instructions": "Continuer sur <b>RNIE1</b>",
+                    "polyline": {
+                        "points": "u{~e@_akMAsFFyAHcC\\gHPoDd@}IJsBTuDP{BFg@Fg@RaBZuBvA}HdA{G\\}BhAyHZyBPy@Ny@V_AL]d@gAp@oAt@yAJUjA}B`@aAd@aBh@oBXcAz@uCVq@Zq@^o@f@s@z@aAb@_@^WRObAm@f@Y|@[^M^IjB[jF_An@Oh@Qz@_@r@c@`@[`@]h@k@`@g@v@oATi@Rg@Lk@Lg@LcAFaADoAR}IBoAHqDHaDL}F@c@ToE?K"
+                    },
+                    "start_location": {
+                        "lat": 6.389231499999999,
+                        "lng": 2.3555199
+                    },
+                    "travel_mode": "DRIVING"
+                },
+                {
+                    "distance": {
+                        "text": "2,5 km",
+                        "value": 2544
+                    },
+                    "duration": {
+                        "text": "4 minutes",
+                        "value": 248
+                    },
+                    "end_location": {
+                        "lat": 6.3566861,
+                        "lng": 2.3992523
+                    },
+                    "html_instructions": "Au rond-point, prendre la <b>1re</b> sortie sur <b>Rte de Lomé</b>",
+                    "maneuver": "roundabout-right",
+                    "polyline": {
+                        "points": "ko|e@quqMDCBA@CBA@C@C@C@C@CNMNORU\\a@HG\\_@`@Y\\UDCXORIn@WzEiBjFcBj@STM\\Sf@_@l@i@d@i@Zc@NU`@_@XSRKPGPGRG^G@?z@Ml@KVE|@Q|@Q|@O`@G`AOtAWx@Mb@G~B]`AO\\G^K^KZIXKh@UbAe@LGv@a@jBaApEwBxG}CnBcADAZOr@]BCrAs@x@a@l@[r@Yt@W~@Y\\Ip@Of@Iz@Od@IZGbAQXEj@Kf@GtAOjAM"
+                    },
+                    "start_location": {
+                        "lat": 6.377015099999999,
+                        "lng": 2.3895329
+                    },
+                    "travel_mode": "DRIVING"
+                },
+                {
+                    "distance": {
+                        "text": "0,1 km",
+                        "value": 95
+                    },
+                    "duration": {
+                        "text": "1 minute",
+                        "value": 15
+                    },
+                    "end_location": {
+                        "lat": 6.356125,
+                        "lng": 2.3998757
+                    },
+                    "html_instructions": "Continuer sur <b>Rue 390</b>",
+                    "polyline": {
+                        "points": "ipxe@irsMFCf@[d@m@Te@DI"
+                    },
+                    "start_location": {
+                        "lat": 6.3566861,
+                        "lng": 2.3992523
+                    },
+                    "travel_mode": "DRIVING"
+                },
+                {
+                    "distance": {
+                        "text": "0,7 km",
+                        "value": 684
+                    },
+                    "duration": {
+                        "text": "2 minutes",
+                        "value": 90
+                    },
+                    "end_location": {
+                        "lat": 6.354997699999999,
+                        "lng": 2.3940868
+                    },
+                    "html_instructions": "Tourner à <b>droite</b>",
+                    "maneuver": "turn-right",
+                    "polyline": {
+                        "points": "wlxe@gvsMF@H@D@D@DBBBR`@Xl@NZLX|ArD^jAAjA?n@At@?`A?XAd@A~@A|@A~@A|@?`A?f@ATA~@"
+                    },
+                    "start_location": {
+                        "lat": 6.356125,
+                        "lng": 2.3998757
+                    },
+                    "travel_mode": "DRIVING"
+                },
+                {
+                    "distance": {
+                        "text": "0,1 km",
+                        "value": 143
+                    },
+                    "duration": {
+                        "text": "1 minute",
+                        "value": 24
+                    },
+                    "end_location": {
+                        "lat": 6.3537121,
+                        "lng": 2.3940638
+                    },
+                    "html_instructions": "Tourner à <b>gauche</b> vers <b>Rte De L'Aéroport</b>",
+                    "maneuver": "turn-left",
+                    "polyline": {
+                        "points": "wexe@arrM|D@bAB"
+                    },
+                    "start_location": {
+                        "lat": 6.354997699999999,
+                        "lng": 2.3940868
+                    },
+                    "travel_mode": "DRIVING"
+                },
+                {
+                    "distance": {
+                        "text": "0,8 km",
+                        "value": 774
+                    },
+                    "duration": {
+                        "text": "1 minute",
+                        "value": 76
+                    },
+                    "end_location": {
+                        "lat": 6.353885099999999,
+                        "lng": 2.3870634
+                    },
+                    "html_instructions": "Prendre <b>à droite</b> sur <b>Rte De L'Aéroport</b>",
+                    "maneuver": "turn-right",
+                    "polyline": {
+                        "points": "u}we@{qrM?ZA~@AfA?^AP?\\CdB?^A\\CdBAr@At@AhCEhFAh@AfAAvB?dD?@AH"
+                    },
+                    "start_location": {
+                        "lat": 6.3537121,
+                        "lng": 2.3940638
+                    },
+                    "travel_mode": "DRIVING"
+                },
+                {
+                    "distance": {
+                        "text": "46 m",
+                        "value": 46
+                    },
+                    "duration": {
+                        "text": "1 minute",
+                        "value": 8
+                    },
+                    "end_location": {
+                        "lat": 6.3542098,
+                        "lng": 2.3867986
+                    },
+                    "html_instructions": "Tourner à <b>droite</b>",
+                    "maneuver": "turn-right",
+                    "polyline": {
+                        "points": "y~we@cfqMC@{@p@"
+                    },
+                    "start_location": {
+                        "lat": 6.353885099999999,
+                        "lng": 2.3870634
+                    },
+                    "travel_mode": "DRIVING"
+                },
+                {
+                    "distance": {
+                        "text": "0,1 km",
+                        "value": 132
+                    },
+                    "duration": {
+                        "text": "1 minute",
+                        "value": 23
+                    },
+                    "end_location": {
+                        "lat": 6.354941699999999,
+                        "lng": 2.3877439
+                    },
+                    "html_instructions": "Tourner à <b>droite</b>",
+                    "maneuver": "turn-right",
+                    "polyline": {
+                        "points": "y`xe@odqMiA{AgA_B"
+                    },
+                    "start_location": {
+                        "lat": 6.3542098,
+                        "lng": 2.3867986
+                    },
+                    "travel_mode": "DRIVING"
+                },
+                {
+                    "distance": {
+                        "text": "0,1 km",
+                        "value": 105
+                    },
+                    "duration": {
+                        "text": "1 minute",
+                        "value": 23
+                    },
+                    "end_location": {
+                        "lat": 6.3557212,
+                        "lng": 2.387209
+                    },
+                    "html_instructions": "Tourner à <b>gauche</b>",
+                    "maneuver": "turn-left",
+                    "polyline": {
+                        "points": "kexe@kjqMyAz@aAl@"
+                    },
+                    "start_location": {
+                        "lat": 6.354941699999999,
+                        "lng": 2.3877439
+                    },
+                    "travel_mode": "DRIVING"
+                },
+                {
+                    "distance": {
+                        "text": "22 m",
+                        "value": 22
+                    },
+                    "duration": {
+                        "text": "1 minute",
+                        "value": 9
+                    },
+                    "end_location": {
+                        "lat": 6.355707499999999,
+                        "lng": 2.3870063
+                    },
+                    "html_instructions": "Tourner à <b>gauche</b>",
+                    "maneuver": "turn-left",
+                    "polyline": {
+                        "points": "gjxe@agqM@f@"
+                    },
+                    "start_location": {
+                        "lat": 6.3557212,
+                        "lng": 2.387209
+                    },
+                    "travel_mode": "DRIVING"
+                },
+                {
+                    "distance": {
+                        "text": "0,4 km",
+                        "value": 376
+                    },
+                    "duration": {
+                        "text": "1 minute",
+                        "value": 74
+                    },
+                    "end_location": {
+                        "lat": 6.3535429,
+                        "lng": 2.3844317
+                    },
+                    "html_instructions": "Tourner légèrement à <b>gauche</b>",
+                    "maneuver": "turn-slight-left",
+                    "polyline": {
+                        "points": "ejxe@yeqMfDxEf@n@JH^FBD@Bv@~@|@pAx@jA"
+                    },
+                    "start_location": {
+                        "lat": 6.355707499999999,
+                        "lng": 2.3870063
+                    },
+                    "travel_mode": "DRIVING"
+                },
+                {
+                    "distance": {
+                        "text": "23 m",
+                        "value": 23
+                    },
+                    "duration": {
+                        "text": "1 minute",
+                        "value": 6
+                    },
+                    "end_location": {
+                        "lat": 6.3537137,
+                        "lng": 2.3843068
+                    },
+                    "html_instructions": "Tourner à <b>droite</b><div style=\"font-size:0.9em\">Votre destination se trouvera sur la gauche.</div>",
+                    "maneuver": "turn-right",
+                    "polyline": {
+                        "points": "s|we@uupMa@V"
+                    },
+                    "start_location": {
+                        "lat": 6.3535429,
+                        "lng": 2.3844317
+                    },
+                    "travel_mode": "DRIVING"
+                }
+            ],
+            "annotations": [
+                {
+                    "distance": 53,
+                    "duration": 11,
+                    "instruction": "Prendre la direction <b>nord-ouest</b>"
+                },
+                {
+                    "distance": 113,
+                    "duration": 28,
+                    "instruction": "Tourner à <b>gauche</b>",
+                    "maneuver": "turn-left"
+                },
+                {
+                    "distance": 262,
+                    "duration": 63,
+                    "instruction": "Tourner à <b>droite</b>",
+                    "maneuver": "turn-right"
+                },
+                {
+                    "distance": 537,
+                    "duration": 132,
+                    "instruction": "Tourner à <b>gauche</b>",
+                    "maneuver": "turn-left"
+                },
+                {
+                    "distance": 2582,
+                    "duration": 371,
+                    "instruction": "Tourner à <b>gauche</b>",
+                    "maneuver": "turn-left"
+                },
+                {
+                    "distance": 8,
+                    "duration": 2,
+                    "instruction": "Tourner à <b>gauche</b> vers <b>RNIE2</b>",
+                    "maneuver": "turn-left"
+                },
+                {
+                    "distance": 2657,
+                    "duration": 238,
+                    "instruction": "Tourner <b>à droite</b> au 1er croisement et continuer sur <b>RNIE2</b>",
+                    "maneuver": "turn-right"
+                },
+                {
+                    "distance": 4258,
+                    "duration": 389,
+                    "instruction": "Continuer sur <b>RNIE1</b>"
+                },
+                {
+                    "distance": 2544,
+                    "duration": 248,
+                    "instruction": "Au rond-point, prendre la <b>1re</b> sortie sur <b>Rte de Lomé</b>",
+                    "maneuver": "roundabout-right"
+                },
+                {
+                    "distance": 95,
+                    "duration": 15,
+                    "instruction": "Continuer sur <b>Rue 390</b>"
+                },
+                {
+                    "distance": 684,
+                    "duration": 90,
+                    "instruction": "Tourner à <b>droite</b>",
+                    "maneuver": "turn-right"
+                },
+                {
+                    "distance": 143,
+                    "duration": 24,
+                    "instruction": "Tourner à <b>gauche</b> vers <b>Rte De L'Aéroport</b>",
+                    "maneuver": "turn-left"
+                },
+                {
+                    "distance": 774,
+                    "duration": 76,
+                    "instruction": "Prendre <b>à droite</b> sur <b>Rte De L'Aéroport</b>",
+                    "maneuver": "turn-right"
+                },
+                {
+                    "distance": 46,
+                    "duration": 8,
+                    "instruction": "Tourner à <b>droite</b>",
+                    "maneuver": "turn-right"
+                },
+                {
+                    "distance": 132,
+                    "duration": 23,
+                    "instruction": "Tourner à <b>droite</b>",
+                    "maneuver": "turn-right"
+                },
+                {
+                    "distance": 105,
+                    "duration": 23,
+                    "instruction": "Tourner à <b>gauche</b>",
+                    "maneuver": "turn-left"
+                },
+                {
+                    "distance": 22,
+                    "duration": 9,
+                    "instruction": "Tourner à <b>gauche</b>",
+                    "maneuver": "turn-left"
+                },
+                {
+                    "distance": 376,
+                    "duration": 74,
+                    "instruction": "Tourner légèrement à <b>gauche</b>",
+                    "maneuver": "turn-slight-left"
+                },
+                {
+                    "distance": 23,
+                    "duration": 6,
+                    "instruction": "Tourner à <b>droite</b><div style=\"font-size:0.9em\">Votre destination se trouvera sur la gauche.</div>",
+                    "maneuver": "turn-right"
+                }
+            ],
+            "duration_in_traffic": 0,
+            "lastRecalcAt": "2025-10-11T13:22:54.263Z"
+        },
+        "driverToPickup": {
+            "geometry": [],
+            "distance": 0,
+            "duration": 0,
+            "duration_in_traffic": 0,
+            "legs": [],
+            "steps": [],
+            "lastRecalcAt": "2025-10-11T13:22:54.263Z"
+        }
+    },
+    "_id": "68ea5bcfff719ef9cf75923e",
+    "vehicle": "confort",
+    "distance": 15.414,
+    "fare": 8500,
+    "estimatedDuration": 30.5,
+    "estimatedDurationFormatted": "00:31",
+    "paymentMethod": "wallet",
+    "customer": {
+        "_id": "6890f806acd4bef85f05c5ae",
+        "role": "customer",
+        "phone": "+22997722461",
+        "countryCode": "bj",
+        "email": "",
+        "birthday": "2025-08-04T18:06:20.164Z",
+        "pushNotificationToken": "ExponentPushToken[62gwt5Hu--fmNQqTczrw0W]",
+        "photo": "uploads/profil/1756204969514-881555203.jpeg",
+        "disabled": false,
+        "step": 4,
+        "carInfo": false,
+        "carPiece": false,
+        "carPhoto": false,
+        "wallet": 790500,
+        "idCard": "",
+        "verified": true,
+        "validated": false,
+        "suspend": false,
+        "isOnline": true,
+        "lastSeen": "2025-10-12T05:29:01.103Z",
+        "otp": null,
+        "otp_expiry": null,
+        "createdAt": "2025-08-04T18:12:22.668Z",
+        "updatedAt": "2025-10-12T05:29:01.103Z",
+        "__v": 0,
+        "nom": "EKPELIKPEZE",
+        "prenom": "Hanniel",
+        "id": "6890f806acd4bef85f05c5ae"
+    },
+    "rider": {
+        "_id": "6897901932a2db9ad0d513b3",
+        "role": "rider",
+        "phone": "+22999112086",
+        "countryCode": "ci",
+        "email": "",
+        "nom": "Hanniel",
+        "prenom": "Ephraim",
+        "birthday": "2025-08-09T15:36:00.365Z",
+        "pushNotificationToken": "ExponentPushToken[pp6S6kM_qO0l2MPSgjXlFA]",
+        "photo": "uploads/profil/1759234116048-723852674.jpeg",
+        "disabled": false,
+        "step": 4,
+        "carInfo": true,
+        "carPiece": true,
+        "carPhoto": true,
+        "wallet": 67000,
+        "idCard": "",
+        "verified": true,
+        "validated": true,
+        "suspend": false,
+        "isOnline": true,
+        "lastSeen": "2025-10-12T05:32:39.890Z",
+        "createdAt": "2025-08-09T18:14:49.501Z",
+        "updatedAt": "2025-10-12T05:32:39.890Z",
+        "__v": 0,
+        "id": "6897901932a2db9ad0d513b3"
+    },
+    "routeGeometry": [
+        [
+            6.42331,
+            2.33033
+        ],
+        [
+            6.4236,
+            2.32995
+        ],
+        [
+            6.42324,
+            2.32966
+        ],
+        [
+            6.4228,
+            2.32932
+        ],
+        [
+            6.42429,
+            2.32768
+        ],
+        [
+            6.42435,
+            2.32755
+        ],
+        [
+            6.42435,
+            2.32749
+        ],
+        [
+            6.42432,
+            2.32743
+        ],
+        [
+            6.42417,
+            2.32725
+        ],
+        [
+            6.4233,
+            2.32658
+        ],
+        [
+            6.42279,
+            2.32618
+        ],
+        [
+            6.42245,
+            2.32587
+        ],
+        [
+            6.42163,
+            2.32511
+        ],
+        [
+            6.42093,
+            2.32447
+        ],
+        [
+            6.42071,
+            2.32426
+        ],
+        [
+            6.42006,
+            2.32509
+        ],
+        [
+            6.41962,
+            2.3256
+        ],
+        [
+            6.41942,
+            2.32583
+        ],
+        [
+            6.41874,
+            2.3266
+        ],
+        [
+            6.41821,
+            2.32715
+        ],
+        [
+            6.41802,
+            2.32736
+        ],
+        [
+            6.41766,
+            2.3278
+        ],
+        [
+            6.41686,
+            2.32877
+        ],
+        [
+            6.41606,
+            2.32971
+        ],
+        [
+            6.41567,
+            2.33016
+        ],
+        [
+            6.41431,
+            2.33173
+        ],
+        [
+            6.41292,
+            2.33327
+        ],
+        [
+            6.41168,
+            2.33461
+        ],
+        [
+            6.41043,
+            2.33607
+        ],
+        [
+            6.40765,
+            2.33927
+        ],
+        [
+            6.40663,
+            2.34047
+        ],
+        [
+            6.40643,
+            2.34071
+        ],
+        [
+            6.40624,
+            2.34093
+        ],
+        [
+            6.40619,
+            2.34099
+        ],
+        [
+            6.40578,
+            2.34146
+        ],
+        [
+            6.40561,
+            2.34161
+        ],
+        [
+            6.40554,
+            2.34165
+        ],
+        [
+            6.40544,
+            2.34168
+        ],
+        [
+            6.4054,
+            2.34175
+        ],
+        [
+            6.40498,
+            2.3415
+        ],
+        [
+            6.40471,
+            2.34139
+        ],
+        [
+            6.40439,
+            2.34129
+        ],
+        [
+            6.40404,
+            2.34123
+        ],
+        [
+            6.4035,
+            2.34121
+        ],
+        [
+            6.40223,
+            2.34126
+        ],
+        [
+            6.40151,
+            2.34135
+        ],
+        [
+            6.40125,
+            2.34139
+        ],
+        [
+            6.40095,
+            2.34147
+        ],
+        [
+            6.39943,
+            2.34202
+        ],
+        [
+            6.39803,
+            2.34255
+        ],
+        [
+            6.39696,
+            2.34293
+        ],
+        [
+            6.39637,
+            2.34316
+        ],
+        [
+            6.39614,
+            2.34329
+        ],
+        [
+            6.39586,
+            2.34349
+        ],
+        [
+            6.39553,
+            2.34381
+        ],
+        [
+            6.39521,
+            2.34418
+        ],
+        [
+            6.39448,
+            2.34512
+        ],
+        [
+            6.39374,
+            2.34609
+        ],
+        [
+            6.39353,
+            2.34644
+        ],
+        [
+            6.39338,
+            2.34682
+        ],
+        [
+            6.3932,
+            2.34748
+        ],
+        [
+            6.39303,
+            2.34792
+        ],
+        [
+            6.39201,
+            2.3497
+        ],
+        [
+            6.39068,
+            2.35198
+        ],
+        [
+            6.39011,
+            2.35297
+        ],
+        [
+            6.38971,
+            2.35369
+        ],
+        [
+            6.38957,
+            2.35398
+        ],
+        [
+            6.38945,
+            2.35433
+        ],
+        [
+            6.3893,
+            2.35496
+        ],
+        [
+            6.38923,
+            2.35552
+        ],
+        [
+            6.38924,
+            2.35674
+        ],
+        [
+            6.3892,
+            2.35719
+        ],
+        [
+            6.389,
+            2.35933
+        ],
+        [
+            6.38855,
+            2.36345
+        ],
+        [
+            6.38842,
+            2.36427
+        ],
+        [
+            6.38828,
+            2.36496
+        ],
+        [
+            6.3877,
+            2.36714
+        ],
+        [
+            6.3872,
+            2.36919
+        ],
+        [
+            6.38669,
+            2.37137
+        ],
+        [
+            6.38652,
+            2.37195
+        ],
+        [
+            6.38633,
+            2.37242
+        ],
+        [
+            6.38589,
+            2.37318
+        ],
+        [
+            6.38556,
+            2.37374
+        ],
+        [
+            6.38518,
+            2.37437
+        ],
+        [
+            6.38501,
+            2.3747
+        ],
+        [
+            6.38461,
+            2.37575
+        ],
+        [
+            6.38418,
+            2.37684
+        ],
+        [
+            6.38392,
+            2.37734
+        ],
+        [
+            6.38356,
+            2.37784
+        ],
+        [
+            6.38326,
+            2.37817
+        ],
+        [
+            6.38308,
+            2.37833
+        ],
+        [
+            6.38282,
+            2.37853
+        ],
+        [
+            6.38228,
+            2.37889
+        ],
+        [
+            6.38181,
+            2.3791
+        ],
+        [
+            6.37969,
+            2.37969
+        ],
+        [
+            6.37918,
+            2.37994
+        ],
+        [
+            6.37875,
+            2.38026
+        ],
+        [
+            6.37837,
+            2.38063
+        ],
+        [
+            6.3782,
+            2.38083
+        ],
+        [
+            6.37792,
+            2.38123
+        ],
+        [
+            6.37771,
+            2.38164
+        ],
+        [
+            6.37757,
+            2.38206
+        ],
+        [
+            6.37746,
+            2.38273
+        ],
+        [
+            6.37733,
+            2.38488
+        ],
+        [
+            6.37714,
+            2.38825
+        ],
+        [
+            6.37702,
+            2.38947
+        ],
+        [
+            6.37702,
+            2.38953
+        ],
+        [
+            6.37699,
+            2.38955
+        ],
+        [
+            6.37696,
+            2.38958
+        ],
+        [
+            6.37693,
+            2.38961
+        ],
+        [
+            6.37689,
+            2.38969
+        ],
+        [
+            6.37673,
+            2.38984
+        ],
+        [
+            6.37648,
+            2.39012
+        ],
+        [
+            6.37628,
+            2.39032
+        ],
+        [
+            6.37596,
+            2.39056
+        ],
+        [
+            6.3758,
+            2.39066
+        ],
+        [
+            6.37546,
+            2.39083
+        ],
+        [
+            6.37436,
+            2.39136
+        ],
+        [
+            6.37318,
+            2.39186
+        ],
+        [
+            6.37285,
+            2.39203
+        ],
+        [
+            6.3725,
+            2.39229
+        ],
+        [
+            6.37227,
+            2.3925
+        ],
+        [
+            6.37208,
+            2.39271
+        ],
+        [
+            6.37186,
+            2.393
+        ],
+        [
+            6.37156,
+            2.39326
+        ],
+        [
+            6.37118,
+            2.39344
+        ],
+        [
+            6.37071,
+            2.39355
+        ],
+        [
+            6.36974,
+            2.39382
+        ],
+        [
+            6.3685,
+            2.39414
+        ],
+        [
+            6.36706,
+            2.39448
+        ],
+        [
+            6.36675,
+            2.39458
+        ],
+        [
+            6.36645,
+            2.39469
+        ],
+        [
+            6.36611,
+            2.39486
+        ],
+        [
+            6.3657,
+            2.39509
+        ],
+        [
+            6.36488,
+            2.39559
+        ],
+        [
+            6.36242,
+            2.39698
+        ],
+        [
+            6.36143,
+            2.39756
+        ],
+        [
+            6.36047,
+            2.39815
+        ],
+        [
+            6.35994,
+            2.3984
+        ],
+        [
+            6.35947,
+            2.39858
+        ],
+        [
+            6.35853,
+            2.39884
+        ],
+        [
+            6.3577,
+            2.39906
+        ],
+        [
+            6.35707,
+            2.39918
+        ],
+        [
+            6.35665,
+            2.39927
+        ],
+        [
+            6.35645,
+            2.39941
+        ],
+        [
+            6.35626,
+            2.39964
+        ],
+        [
+            6.35612,
+            2.39988
+        ],
+        [
+            6.35597,
+            2.39984
+        ],
+        [
+            6.35592,
+            2.3998
+        ],
+        [
+            6.35569,
+            2.3994
+        ],
+        [
+            6.35554,
+            2.39913
+        ],
+        [
+            6.35507,
+            2.39823
+        ],
+        [
+            6.35491,
+            2.39785
+        ],
+        [
+            6.35492,
+            2.39723
+        ],
+        [
+            6.35493,
+            2.39663
+        ],
+        [
+            6.35496,
+            2.39568
+        ],
+        [
+            6.35498,
+            2.39452
+        ],
+        [
+            6.355,
+            2.39409
+        ],
+        [
+            6.35371,
+            2.39406
+        ],
+        [
+            6.35373,
+            2.39308
+        ],
+        [
+            6.35381,
+            2.39098
+        ],
+        [
+            6.35387,
+            2.38855
+        ],
+        [
+            6.35389,
+            2.38706
+        ],
+        [
+            6.35421,
+            2.3868
+        ],
+        [
+            6.35494,
+            2.38774
+        ],
+        [
+            6.35572,
+            2.38721
+        ],
+        [
+            6.35571,
+            2.38701
+        ],
+        [
+            6.35487,
+            2.38592
+        ],
+        [
+            6.35461,
+            2.38563
+        ],
+        [
+            6.35445,
+            2.38559
+        ],
+        [
+            6.35443,
+            2.38556
+        ],
+        [
+            6.35414,
+            2.38522
+        ],
+        [
+            6.35354,
+            2.38443
+        ],
+        [
+            6.35371,
+            2.38431
+        ]
+    ],
+    "startTime": "2025-10-11T14:13:52.722Z",
+    "endTime": null,
+    "status": "START",
+    "otp": null,
+    "createdAt": "2025-10-11T13:29:51.480Z",
+    "updatedAt": "2025-10-11T14:13:52.729Z",
+    "__v": 0,
+    "id": "68ea5bcfff719ef9cf75923e"
+}
